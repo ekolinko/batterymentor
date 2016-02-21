@@ -1,0 +1,7 @@
+<resources>
+    <!-- Common -->
+    <string name="value_units_template" formatted="false">%s %s</string>
+
+    <!-- Formatting -->
+    <string name="format_power">#0.00</string>
+</resources>

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">PowerBench</string>
+
+    <!-- Common -->
+    <string name="milliwatts">mW</string>
+
+    <!-- PowerBenchActivity -->
+    <string name="powerbench_battery_benchmark">Battery Benchmark</string>
+    <string name="powerbench_charger_benchmark">Charger Benchmark</string>
 </resources>
