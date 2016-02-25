@@ -1,8 +1,7 @@
 package com.powerbench.sensors;
 
-import android.util.Log;
-
 import com.powerbench.constants.SensorConstants;
+import com.powerbench.datamanager.Point;
 import com.powerbench.debug.Debug;
 
 import java.io.File;
@@ -126,7 +125,6 @@ public enum Sensor {
             if (Debug.isCollectionManagerLoggingEnabled())
                 Debug.printDebug(e);
         }
-        Log.d("tstatic", this + " measureValue " + value);
         return value;
     }
 }

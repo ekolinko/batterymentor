@@ -1,6 +1,8 @@
 package com.powerbench.sensors;
 
 import com.powerbench.constants.SensorConstants;
+import com.powerbench.datamanager.Point;
+import com.powerbench.datamanager.Statistics;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -27,6 +29,11 @@ public class CollectionTask {
      * The data collection interval.
      */
     private long mCollectionInterval;
+
+    /**
+     * The statistics associated with this task.
+     */
+    private Statistics mStatistics;
 
     /**
      * The current point associated with this task.
@@ -81,6 +88,7 @@ public class CollectionTask {
         mCollectionInterval = collectionInterval;
         registerMeasurementListener(measurementListener);
         mTimer = new Timer();
+        mStatistics = new Statistics();
     }
 
     /**
@@ -97,14 +105,12 @@ public class CollectionTask {
         mTimer.cancel();
     }
 
-    /**
-     * Task used for measuring the sensor associated with this collection task.
-     */
-    class SensorMeasurementTask extends TimerTask {
-        public void run() {
-            mPoint = mSensor.measurePoint();
-            notifyAllListenersOfMeasurement(mPoint);
-        }
+    public Statistics getStatistics() {
+        return mStatistics;
+    }
+
+    public double getMedian() {
+        return mStatistics.getMedian();
     }
 
     /**
@@ -145,6 +151,24 @@ public class CollectionTask {
             for (MeasurementListener measurementListener : mMeasurementListeners) {
                 measurementListener.onMeasurementReceived(point);
             }
+        }
+    }
+
+    /**
+     * Measure the sensor immediately and notify all the associated listeners of the measurement.
+     */
+    public void measureSensor() {
+        mPoint = mSensor.measurePoint();
+        mStatistics.addPoint(mPoint);
+        notifyAllListenersOfMeasurement(mPoint);
+    }
+
+    /**
+     * Task used for measuring the sensor associated with this collection task.
+     */
+    class SensorMeasurementTask extends TimerTask {
+        public void run() {
+            measureSensor();
         }
     }
 

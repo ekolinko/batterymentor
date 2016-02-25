@@ -6,7 +6,17 @@ package com.powerbench.constants;
 public class Constants {
 
     /**
-     * The key for a point.
+     * The key for a double value.
      */
-    public static final String BUNDLE_KEY_POINT = "point";
+    public static final String BUNDLE_KEY_VALUE = "double";
+
+    /**
+     * An empty string.
+     */
+    public static final String EMPTY_STRING = "";
+
+    /**
+     * A blank space.
+     */
+    public static final String SPACE = " ";
 }

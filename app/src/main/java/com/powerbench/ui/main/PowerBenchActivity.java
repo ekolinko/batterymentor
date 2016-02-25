@@ -1,5 +1,6 @@
 package com.powerbench.ui.main;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -11,8 +12,9 @@ import android.widget.TextView;
 
 import com.powerbench.R;
 import com.powerbench.constants.Constants;
+import com.powerbench.datamanager.Statistics;
 import com.powerbench.sensors.CollectionTask;
-import com.powerbench.sensors.Point;
+import com.powerbench.datamanager.Point;
 import com.powerbench.sensors.Sensor;
 import com.powerbench.ui.common.CommonActivity;
 
@@ -30,6 +32,16 @@ public class PowerBenchActivity extends CommonActivity {
     private CollectionTask mBatteryCollectionTask;
 
     /**
+     * The statistics associated with the battery collection task.
+     */
+    private Statistics mBatteryStatistics;
+
+    /**
+     * The measurement listener.
+     */
+    private CollectionTask.MeasurementListener mMeasurementListener;
+
+    /**
      * The handler used to update the UI.
      */
     private Handler mHandler;
@@ -38,6 +50,11 @@ public class PowerBenchActivity extends CommonActivity {
      * The last point that was received.
      */
     private Point mLastPoint;
+
+    /**
+     * The current median.
+     */
+    private double mMedian;
 
     /**
      * The current realtime fragment being shown on the screen.
@@ -58,23 +75,32 @@ public class PowerBenchActivity extends CommonActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        String version = Constants.EMPTY_STRING;
+        try {
+            version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        getSupportActionBar().setTitle(getString(R.string.app_name) + Constants.SPACE + version);
         mBatteryFragment = new BatteryFragment();
         mChargerFragment = new ChargerFragment();
         mHandler = new Handler();
-        mBatteryCollectionTask = new CollectionTask(Sensor.POWER, new CollectionTask.MeasurementListener() {
+        mMeasurementListener = new CollectionTask.MeasurementListener() {
             @Override
             public void onMeasurementReceived(final Point point) {
                 mLastPoint = point;
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mFragment != null) {
-                            mFragment.updatePowerValue(point);
+                if (mBatteryStatistics != null) {
+                    mMedian = Math.abs(mBatteryStatistics.getMedian());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mFragment.updatePowerValue(mMedian);
                         }
-                    }
-                });
+                    });
+                }
             }
-        });
+        };
+        mBatteryCollectionTask = new CollectionTask(Sensor.POWER, mMeasurementListener);
+        mBatteryStatistics = mBatteryCollectionTask.getStatistics();
         mBatteryCollectionTask.start();
     }
 
@@ -88,6 +114,7 @@ public class PowerBenchActivity extends CommonActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mBatteryCollectionTask.registerMeasurementListener(mMeasurementListener);
         if (isServiceBound()) {
             getService().addCollectionTask(mBatteryCollectionTask);
         }
@@ -96,6 +123,7 @@ public class PowerBenchActivity extends CommonActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        mBatteryCollectionTask.unregisterMeasurementListener(mMeasurementListener);
         if (isServiceBound()) {
             getService().removeCollectionTask(mBatteryCollectionTask);
         }
@@ -104,11 +132,13 @@ public class PowerBenchActivity extends CommonActivity {
     @Override
     public void onChargerConnected() {
         showFragment(mChargerFragment);
+        mBatteryStatistics.clearRecentData();
     }
 
     @Override
     public void onChargerDisconnected() {
         showFragment(mBatteryFragment);
+        mBatteryStatistics.clearRecentData();
     }
 
     /**
@@ -121,7 +151,7 @@ public class PowerBenchActivity extends CommonActivity {
         if (mFragment != fragment) {
             mFragment = fragment;
             Bundle args = new Bundle();
-            args.putSerializable(Constants.BUNDLE_KEY_POINT, mLastPoint);
+            args.putDouble(Constants.BUNDLE_KEY_VALUE, mMedian);
             if (mFragment.getArguments() == null) {
                 mFragment.setArguments(args);
             } else {
@@ -129,7 +159,6 @@ public class PowerBenchActivity extends CommonActivity {
             }
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, mFragment);
-            transaction.addToBackStack(null);
             transaction.commit();
         }
     }
@@ -143,16 +172,14 @@ public class PowerBenchActivity extends CommonActivity {
          */
         private DecimalFormat mPowerFormatter;
 
-        public abstract TextView getPowerValue();
+        public abstract TextView getPowerValueTextView();
 
         /**
          * Update the power value from the fragment arguments.
          */
         public void updatePowerValueFromArguments() {
-            Point point = (Point) getArguments().getSerializable(Constants.BUNDLE_KEY_POINT);
-            if (point != null) {
-                updatePowerValue(point);
-            }
+            double value = getArguments().getDouble(Constants.BUNDLE_KEY_VALUE);
+            updatePowerValue(value);
         }
 
         /**
@@ -164,13 +191,22 @@ public class PowerBenchActivity extends CommonActivity {
             if (point == null)
                 return;
 
+            updatePowerValue(point.getValue());
+        }
+
+        /**
+         * Update the power value using the specified value
+         *
+         * @param powerValue the value to use to update the arguments.
+         */
+        public void updatePowerValue(double powerValue) {
             if (mPowerFormatter == null)
                 mPowerFormatter = new DecimalFormat(getString(R.string.format_power));
 
-            TextView powerValue = getPowerValue();
-            if (powerValue != null) {
-                String value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(point.getValue()), getString(R.string.milliwatts));
-                powerValue.setText(value);
+            TextView powerValueTextView = getPowerValueTextView();
+            if (powerValueTextView != null) {
+                String value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.milliwatts));
+                powerValueTextView.setText(value);
             }
         }
 
@@ -197,7 +233,7 @@ public class PowerBenchActivity extends CommonActivity {
         }
 
         @Override
-        public TextView getPowerValue() {
+        public TextView getPowerValueTextView() {
             return mBatteryPowerValue;
         }
     }
@@ -222,7 +258,7 @@ public class PowerBenchActivity extends CommonActivity {
         }
 
         @Override
-        public TextView getPowerValue() {
+        public TextView getPowerValueTextView() {
             return mChargerPowerValue;
         }
     }
