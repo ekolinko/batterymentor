@@ -11,11 +11,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.powerbench.R;
+import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.Constants;
 import com.powerbench.datamanager.Statistics;
 import com.powerbench.sensors.CollectionTask;
 import com.powerbench.datamanager.Point;
-import com.powerbench.sensors.Sensor;
 import com.powerbench.ui.common.CommonActivity;
 
 import java.text.DecimalFormat;
@@ -27,9 +27,9 @@ import java.text.DecimalFormat;
 public class PowerBenchActivity extends CommonActivity {
 
     /**
-     * The battery collection task.
+     * The primary battery collection task.
      */
-    private CollectionTask mBatteryCollectionTask;
+    private CollectionTask mPowerCollectionTask;
 
     /**
      * The statistics associated with the battery collection task.
@@ -54,7 +54,7 @@ public class PowerBenchActivity extends CommonActivity {
     /**
      * The current median.
      */
-    private double mMedian;
+    private double mValue;
 
     /**
      * The current realtime fragment being shown on the screen.
@@ -89,44 +89,35 @@ public class PowerBenchActivity extends CommonActivity {
             public void onMeasurementReceived(final Point point) {
                 mLastPoint = point;
                 if (mBatteryStatistics != null) {
-                    mMedian = Math.abs(mBatteryStatistics.getMedian());
+                    mValue = Math.abs(mBatteryStatistics.getValue());
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            mFragment.updatePowerValue(mMedian);
+                            mFragment.updatePowerValue(mValue);
                         }
                     });
                 }
             }
         };
-        mBatteryCollectionTask = new CollectionTask(Sensor.POWER, mMeasurementListener);
-        mBatteryStatistics = mBatteryCollectionTask.getStatistics();
-        mBatteryCollectionTask.start();
+        mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask();
+        mBatteryStatistics = mPowerCollectionTask.getStatistics();
+        mPowerCollectionTask.start();
     }
 
     @Override
     protected void onServiceBound() {
-        if (isServiceBound()) {
-            getService().addCollectionTask(mBatteryCollectionTask);
-        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mBatteryCollectionTask.registerMeasurementListener(mMeasurementListener);
-        if (isServiceBound()) {
-            getService().addCollectionTask(mBatteryCollectionTask);
-        }
+        mPowerCollectionTask.registerMeasurementListener(mMeasurementListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mBatteryCollectionTask.unregisterMeasurementListener(mMeasurementListener);
-        if (isServiceBound()) {
-            getService().removeCollectionTask(mBatteryCollectionTask);
-        }
+        mPowerCollectionTask.unregisterMeasurementListener(mMeasurementListener);
     }
 
     @Override
@@ -151,7 +142,7 @@ public class PowerBenchActivity extends CommonActivity {
         if (mFragment != fragment) {
             mFragment = fragment;
             Bundle args = new Bundle();
-            args.putDouble(Constants.BUNDLE_KEY_VALUE, mMedian);
+            args.putDouble(Constants.BUNDLE_KEY_VALUE, mValue);
             if (mFragment.getArguments() == null) {
                 mFragment.setArguments(args);
             } else {

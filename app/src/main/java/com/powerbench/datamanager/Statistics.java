@@ -1,5 +1,7 @@
 package com.powerbench.datamanager;
 
+import android.util.Log;
+
 import com.powerbench.constants.DataConstants;
 
 import java.util.ArrayList;
@@ -21,6 +23,11 @@ public class Statistics {
      * The global median of the data.
      */
     private double mMedian;
+
+    /**
+     * The last value received by the statistics.
+     */
+    private double mValue;
 
     /**
      * Flag indicating that the median has already been calculated and no data has come in to
@@ -46,6 +53,7 @@ public class Statistics {
                 mRecentData.removeFirst();
             }
             mMedianCalculated = false;
+            mValue = point.getValue();
         }
     }
 
@@ -63,6 +71,12 @@ public class Statistics {
                 if (size > 0) {
                     int nonSpikeMidpoint = (int) (size * (1 - DataConstants.STATISTICS_PERCENT_OF_SPIKES_TO_DROP) / 2);
                     mMedian = sortedRecentData.get(nonSpikeMidpoint).getValue();
+                    StringBuilder sb = new StringBuilder();
+                    for (Point point : sortedRecentData) {
+                        sb.append(Math.abs(point.getValue()) + " ");
+                    }
+                    Log.d("tstatic","Median = " + mMedian);
+                    Log.d("tstatic",sb.toString());
                 } else {
                     mMedian = 0;
                 }
@@ -70,6 +84,10 @@ public class Statistics {
             }
         }
         return mMedian;
+    }
+
+    public double getValue() {
+        return mValue;
     }
 
     /**

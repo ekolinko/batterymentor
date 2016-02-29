@@ -89,11 +89,7 @@ public class ChargerManager {
         int status = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
         boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
                 status == BatteryManager.BATTERY_STATUS_FULL;
-        int chargePlug = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-        boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
-        boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-        boolean wirelessCharger = chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS;
-        if (isCharging && (usbCharge || acCharge || wirelessCharger)) {
+        if (isCharging) {
             notifyAllListenersOfChargerConnected();
         } else {
             notifyAllListenersOfChargerDisconnected();

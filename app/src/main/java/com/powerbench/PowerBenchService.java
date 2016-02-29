@@ -1,14 +1,19 @@
 package com.powerbench;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
+import com.powerbench.collectionmanager.CollectionManager;
+import com.powerbench.constants.Constants;
+import com.powerbench.datamanager.Point;
 import com.powerbench.sensors.CollectionTask;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.powerbench.ui.notification.PowerBenchNotification;
 
 /**
  * This class is a service that performs data collection and benchmark tasks in the background. This
@@ -23,9 +28,9 @@ public class PowerBenchService extends Service {
     private IBinder mBinder = new PowerBenchBinder();
 
     /**
-     * The set of collection tasks that are collecting data in the background.
+     * The notification associated with this service.
      */
-    private Set<CollectionTask> mCollectionTasks = new HashSet<CollectionTask>();
+    private Notification mNotification;
 
     /**
      * Create a new powerbench service. Instantiate and initialize all the core modules.
@@ -33,31 +38,21 @@ public class PowerBenchService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        mNotification = PowerBenchNotification.getInstance().createNotification(this);
+        startForeground(Constants.NOTIFICATION_ID, mNotification);
+        final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        CollectionManager.getInstance().getPowerCollectionTask().registerMeasurementListener(new CollectionTask.MeasurementListener() {
+            @Override
+            public void onMeasurementReceived(Point point) {
+                mNotification = PowerBenchNotification.getInstance().updateNotification(PowerBenchService.this, Math.abs(point.getValue()));
+                notificationManager.notify(Constants.NOTIFICATION_ID, mNotification);
+            }
+        });
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
-    }
-
-    /**
-     * Add a collection task to the service. The specified collection task will continue to collect
-     * data when the UI is put into the background.
-     */
-    public void addCollectionTask(CollectionTask collectionTask) {
-        synchronized (mCollectionTasks) {
-            mCollectionTasks.add(collectionTask);
-        }
-    }
-
-    /**
-     * Remove a collection task from the service. The specified collection task will no longer
-     * collect data when the UI is put into the background.
-     */
-    public void removeCollectionTask(CollectionTask collectionTask) {
-        synchronized (mCollectionTasks) {
-            mCollectionTasks.add(collectionTask);
-        }
     }
 
     /**

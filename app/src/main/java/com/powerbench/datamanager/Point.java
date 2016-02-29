@@ -36,13 +36,14 @@ public class Point implements Serializable, Comparable<Point> {
         if (another == null)
             return -1;
 
-        double otherValue = another.getValue();
-        if (mValue < otherValue)
+        double value = Math.abs(mValue);
+        double otherValue = Math.abs(another.getValue());
+        if (value < otherValue)
             return -1;
-        if (mValue > otherValue)
+        if (value > otherValue)
             return 1;
 
-        long thisBits = Double.doubleToLongBits(mValue);
+        long thisBits = Double.doubleToLongBits(value);
         long otherBits = Double.doubleToLongBits(otherValue);
 
         return (thisBits == otherBits ?  0 : (thisBits < otherBits ? -1 : 1));

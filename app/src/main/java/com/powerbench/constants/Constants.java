@@ -6,6 +6,11 @@ package com.powerbench.constants;
 public class Constants {
 
     /**
+     * The id of the notification.
+     */
+    public static final int NOTIFICATION_ID = 955845;
+
+    /**
      * The key for a double value.
      */
     public static final String BUNDLE_KEY_VALUE = "double";

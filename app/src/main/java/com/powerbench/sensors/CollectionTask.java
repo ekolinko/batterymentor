@@ -113,6 +113,10 @@ public class CollectionTask {
         return mStatistics.getMedian();
     }
 
+    public double getValue() {
+        return mStatistics.getValue();
+    }
+
     /**
      * Register a {@link MeasurementListener} to listen to measurements in this task.
      *

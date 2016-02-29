@@ -7,4 +7,8 @@
     <!-- PowerBenchActivity -->
     <string name="powerbench_battery_benchmark">Battery Benchmark</string>
     <string name="powerbench_charger_benchmark">Charger Benchmark</string>
+
+    <!-- Notification -->
+    <string name="notification_measuring">Measuring...</string>
+    <string name="notification_power_template" formatted="false">Power: %d mW</string>
 </resources>
