@@ -16,4 +16,7 @@
     <!-- PowerBench -->
     <color name="powerbench_blue">#0070C0</color>
     <color name="powerbench_red">#FF0000</color>
+
+    <!-- Text -->
+    <color name="powerbench_text">@color/black</color>
 </resources>

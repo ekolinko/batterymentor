@@ -4,11 +4,17 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.MenuItem;
 
 import com.powerbench.PowerBenchService;
+import com.powerbench.constants.DeviceConstants;
 import com.powerbench.sensors.ChargerManager;
 
 /**
@@ -38,6 +44,26 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
+    /**
+     * Initialize the common UI elements across all activities. Should be called after the call to
+     * {@link android.app.Activity#setContentView(int)}}.
+     */
+    protected void initialize() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -60,6 +86,43 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
         ChargerManager.getInstance().registerChargerListener(this, this);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == DeviceConstants.PERMISSIONS_WRITE_SETTINGS) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (Settings.System.canWrite(this)) {
+                    onPermissionGranted(DeviceConstants.PERMISSIONS_WRITE_SETTINGS);
+                } else {
+                    onPermissionDenied(DeviceConstants.PERMISSIONS_WRITE_SETTINGS);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case DeviceConstants.PERMISSIONS_WRITE_SETTINGS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    onPermissionGranted(requestCode);
+                } else {
+                    onPermissionDenied(requestCode);
+                }
+                break;
+        }
+    }
+
+    /**
+     * Show a dialog with the specified title and message.
+     *
+     * @param title the dialog title.
+     * @param message the dialog message.
+     */
+    protected void showPermissionDialog(String title, String message) {
+
+    }
+
     /**
      * Return the powerbench service. If the service has not yet been bound, wait until it has
      * been bound.
@@ -75,6 +138,20 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     public boolean isServiceBound() {
         return mServiceBound;
+    }
+
+    /**
+     * Method that indicates all activities that inherit from this class that a permission has been
+     * granted.
+     */
+    protected void onPermissionGranted(int permission) {
+    }
+
+    /**
+     * Method that indicates all activities that inherit from this class that a permission has been
+     * rejected.
+     */
+    protected void onPermissionDenied(int permission) {
     }
 
     /**

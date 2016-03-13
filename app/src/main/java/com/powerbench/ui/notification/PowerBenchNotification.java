@@ -63,9 +63,17 @@ public class PowerBenchNotification {
     public Notification updateNotification(Context context, double value) {
         int roundedValue = (int) value;
 
-        // Round to the nearest tenth
-        roundedValue = ((roundedValue + UIConstants.NOTIFICATION_ROUNDING_FACTOR / 2) /
-                UIConstants.NOTIFICATION_ROUNDING_FACTOR) * UIConstants.NOTIFICATION_ROUNDING_FACTOR;
+        // Rounding code
+        if (value < UIConstants.NOTIFICATION_ROUNDING_THRESHOLD_HUNDREDS) {
+            roundedValue = ((roundedValue + UIConstants.NOTIFICATION_ROUNDING_FACTOR_HUNDREDS / 2) /
+                    UIConstants.NOTIFICATION_ROUNDING_FACTOR_HUNDREDS) * UIConstants.NOTIFICATION_ROUNDING_FACTOR_HUNDREDS;
+        } else if (value < UIConstants.NOTIFICATION_ROUNDING_THRESHOLD_THOUSANDS) {
+            roundedValue = ((roundedValue + UIConstants.NOTIFICATION_ROUNDING_FACTOR_THOUSANDS / 2) /
+                    UIConstants.NOTIFICATION_ROUNDING_FACTOR_THOUSANDS) * UIConstants.NOTIFICATION_ROUNDING_FACTOR_THOUSANDS;
+        } else {
+            roundedValue = ((roundedValue + UIConstants.NOTIFICATION_ROUNDING_FACTOR_TENS_OF_THOUSANDS / 2) /
+                    UIConstants.NOTIFICATION_ROUNDING_FACTOR_TENS_OF_THOUSANDS) * UIConstants.NOTIFICATION_ROUNDING_FACTOR_TENS_OF_THOUSANDS;
+        }
 
         int resourceId = mResourceCache.getResourceForValue(roundedValue);
         NotificationCompat.Builder mBuilder =

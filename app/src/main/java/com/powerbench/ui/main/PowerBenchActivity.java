@@ -1,5 +1,6 @@
 package com.powerbench.ui.main;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,14 +9,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.powerbench.R;
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.Constants;
 import com.powerbench.datamanager.Statistics;
+import com.powerbench.device.Device;
 import com.powerbench.sensors.CollectionTask;
 import com.powerbench.datamanager.Point;
+import com.powerbench.ui.benchmark.BrightnessBenchmarkActivity;
 import com.powerbench.ui.common.CommonActivity;
 
 import java.text.DecimalFormat;
@@ -75,6 +79,7 @@ public class PowerBenchActivity extends CommonActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initialize();
         String version = Constants.EMPTY_STRING;
         try {
             version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
@@ -89,7 +94,7 @@ public class PowerBenchActivity extends CommonActivity {
             public void onMeasurementReceived(final Point point) {
                 mLastPoint = point;
                 if (mBatteryStatistics != null) {
-                    mValue = Math.abs(mBatteryStatistics.getValue());
+                    mValue = Math.abs(mBatteryStatistics.getAverage());
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -102,6 +107,7 @@ public class PowerBenchActivity extends CommonActivity {
         mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask();
         mBatteryStatistics = mPowerCollectionTask.getStatistics();
         mPowerCollectionTask.start();
+        Device.getInstance().getBatteryCapacity(this);
     }
 
     @Override
@@ -182,7 +188,7 @@ public class PowerBenchActivity extends CommonActivity {
             if (point == null)
                 return;
 
-            updatePowerValue(point.getValue());
+            updatePowerValue(point.getY());
         }
 
         /**
@@ -218,6 +224,15 @@ public class PowerBenchActivity extends CommonActivity {
                                  Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_realtime_battery, container, false);
             mBatteryPowerValue = (TextView) view.findViewById(R.id.powerbench_power_value);
+            Button batteryBenchmark = (Button) view.findViewById(R.id.button_battery_benchmark);
+            if (batteryBenchmark != null) {
+                batteryBenchmark.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getContext(), BrightnessBenchmarkActivity.class));
+                    }
+                });
+            }
             updatePowerValueFromArguments();
             setRetainInstance(true);
             return view;

@@ -1,14 +1,13 @@
 package com.powerbench.sensors;
 
+import android.util.Log;
+
 import com.powerbench.constants.SensorConstants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.datamanager.Statistics;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Class responsible for performing data collection for a specified sensor.
@@ -21,9 +20,9 @@ public class CollectionTask {
     private final Sensor mSensor;
 
     /**
-     * The timer used for data collection.
+     * The sensor measurement task.
      */
-    private Timer mTimer;
+    private SensorMeasurementTask mSensorMeasurementTask;
 
     /**
      * The data collection interval.
@@ -57,7 +56,7 @@ public class CollectionTask {
     /**
      * Create a new collection task with the specified sensor and the specified collection interval.
      *
-     * @param sensor the sensor that is measured during data collection.
+     * @param sensor             the sensor that is measured during data collection.
      * @param collectionInterval the data collection interval.
      */
     public CollectionTask(Sensor sensor, long collectionInterval) {
@@ -68,7 +67,7 @@ public class CollectionTask {
      * Create a new collection task with the specified sensor. Register the specified measurement
      * listener with this task.
      *
-     * @param sensor the sensor that is measured during data collection.
+     * @param sensor              the sensor that is measured during data collection.
      * @param measurementListener a listener to register with this task.
      */
     public CollectionTask(Sensor sensor, MeasurementListener measurementListener) {
@@ -79,15 +78,14 @@ public class CollectionTask {
      * Create a new collection task with the specified sensor and the specified collection interval.
      * Register the specified measurement listener with this task.
      *
-     * @param sensor the sensor that is measured during data collection.
-     * @param collectionInterval the data collection interval.
+     * @param sensor              the sensor that is measured during data collection.
+     * @param collectionInterval  the data collection interval.
      * @param measurementListener a listener to register with this task.
      */
     public CollectionTask(Sensor sensor, long collectionInterval, MeasurementListener measurementListener) {
         mSensor = sensor;
         mCollectionInterval = collectionInterval;
         registerMeasurementListener(measurementListener);
-        mTimer = new Timer();
         mStatistics = new Statistics();
     }
 
@@ -95,14 +93,20 @@ public class CollectionTask {
      * Start the data collection task.
      */
     public void start() {
-        mTimer.scheduleAtFixedRate(new SensorMeasurementTask(), new Date(), mCollectionInterval);
+        if (mSensorMeasurementTask == null) {
+            mSensorMeasurementTask = new SensorMeasurementTask();
+            new Thread(mSensorMeasurementTask).start();
+        }
     }
 
     /**
      * Stop the data collection task.
      */
     public void stop() {
-        mTimer.cancel();
+        if (mSensorMeasurementTask != null) {
+            mSensorMeasurementTask.stop();
+            mSensorMeasurementTask = null;
+        }
     }
 
     public Statistics getStatistics() {
@@ -111,6 +115,10 @@ public class CollectionTask {
 
     public double getMedian() {
         return mStatistics.getMedian();
+    }
+
+    public double getAverage() {
+        return mStatistics.getAverage();
     }
 
     public double getValue() {
@@ -170,9 +178,25 @@ public class CollectionTask {
     /**
      * Task used for measuring the sensor associated with this collection task.
      */
-    class SensorMeasurementTask extends TimerTask {
+    class SensorMeasurementTask implements Runnable {
+
+        /**
+         * Flag indicating whether this task has been cancelled.
+         */
+        private boolean mCancelled = false;
+
         public void run() {
-            measureSensor();
+            while (!mCancelled) {
+                measureSensor();
+                try {
+                    Thread.sleep(mCollectionInterval);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+
+        public void stop() {
+            mCancelled = true;
         }
     }
 

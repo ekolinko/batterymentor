@@ -1,7 +1,5 @@
 package com.powerbench.datamanager;
 
-import android.util.Log;
-
 import com.powerbench.constants.DataConstants;
 
 import java.util.ArrayList;
@@ -15,14 +13,24 @@ import java.util.LinkedList;
 public class Statistics {
 
     /**
+     * The global median of the data.
+     */
+    private double mMedian;
+
+    /**
      * The global average of the data.
      */
     private double mAverage;
 
     /**
-     * The global median of the data.
+     * The total sum of the data.
      */
-    private double mMedian;
+    private double mTotal;
+
+    /**
+     * The number of points.
+     */
+    private double mNumPoints;
 
     /**
      * The last value received by the statistics.
@@ -34,6 +42,12 @@ public class Statistics {
      * change it.
      */
     private boolean mMedianCalculated = false;
+
+    /**
+     * Flag indicating that the adjusted average has already been calculated and no data has come
+     * int to change it.
+     */
+    private boolean mAverageCalculated = false;
 
     /**
      * The linked list of the most recent data points used for statistic calculation.
@@ -53,7 +67,10 @@ public class Statistics {
                 mRecentData.removeFirst();
             }
             mMedianCalculated = false;
-            mValue = point.getValue();
+            mAverageCalculated = false;
+            mValue = point.getY();
+            mTotal += Math.abs(mValue);
+            mNumPoints++;
         }
     }
 
@@ -70,13 +87,11 @@ public class Statistics {
                 int size = sortedRecentData.size();
                 if (size > 0) {
                     int nonSpikeMidpoint = (int) (size * (1 - DataConstants.STATISTICS_PERCENT_OF_SPIKES_TO_DROP) / 2);
-                    mMedian = sortedRecentData.get(nonSpikeMidpoint).getValue();
+                    mMedian = sortedRecentData.get(nonSpikeMidpoint).getY();
                     StringBuilder sb = new StringBuilder();
                     for (Point point : sortedRecentData) {
-                        sb.append(Math.abs(point.getValue()) + " ");
+                        sb.append(Math.abs(point.getY()) + " ");
                     }
-                    Log.d("tstatic","Median = " + mMedian);
-                    Log.d("tstatic",sb.toString());
                 } else {
                     mMedian = 0;
                 }
@@ -84,6 +99,43 @@ public class Statistics {
             }
         }
         return mMedian;
+    }
+
+    /**
+     * Calculate the average of the recent data.
+     *
+     * @return the average of the recent data.
+     */
+    public double getAverage() {
+        synchronized (mRecentData) {
+            if (!mAverageCalculated) {
+                mAverage = (mNumPoints > 0) ? mTotal / mNumPoints : 0;
+                int recentSize = DataConstants.STATISTICS_RECENT_DATA_SIZE;
+                if (mRecentData.size() > recentSize + 1) {
+                    double previousShortAverage = 0;
+                    for (int i = mRecentData.size() - 2; i > mRecentData.size() - recentSize - 2; i--) {
+                        previousShortAverage += Math.abs(mRecentData.get(i).getY());
+                    }
+                    previousShortAverage /= recentSize;
+                    double currentShortAverage = 0;
+                    for (int i = mRecentData.size() - 1; i > mRecentData.size() - recentSize - 1; i--) {
+                        currentShortAverage += Math.abs(mRecentData.get(i).getY());
+                    }
+                    currentShortAverage /= recentSize;
+                    if (currentShortAverage > previousShortAverage) {
+                        double variance = 0;
+                        for (int i = mRecentData.size() - 1; i > mRecentData.size() - recentSize - 1; i--) {
+                            double value = Math.abs(mRecentData.get(i).getY());
+                            variance += Math.pow(value - currentShortAverage, 2);
+                        }
+                        double standardDeviation = Math.sqrt(variance / recentSize);
+                        mAverage += standardDeviation / 2;
+                    }
+                    mAverageCalculated = true;
+                }
+            }
+        }
+        return mAverage;
     }
 
     public double getValue() {

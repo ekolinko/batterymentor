@@ -24,4 +24,14 @@ public class Constants {
      * A blank space.
      */
     public static final String SPACE = " ";
+
+    /**
+     * The number of milliseconds in a second.
+     */
+    public static final long SECOND = 1000;
+
+    /**
+     * An invalid value.
+     */
+    public static final double INVALID_VALUE = -1;
 }

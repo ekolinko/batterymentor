@@ -41,10 +41,12 @@ public class PowerBenchService extends Service {
         mNotification = PowerBenchNotification.getInstance().createNotification(this);
         startForeground(Constants.NOTIFICATION_ID, mNotification);
         final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        CollectionManager.getInstance().getPowerCollectionTask().registerMeasurementListener(new CollectionTask.MeasurementListener() {
+        final CollectionTask powerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask();
+        powerCollectionTask.registerMeasurementListener(new CollectionTask.MeasurementListener() {
             @Override
             public void onMeasurementReceived(Point point) {
-                mNotification = PowerBenchNotification.getInstance().updateNotification(PowerBenchService.this, Math.abs(point.getValue()));
+                double average = powerCollectionTask.getStatistics().getAverage();
+                mNotification = PowerBenchNotification.getInstance().updateNotification(PowerBenchService.this, Math.abs(average));
                 notificationManager.notify(Constants.NOTIFICATION_ID, mNotification);
             }
         });

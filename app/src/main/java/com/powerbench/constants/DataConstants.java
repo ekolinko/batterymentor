@@ -16,4 +16,9 @@ public class DataConstants {
      */
     public static final double STATISTICS_PERCENT_OF_SPIKES_TO_DROP = 0.10;
 
+    /**
+     * The number of points to be considered as part of the short term calculation.
+     */
+    public static final int STATISTICS_RECENT_DATA_SIZE = 5;
+
 }

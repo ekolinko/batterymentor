@@ -1,14 +1,27 @@
 <resources>
     <string name="app_name">PowerBench</string>
 
+    <!-- Benchmarks -->
+    <string name="brightness_benchmark">Brightness Benchmark</string>
+    <string name="benchmark_in_progress">Benchmark in Progress.\n</string>
+    <string name="benchmark_complete">Benchmark is Complete.\n</string>
+
+    <!-- BrightnessBenchmarkActivity -->
+    <string name="brightness_data_template" formatted="false">Brightness %d: %s mW\n</string>
+
     <!-- Common -->
     <string name="milliwatts">mW</string>
+    <string name="hours">hours</string>
+    <string name="stop_benchmark">Stop Benchmark</string>
 
-    <!-- PowerBenchActivity -->
-    <string name="powerbench_battery_benchmark">Battery Benchmark</string>
-    <string name="powerbench_charger_benchmark">Charger Benchmark</string>
+    <!-- Gadgets -->
+    <string name="brightness_gadget">Brightness Gadget</string>
 
     <!-- Notification -->
     <string name="notification_measuring">Measuring...</string>
     <string name="notification_power_template" formatted="false">Power: %d mW</string>
+
+    <!-- PowerBenchActivity -->
+    <string name="powerbench_battery_benchmark">Battery Benchmark</string>
+    <string name="powerbench_charger_benchmark">Charger Benchmark</string>
 </resources>

@@ -76,6 +76,7 @@ public class ChargerManager {
 
         if (mChargerReceiverRegistered && mChargerListeners.isEmpty()) {
             context.unregisterReceiver(mChargerReceiver);
+            mChargerReceiverRegistered = false;
         }
     }
 
