@@ -3,16 +3,19 @@ package com.powerbench;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.Constants;
+import com.powerbench.constants.UIConstants;
 import com.powerbench.datamanager.Point;
-import com.powerbench.sensors.CollectionTask;
+import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.ui.notification.PowerBenchNotification;
 
 /**
@@ -33,23 +36,53 @@ public class PowerBenchService extends Service {
     private Notification mNotification;
 
     /**
+     * The notification manager service.
+     */
+    private NotificationManager mNotificationManager;
+
+    /**
+     * The power collection task.
+     */
+    private CollectionTask mPowerCollectionTask;
+
+    /**
+     * The measurement listener.
+     */
+    private CollectionTask.MeasurementListener mMeasurementListener;
+
+    /**
+     * The notification dismissed broadcast receiver.
+     */
+    private NotificationDismissedReceiver mNotificationDismissedReceiver;
+
+    /**
+     * Flag indicating whether the notification should be shown.
+     */
+    private boolean mShowNotification = true;
+
+    /**
      * Create a new powerbench service. Instantiate and initialize all the core modules.
      */
     @Override
     public void onCreate() {
         super.onCreate();
         mNotification = PowerBenchNotification.getInstance().createNotification(this);
-        startForeground(Constants.NOTIFICATION_ID, mNotification);
-        final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        final CollectionTask powerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask();
-        powerCollectionTask.registerMeasurementListener(new CollectionTask.MeasurementListener() {
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(Constants.NOTIFICATION_ID, mNotification);
+        mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask();
+        mMeasurementListener = new CollectionTask.MeasurementListener() {
             @Override
             public void onMeasurementReceived(Point point) {
-                double average = powerCollectionTask.getStatistics().getAverage();
-                mNotification = PowerBenchNotification.getInstance().updateNotification(PowerBenchService.this, Math.abs(average));
-                notificationManager.notify(Constants.NOTIFICATION_ID, mNotification);
+                if (mShowNotification) {
+                    double average = mPowerCollectionTask.getStatistics().getAverage();
+                    mNotification = PowerBenchNotification.getInstance().updateNotification(PowerBenchService.this, Math.abs(average));
+                    mNotificationManager.notify(Constants.NOTIFICATION_ID, mNotification);
+                }
             }
-        });
+        };
+        mPowerCollectionTask.registerMeasurementListener(mMeasurementListener);
+        mNotificationDismissedReceiver = new NotificationDismissedReceiver();
+        registerReceiver(mNotificationDismissedReceiver, new IntentFilter(Constants.NOTIFICATION_ACTION));
     }
 
     @Override
@@ -63,6 +96,32 @@ public class PowerBenchService extends Service {
     public class PowerBenchBinder extends Binder {
         public PowerBenchService getService() {
             return PowerBenchService.this;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(mNotificationDismissedReceiver);
+    }
+
+    /**
+     * Class used for detecting when the notification has been swiped away.
+     */
+    public class NotificationDismissedReceiver extends BroadcastReceiver {
+        public NotificationDismissedReceiver(){
+
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int notificationId = intent.getExtras().getInt(UIConstants.NOTIFICATION_ID_KEY);
+            if (notificationId == Constants.NOTIFICATION_ID && mMeasurementListener != null && mShowNotification) {
+                mPowerCollectionTask.unregisterMeasurementListener(mMeasurementListener);
+                mShowNotification = false;
+                if (mNotificationManager != null) {
+                    mNotificationManager.cancel(Constants.NOTIFICATION_ID);
+                }
+            }
         }
     }
 }

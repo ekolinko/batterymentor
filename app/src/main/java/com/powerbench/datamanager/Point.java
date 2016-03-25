@@ -22,6 +22,14 @@ public class Point implements Serializable, Comparable<Point> {
         mY = value;
     }
 
+    public void setX(double x) {
+        mX = x;
+    }
+
+    public void setY(double y) {
+        mY = y;
+    }
+
     public double getX() {
         return mX;
     }

@@ -1,9 +1,7 @@
 package com.powerbench.ui.benchmark;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -13,16 +11,13 @@ import android.widget.TextView;
 import com.powerbench.R;
 import com.powerbench.benchmarks.Benchmark;
 import com.powerbench.benchmarks.BrightnessBenchmark;
-import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.BenchmarkConstants;
+import com.powerbench.constants.Constants;
 import com.powerbench.constants.DeviceConstants;
 import com.powerbench.datamanager.Point;
-import com.powerbench.datamanager.Statistics;
 import com.powerbench.device.Device;
 import com.powerbench.device.Permissions;
 import com.powerbench.model.Model;
-import com.powerbench.sensors.CollectionTask;
-import com.powerbench.ui.common.CommonActivity;
 
 import java.text.DecimalFormat;
 
@@ -30,12 +25,7 @@ import java.text.DecimalFormat;
  * The main powerbench activity that allows a user to view battery power consumption and charging
  * rate in realtime.
  */
-public class BrightnessBenchmarkActivity extends CommonActivity {
-
-    /**
-     * The power value text view.
-     */
-    private TextView mPowerTextView;
+public class BrightnessBenchmarkActivity extends BenchmarkActivity {
 
     /**
      * The brightness data text view.
@@ -73,36 +63,6 @@ public class BrightnessBenchmarkActivity extends CommonActivity {
     private Benchmark.ProgressListener mBrightnessProgressListener;
 
     /**
-     * The primary battery collection task.
-     */
-    private CollectionTask mPowerCollectionTask;
-
-    /**
-     * The statistics associated with the battery collection task.
-     */
-    private Statistics mBatteryStatistics;
-
-    /**
-     * The measurement listener.
-     */
-    private CollectionTask.MeasurementListener mMeasurementListener;
-
-    /**
-     * The handler used to update the UI.
-     */
-    private Handler mHandler;
-
-    /**
-     * The current value.
-     */
-    private double mValue;
-
-    /**
-     * The power formatter.
-     */
-    private DecimalFormat mPowerFormatter;
-
-    /**
      * The battery life formatter.
      */
     private DecimalFormat mBatteryLifeFormatter;
@@ -114,34 +74,11 @@ public class BrightnessBenchmarkActivity extends CommonActivity {
         initialize();
         setupButtons();
         getSupportActionBar().setTitle(getString(R.string.brightness_benchmark));
-        mHandler = new Handler();
-        mPowerTextView = (TextView) findViewById(R.id.powerbench_power_value);
         mBrightnessDataTextView = (TextView) findViewById(R.id.benchmark_brightness_text_view);
         mBrightnessGadgetContainer = (LinearLayout) findViewById(R.id.brightness_gadget_container);
         mBrightnessGadgetPowerValue = (TextView) findViewById(R.id.brightness_gadget_power_value);
         mBrightnessGadgetSeekBar = (SeekBar) findViewById(R.id.brightness_gadget_slider);
-        mPowerFormatter = new DecimalFormat(getString(R.string.format_power));
         mBatteryLifeFormatter = new DecimalFormat(getString(R.string.format_battery_life));
-        mMeasurementListener = new CollectionTask.MeasurementListener() {
-            @Override
-            public void onMeasurementReceived(final Point point) {
-                if (mBatteryStatistics != null) {
-                    mValue = Math.abs(mBatteryStatistics.getAverage());
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mPowerTextView != null) {
-                                String value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(mValue), getString(R.string.milliwatts));
-                                mPowerTextView.setText(value);
-                            }
-                        }
-                    });
-                }
-            }
-        };
-        mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask();
-        mBatteryStatistics = mPowerCollectionTask.getStatistics();
-        mPowerCollectionTask.start();
         if (Permissions.getInstance().requestSettingsPermission(this)) {
             startBenchmark();
         }
@@ -151,15 +88,27 @@ public class BrightnessBenchmarkActivity extends CommonActivity {
         mBrightnessBenchmark = new BrightnessBenchmark(this, BenchmarkConstants.BRIGHTNESS_DURATION_STEP, BenchmarkConstants.BRIGHTNESS_STEP);
         mBrightnessProgressListener = new Benchmark.ProgressListener() {
             @Override
+            public void onTick(long millisUntilFinished) {
+                updateDuration(millisUntilFinished);
+            }
+
+            @Override
+            public void onTimerComplete() {
+                onCountdownTimerComplete();
+            }
+
+            @Override
             public void onProgress(int progress) {
-                mHandler.post(new Runnable() {
+                getHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         if (mBrightnessDataTextView != null) {
                             String benchmarkText = getString(R.string.benchmark_in_progress);
                             mBrightnessBenchmark.lockData();
                             for (Point point : mBrightnessBenchmark.getBrightnessData()) {
-                                benchmarkText += String.format(getString(R.string.brightness_data_template), (int)point.getX(), mPowerFormatter.format(point.getY()));
+                                int brightness = (int)point.getX();
+                                int percent = (int)Math.round((brightness * Constants.PERCENT) / (double)(BenchmarkConstants.MAX_BRIGHTNESS - BenchmarkConstants.MIN_BRIGHTNESS));
+                                benchmarkText += String.format(getString(R.string.brightness_data_template), percent, getPowerFormatter().format(point.getY()));
                             }
                             mBrightnessBenchmark.unlockData();
                             mBrightnessDataTextView.setText(benchmarkText);
@@ -170,62 +119,70 @@ public class BrightnessBenchmarkActivity extends CommonActivity {
 
             @Override
             public void onComplete() {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mBrightnessDataTextView != null) {
-                            String benchmarkText = getString(R.string.benchmark_complete);
-                            mBrightnessBenchmark.lockData();
-                            for (Point point : mBrightnessBenchmark.getBrightnessData()) {
-                                benchmarkText += String.format(getString(R.string.brightness_data_template), (int)point.getX(), mPowerFormatter.format(point.getY()));
-                            }
-                            mBrightnessBenchmark.unlockData();
-                            mBrightnessDataTextView.setText(benchmarkText);
-                        }
-                        final Model model = mBrightnessBenchmark.getModel();
-                        if (model != null) {
-                            int brightness = BenchmarkConstants.MAX_BRIGHTNESS;
-                            try {
-                                brightness = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
-                            } catch (Settings.SettingNotFoundException e) {
-                            }
-                            mBrightnessGadgetSeekBar.setProgress(brightness);
-                            final double batteryCapacity = Device.getInstance().getBatteryCapacity(BrightnessBenchmarkActivity.this);
-                            double power = model.getY(brightness);
-                            double batteryLife = batteryCapacity / power;
-                            String value = String.format(getString(R.string.value_units_template), mBatteryLifeFormatter.format(batteryLife), getString(R.string.hours));
-                            mBrightnessGadgetPowerValue.setText(value);
-                            mBrightnessGadgetSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                                @Override
-                                public void onProgressChanged(SeekBar seekBar, int brightness, boolean fromUser) {
-                                    Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, brightness);
-                                    double power = model.getY(brightness);
-                                    double batteryLife = batteryCapacity / power;
-                                    String value = String.format(getString(R.string.value_units_template), mBatteryLifeFormatter.format(batteryLife), getString(R.string.hours));
-                                    mBrightnessGadgetPowerValue.setText(value);
-                                }
-
-                                @Override
-                                public void onStartTrackingTouch(SeekBar seekBar) {
-
-                                }
-
-                                @Override
-                                public void onStopTrackingTouch(SeekBar seekBar) {
-
-                                }
-                            });
-                            mBrightnessGadgetContainer.setVisibility(View.VISIBLE);
-                        }
-                        if (mStopButton != null) {
-                            mStopButton.setVisibility(View.GONE);
-                        }
-                    }
-                });
+                onBenchmarkComplete();
             }
         };
         mBrightnessBenchmark.start();
         mBrightnessBenchmark.registerProgressListener(mBrightnessProgressListener);
+        onBenchmarkStarted();
+    }
+
+    @Override
+    protected void showBenchmarkResults() {
+        getHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (mBrightnessDataTextView != null) {
+                    String benchmarkText = getString(R.string.benchmark_complete);
+                    mBrightnessBenchmark.lockData();
+                    for (Point point : mBrightnessBenchmark.getBrightnessData()) {
+                        int brightness = (int)point.getX();
+                        int percent = (int)Math.round((brightness * Constants.PERCENT) / (double)(BenchmarkConstants.MAX_BRIGHTNESS - BenchmarkConstants.MIN_BRIGHTNESS));
+                        benchmarkText += String.format(getString(R.string.brightness_data_template), percent, getPowerFormatter().format(point.getY()));
+                    }
+                    mBrightnessBenchmark.unlockData();
+                    mBrightnessDataTextView.setText(benchmarkText);
+                }
+                final Model model = mBrightnessBenchmark.getModel();
+                if (model != null) {
+                    int brightness = BenchmarkConstants.MAX_BRIGHTNESS;
+                    try {
+                        brightness = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+                    } catch (Settings.SettingNotFoundException e) {
+                    }
+                    mBrightnessGadgetSeekBar.setProgress(brightness);
+                    final double batteryCapacity = Device.getInstance().getBatteryCapacity(BrightnessBenchmarkActivity.this);
+                    double power = model.getY(brightness);
+                    double batteryLife = batteryCapacity / power;
+                    String value = String.format(getString(R.string.value_units_template), mBatteryLifeFormatter.format(batteryLife), getString(R.string.hours));
+                    mBrightnessGadgetPowerValue.setText(value);
+                    mBrightnessGadgetSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int brightness, boolean fromUser) {
+                            Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, brightness);
+                            double power = model.getY(brightness);
+                            double batteryLife = batteryCapacity / power;
+                            String value = String.format(getString(R.string.value_units_template), mBatteryLifeFormatter.format(batteryLife), getString(R.string.hours));
+                            mBrightnessGadgetPowerValue.setText(value);
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+
+                        }
+                    });
+                    mBrightnessGadgetContainer.setVisibility(View.VISIBLE);
+                }
+                if (mStopButton != null) {
+                    mStopButton.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     @Override
@@ -264,7 +221,6 @@ public class BrightnessBenchmarkActivity extends CommonActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mPowerCollectionTask.registerMeasurementListener(mMeasurementListener);
         if (mBrightnessBenchmark != null) {
             mBrightnessBenchmark.registerProgressListener(mBrightnessProgressListener);
         }
@@ -273,7 +229,6 @@ public class BrightnessBenchmarkActivity extends CommonActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mPowerCollectionTask.unregisterMeasurementListener(mMeasurementListener);
         if (mBrightnessBenchmark != null) {
             mBrightnessBenchmark.unregisterProgressListener(mBrightnessProgressListener);
         }
@@ -284,16 +239,7 @@ public class BrightnessBenchmarkActivity extends CommonActivity {
         super.onStop();
         if (mBrightnessBenchmark != null) {
             mBrightnessBenchmark.stop();
+            onBenchmarkStopped();
         }
-    }
-
-    @Override
-    public void onChargerConnected() {
-        mBatteryStatistics.clearRecentData();
-    }
-
-    @Override
-    public void onChargerDisconnected() {
-        mBatteryStatistics.clearRecentData();
     }
 }

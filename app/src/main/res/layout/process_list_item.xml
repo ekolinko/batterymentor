@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/process_container">
+    <ImageView android:id="@+id/process_icon"
+        style="@style/process_item"
+        android:src="@drawable/powerbench" />
+    <RelativeLayout android:id="@+id/process_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/process_icon"
+        android:layout_toLeftOf="@+id/process_button_stop"
+        android:layout_centerVertical="true">
+        <TextView android:id="@+id/process_name"
+            style="@style/process_name"
+            android:text="Process Name" />
+        <TextView android:id="@+id/process_cpu"
+            style="@style/process_cpu"
+            android:layout_below="@+id/process_name"
+            android:text="100%" />
+        <TextView android:id="@+id/process_power"
+            style="@style/process_power"
+            android:layout_toRightOf="@+id/process_cpu"
+            android:layout_below="@+id/process_name"
+            android:text="10,000 mW" />
+    </RelativeLayout>
+    <Button android:id="@+id/process_button_stop"
+        style="@style/process_button_stop"
+        android:text="@string/process_stop"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
+</RelativeLayout>

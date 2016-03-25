@@ -3,18 +3,24 @@ package com.powerbench.sensors;
 import com.powerbench.constants.SensorConstants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.debug.Debug;
+import com.powerbench.sensors.cpu.FrequencySensor;
+import com.powerbench.sensors.cpu.LoadSensor;
+import com.powerbench.sensors.power.CurrentSensor;
+import com.powerbench.sensors.power.PowerSensor;
+import com.powerbench.sensors.power.VoltageSensor;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
 /**
- * The set of sensors responsible for reading power values from the filesystem.
+ * The set of sensors responsible for reading values from the filesystem.
  */
-public enum Sensor {
-    CURRENT,
-    VOLTAGE,
-    POWER;
+public abstract class Sensor {
+    public static final CurrentSensor CURRENT = new CurrentSensor();
+    public static final VoltageSensor VOLTAGE = new VoltageSensor();
+    public static final PowerSensor POWER = new PowerSensor();
+    public static final FrequencySensor FREQUENCY_SENSOR = new FrequencySensor();
+    public static final LoadSensor LOAD_SENSOR = new LoadSensor();
 
     /**
      * The name of the file used for reading the sensor measurement.
@@ -35,25 +41,19 @@ public enum Sensor {
     /**
      * Return the filename associated with this sensor. Set the filename if it is null.
      */
-    private String getFilename() {
+    public String getFilename() {
         if (mFilename == null) {
-            switch (this) {
-                case CURRENT:
-                    if (new File(SensorConstants.SENSOR_CURRENT_NOW).exists()) {
-                        mFilename = SensorConstants.SENSOR_CURRENT_NOW;
-                    }
-                    break;
-                case VOLTAGE:
-                    if (new File(SensorConstants.SENSOR_VOLTAGE_NOW).exists()) {
-                        mFilename = SensorConstants.SENSOR_VOLTAGE_NOW;
-                    }
-                    break;
-                case POWER:
-                    break;
-            }
+            mFilename = initFilename();
         }
         return mFilename;
     }
+
+    /**
+     * Initialize the filename for this specific sensor.
+     *
+     * @return the filename associated with the sensor or null if it doesn't exist.
+     */
+    public abstract String initFilename();
 
     /**
      * Return true if this sensor is supported, false otherwise.
@@ -61,15 +61,15 @@ public enum Sensor {
      * @return true if this sensor is supported, false otherwise.
      */
     public boolean isSupported() {
-        switch (this) {
-            case CURRENT:
-            case VOLTAGE:
-                return getFilename() != null;
-            case POWER:
-                return CURRENT.isSupported() && VOLTAGE.isSupported();
-        }
-        return false;
+        return getFilename() != null;
     }
+
+    /**
+     * Read a value measurement from this sensor and scale it by the specified conversion factor.
+     *
+     * @return a scaled value measurement from this sensor.
+     */
+    public abstract double measure();
 
     /**
      * Read a point measurement from this sensor.
@@ -84,7 +84,7 @@ public enum Sensor {
                 point = new Point(timestamp, mValue);
             } else {
                 mTimestamp = timestamp;
-                mValue = measureValue();
+                mValue = measure();
                 point = new Point(mTimestamp, mValue);
             }
         }
@@ -94,36 +94,35 @@ public enum Sensor {
     /**
      * Read a value measurement from this sensor and scale it by the specified conversion factor.
      *
+     * @param conversionFactor the factor by which to scale the measurement.
      * @return a scaled value measurement from this sensor.
      */
-    public double measureValue() {
-        double conversionFactor = SensorConstants.DEFAULT_CONVERSION_FACTOR;
-        switch (this) {
-            case CURRENT:
-                conversionFactor = SensorConstants.MILLIAMPS_IN_MICROAMP;
-                break;
-            case VOLTAGE:
-                conversionFactor = SensorConstants.VOLTS_IN_MICROWATT;
-                break;
-            case POWER:
-                return CURRENT.measureValue() * VOLTAGE.measureValue();
-        }
-        return measureValue(conversionFactor);
+    public double measureValue(double conversionFactor) {
+        return measureValue(getFilename(), conversionFactor);
     }
 
     /**
      * Read a value measurement from this sensor and scale it by the specified conversion factor.
      *
+     * @param filename the name of the file to measure from.
+     * @param conversionFactor the factor by which to scale the measurement.
      * @return a scaled value measurement from this sensor.
      */
-    public double measureValue(double conversionFactor) {
+    public double measureValue(String filename, double conversionFactor) {
         double value = 0;
+        RandomAccessFile file = null;
         try {
-            RandomAccessFile file = new RandomAccessFile(getFilename(), SensorConstants.MODE_READ);
+            file = new RandomAccessFile(filename, SensorConstants.MODE_READ);
             value = Double.parseDouble(file.readLine()) / conversionFactor;
-        } catch (IOException e) {
+        } catch (Exception e) {
             if (Debug.isCollectionManagerLoggingEnabled())
                 Debug.printDebug(e);
+        } finally {
+            try {
+                if (file != null)
+                    file.close();
+            } catch (IOException e) {
+            }
         }
         return value;
     }

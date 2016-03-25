@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
+import com.powerbench.PowerBenchService;
 import com.powerbench.R;
+import com.powerbench.constants.Constants;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.ui.main.PowerBenchActivity;
 
@@ -41,9 +43,10 @@ public class PowerBenchNotification {
     public Notification createNotification(Context context) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.remove_app_icon)
+                        .setSmallIcon(R.drawable.powerbench)
                         .setContentTitle(context.getString(R.string.app_name))
-                        .setContentText(context.getString(R.string.notification_measuring));
+                        .setContentText(context.getString(R.string.notification_measuring))
+                        .setDeleteIntent(createOnDismissedIntent(context, Constants.NOTIFICATION_ID));
         Intent resultIntent = new Intent(context, PowerBenchActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(PowerBenchActivity.class);
@@ -57,7 +60,7 @@ public class PowerBenchNotification {
      * Update the notification with the specified power value.
      *
      * @param context the context of the application.
-     * @param value the value with which to update the notification.
+     * @param value the value with which to measure the notification.
      * @return the updated notification.
      */
     public Notification updateNotification(Context context, double value) {
@@ -80,7 +83,25 @@ public class PowerBenchNotification {
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(resourceId)
                         .setContentTitle(context.getString(R.string.app_name))
-                        .setContentText(String.format(context.getString(R.string.notification_power_template), roundedValue));
+                        .setContentText(String.format(context.getString(R.string.notification_power_template), roundedValue))
+                        .setDeleteIntent(createOnDismissedIntent(context, Constants.NOTIFICATION_ID));
         return mBuilder.build();
+    }
+
+    /**
+     * Create an intent that is triggered when the notification is dismissed.
+     *
+     * @param context the application context.
+     * @param notificationId the notification id.
+     * @return the intent that is triggered when the notification is dismissed.
+     */
+    private PendingIntent createOnDismissedIntent(Context context, int notificationId) {
+        Intent intent = new Intent();
+        intent.setAction(Constants.NOTIFICATION_ACTION);
+        intent.putExtra(UIConstants.NOTIFICATION_ID_KEY, notificationId);
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(context.getApplicationContext(),
+                        notificationId, intent, 0);
+        return pendingIntent;
     }
 }

@@ -11,6 +11,11 @@ public class Constants {
     public static final int NOTIFICATION_ID = 955845;
 
     /**
+     * The notification action
+     */
+    public static final String NOTIFICATION_ACTION = "com.powerbench.NOTIFICATION_DISMISSED";
+
+    /**
      * The key for a double value.
      */
     public static final String BUNDLE_KEY_VALUE = "double";
@@ -33,5 +38,15 @@ public class Constants {
     /**
      * An invalid value.
      */
-    public static final double INVALID_VALUE = -1;
+    public static final int INVALID_VALUE = -1;
+
+    /**
+     * The factor to multiply a ratio to make it a percent.
+     */
+    public static final double PERCENT = 100;
+
+    /**
+     * The number of milliseconds in a nanosecond.
+     */
+    public static final long NANOSECONDS_IN_MILLISECOND = 1000000;
 }

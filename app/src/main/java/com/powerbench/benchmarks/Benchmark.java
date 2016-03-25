@@ -1,6 +1,10 @@
 package com.powerbench.benchmarks;
 
 import android.content.Context;
+import android.os.CountDownTimer;
+
+import com.powerbench.constants.BenchmarkConstants;
+import com.powerbench.constants.Constants;
 
 import java.util.HashSet;
 
@@ -25,20 +29,39 @@ public abstract class Benchmark {
      */
     private long mDuration;
 
+    /**
+     * The countdown timer associated with this benchmark.
+     */
+    private CountDownTimer mCountdownTimer;
+
     public Benchmark(Context context, long duration) {
         mContext = context;
         mDuration = duration;
+        mCountdownTimer = new CountDownTimer(mDuration + BenchmarkConstants.BASE_DURATION, BenchmarkConstants.COUNTDOWN_TIMER_UPDATE_INTERVAL) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                notifyListenersOfBenchmarkTick(millisUntilFinished);
+            }
+
+            @Override
+            public void onFinish() {
+                notifyListenersOfBenchmarkTimerComplete();
+            }
+        };
     }
 
     /**
      * Start running the benchmark.
      */
-    public abstract void start();
+    public void start() {
+        mCountdownTimer.start();
+    }
 
     /**
      * Stop running the benchmark.
      */
-    public abstract void stop();
+    public void stop() {
+    }
 
     public long getDuration() {
         return mDuration;
@@ -63,6 +86,28 @@ public abstract class Benchmark {
     public void unregisterProgressListener(ProgressListener progressListener) {
         synchronized (mProgressListeners) {
             mProgressListeners.remove(progressListener);
+        }
+    }
+
+    /**
+     * Notify all registered progress listeners of a timer tick.
+     */
+    public void notifyListenersOfBenchmarkTick(long millisUntilFinished) {
+        synchronized (mProgressListeners) {
+            for (ProgressListener completionListener : mProgressListeners) {
+                completionListener.onTick(millisUntilFinished);
+            }
+        }
+    }
+
+    /**
+     * Notify all registered progress listeners when the timer completes.
+     */
+    public void notifyListenersOfBenchmarkTimerComplete() {
+        synchronized (mProgressListeners) {
+            for (ProgressListener completionListener : mProgressListeners) {
+                completionListener.onTimerComplete();
+            }
         }
     }
 
@@ -92,6 +137,16 @@ public abstract class Benchmark {
      * The interface used for listening for benchmark progress.
      */
     public interface ProgressListener {
+
+        /**
+         * Called at a regular interval when the timer changes.
+         */
+        void onTick(long millisUntilFinished);
+
+        /**
+         * Called when the timer is complete.
+         */
+        void onTimerComplete();
 
         /**
          * Called when the benchmark changes in progress.

@@ -1,5 +1,7 @@
 package com.powerbench.model;
 
+import android.util.Log;
+
 import com.powerbench.datamanager.Point;
 
 import java.util.ArrayList;
@@ -12,12 +14,12 @@ public class LinearModel extends Model {
     /**
      * The slope of the line in the model.
      */
-    private double mSlope;
+    protected double mSlope;
 
     /**
      * The intercept of the line in the model.
      */
-    private double mIntercept;
+    protected double mIntercept;
 
     public LinearModel(ArrayList<Point> data) {
         super(data);

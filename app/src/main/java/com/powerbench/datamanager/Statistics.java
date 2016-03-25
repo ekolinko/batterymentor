@@ -61,6 +61,9 @@ public class Statistics {
      * @param point the point to add to the statistics.
      */
     public void addPoint(Point point) {
+        if (point == null)
+            return;
+
         synchronized (mRecentData) {
             mRecentData.add(point);
             if (mRecentData.size() > DataConstants.STATISTICS_RECENT_DATA_MAX_QUEUE_SIZE) {

@@ -1,13 +1,14 @@
 package com.powerbench.device;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.powerbench.constants.Constants;
 import com.powerbench.constants.DeviceConstants;
+import com.powerbench.constants.SensorConstants;
 import com.powerbench.sensors.Sensor;
 import com.powerbench.ui.common.CommonActivity;
+
+import java.io.File;
 
 /**
  * Class that handles device information.
@@ -18,6 +19,11 @@ public class Device {
      * The battery capacity.
      */
     private double mBatteryCapacity = Constants.INVALID_VALUE;
+
+    /**
+     * The number of cores.
+     */
+    public int mNumCores = Constants.INVALID_VALUE;
 
     private static class SingletonHolder {
         private static final Device INSTANCE = new Device();
@@ -51,11 +57,26 @@ public class Device {
                         .forName(DeviceConstants.POWER_PROFILE_CLASS)
                         .getMethod(DeviceConstants.GET_AVERAGE_POWER_METHOD, java.lang.String.class)
                         .invoke(mPowerProfile, DeviceConstants.BATTERY_CAPACITY_FIELD);
-                mBatteryCapacity = capacityInMah * Sensor.VOLTAGE.measureValue();
+                mBatteryCapacity = capacityInMah * Sensor.VOLTAGE.measure();
             } catch (Exception e) {
                 mBatteryCapacity = 0;
             }
         }
         return mBatteryCapacity;
+    }
+
+    /**
+     * Get the number of CPU cores.
+     *
+     * @return the number of CPU cores.
+     */
+    public int getNumCores() {
+        if (mNumCores == Constants.INVALID_VALUE) {
+            mNumCores = 0;
+            while (new File(String.format(SensorConstants.SENSOR_CPU_TEMPLATE, mNumCores)).exists()) {
+                mNumCores++;
+            }
+        }
+        return mNumCores;
     }
 }

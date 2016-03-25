@@ -8,7 +8,7 @@ import com.powerbench.constants.BenchmarkConstants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.model.LinearModel;
 import com.powerbench.model.Model;
-import com.powerbench.sensors.CollectionTask;
+import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.sensors.Sensor;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class BrightnessBenchmark extends Benchmark {
     /**
      * The amount to increase the brightness at each step.
      */
-    private int mBrightnessStep;
+    private double mBrightnessStep;
 
     /**
      * The thread used for running the benchmark.
@@ -69,14 +69,15 @@ public class BrightnessBenchmark extends Benchmark {
      * @param durationStep the time to collect the data at each brightness step.
      * @param brightnessStep the amount to increase the brightness at each step.
      */
-    public BrightnessBenchmark(Context context, long durationStep, int brightnessStep) {
-        super(context, durationStep * (BenchmarkConstants.MAX_BRIGHTNESS - BenchmarkConstants.MIN_BRIGHTNESS) / brightnessStep);
+    public BrightnessBenchmark(Context context, long durationStep, double brightnessStep) {
+        super(context, (durationStep + BenchmarkConstants.BRIGHTNESS_CHANGE_SETTLE_DURATION) * (int)(1 + (BenchmarkConstants.MAX_BRIGHTNESS - BenchmarkConstants.MIN_BRIGHTNESS) / brightnessStep));
         mDurationStep = durationStep;
         mBrightnessStep = brightnessStep;
         mContentResolver = context.getContentResolver();
     }
 
     public void start() {
+        super.start();
         if (mBrightnessThread == null) {
             mBrightnessThread = new BrightnessThread();
             new Thread(mBrightnessThread).start();
@@ -84,6 +85,7 @@ public class BrightnessBenchmark extends Benchmark {
     }
 
     public void stop() {
+        super.stop();
         if (mBrightnessThread != null) {
             mBrightnessThread.stop();
             mBrightnessThread = null;
@@ -135,6 +137,7 @@ public class BrightnessBenchmark extends Benchmark {
             }
             mBenchmarkRunning = true;
             Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+            double preciseBrightness = brightness;
             while (!mStopped && brightness <= BenchmarkConstants.MAX_BRIGHTNESS) {
                 Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, brightness);
                 try {
@@ -152,7 +155,8 @@ public class BrightnessBenchmark extends Benchmark {
                 mBrightnessData.add(new Point(brightness, collectionTask.getAverage()));
                 unlockData();
                 notifyListenersOfBenchmarkProgress(brightness);
-                brightness += mBrightnessStep;
+                preciseBrightness += mBrightnessStep;
+                brightness = (int) Math.round(preciseBrightness);
             }
             Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, mInitialBrightness);
             if (!mStopped) {

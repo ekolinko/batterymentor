@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +15,11 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.powerbench.PowerBenchService;
+import com.powerbench.R;
 import com.powerbench.constants.DeviceConstants;
 import com.powerbench.sensors.ChargerManager;
+
+import java.text.DecimalFormat;
 
 /**
  * The common activity that all other activities in the application inherit from.
@@ -32,6 +36,16 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     private boolean mServiceBound = false;
 
+    /**
+     * The formatter used to format power values.
+     */
+    private DecimalFormat mPowerFormatter;
+
+    /**
+     * The handler used to measure the UI.
+     */
+    private Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +55,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     protected void onStart() {
         super.onStart();
         Intent intent = new Intent(this, PowerBenchService.class);
+        startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -49,6 +64,8 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      * {@link android.app.Activity#setContentView(int)}}.
      */
     protected void initialize() {
+        mHandler = new Handler();
+        mPowerFormatter = new DecimalFormat(getString(R.string.format_power));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
@@ -165,14 +182,24 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      * connected.
      */
     @Override
-    public abstract void onChargerConnected();
+    public void onChargerConnected() {
+    }
 
     /**
      * Method that indicates to all activities that inherit from this class that a charger has been
      * disconnected.
      */
     @Override
-    public abstract void onChargerDisconnected();
+    public void onChargerDisconnected() {
+    }
+
+    protected Handler getHandler() {
+        return mHandler;
+    }
+
+    protected DecimalFormat getPowerFormatter() {
+        return mPowerFormatter;
+    }
 
     /**
      * Connection used to bind to {@link PowerBenchService}.

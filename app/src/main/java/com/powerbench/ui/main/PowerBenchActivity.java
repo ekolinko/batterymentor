@@ -2,14 +2,19 @@ package com.powerbench.ui.main;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.powerbench.R;
@@ -17,10 +22,12 @@ import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.Constants;
 import com.powerbench.datamanager.Statistics;
 import com.powerbench.device.Device;
-import com.powerbench.sensors.CollectionTask;
+import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.datamanager.Point;
 import com.powerbench.ui.benchmark.BrightnessBenchmarkActivity;
+import com.powerbench.ui.benchmark.CpuBenchmarkActivity;
 import com.powerbench.ui.common.CommonActivity;
+import com.powerbench.ui.prototype.RunningApplicationsActivity;
 
 import java.text.DecimalFormat;
 
@@ -41,19 +48,24 @@ public class PowerBenchActivity extends CommonActivity {
     private Statistics mBatteryStatistics;
 
     /**
+     * The drawer layout.
+     */
+    private DrawerLayout mDrawerLayout;
+
+    /**
+     * The drawer toggle for the action bar.
+     */
+    private ActionBarDrawerToggle mDrawerToggle;
+
+    /**
      * The measurement listener.
      */
     private CollectionTask.MeasurementListener mMeasurementListener;
 
     /**
-     * The handler used to update the UI.
+     * The handler used to measure the UI.
      */
     private Handler mHandler;
-
-    /**
-     * The last point that was received.
-     */
-    private Point mLastPoint;
 
     /**
      * The current median.
@@ -79,6 +91,7 @@ public class PowerBenchActivity extends CommonActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setupNavigationDrawer();
         initialize();
         String version = Constants.EMPTY_STRING;
         try {
@@ -92,7 +105,6 @@ public class PowerBenchActivity extends CommonActivity {
         mMeasurementListener = new CollectionTask.MeasurementListener() {
             @Override
             public void onMeasurementReceived(final Point point) {
-                mLastPoint = point;
                 if (mBatteryStatistics != null) {
                     mValue = Math.abs(mBatteryStatistics.getAverage());
                     mHandler.post(new Runnable() {
@@ -108,6 +120,67 @@ public class PowerBenchActivity extends CommonActivity {
         mBatteryStatistics = mPowerCollectionTask.getStatistics();
         mPowerCollectionTask.start();
         Device.getInstance().getBatteryCapacity(this);
+    }
+
+    /**
+     * Setup the navigation drawer.
+     */
+    private void setupNavigationDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final FrameLayout contentFrame = (FrameLayout)findViewById(R.id.fragment_container);
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                R.string.app_name,
+                R.string.app_name) {
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                contentFrame.setTranslationX(slideOffset * drawerView.getWidth());
+                mDrawerLayout.bringChildToFront(drawerView);
+                mDrawerLayout.requestLayout();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_menu);
+
+        Button exitButton = (Button) findViewById(R.id.button_exit);
+        if (exitButton != null) {
+            exitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -182,7 +255,7 @@ public class PowerBenchActivity extends CommonActivity {
         /**
          * Update the power value using the specified point.
          *
-         * @param point the point to use to update the arguments.
+         * @param point the point to use to measure the arguments.
          */
         public void updatePowerValue(Point point) {
             if (point == null)
@@ -194,7 +267,7 @@ public class PowerBenchActivity extends CommonActivity {
         /**
          * Update the power value using the specified value
          *
-         * @param powerValue the value to use to update the arguments.
+         * @param powerValue the value to use to measure the arguments.
          */
         public void updatePowerValue(double powerValue) {
             if (mPowerFormatter == null)
@@ -224,12 +297,21 @@ public class PowerBenchActivity extends CommonActivity {
                                  Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_realtime_battery, container, false);
             mBatteryPowerValue = (TextView) view.findViewById(R.id.powerbench_power_value);
-            Button batteryBenchmark = (Button) view.findViewById(R.id.button_battery_benchmark);
-            if (batteryBenchmark != null) {
-                batteryBenchmark.setOnClickListener(new View.OnClickListener() {
+            Button brightnessBenchmark = (Button) view.findViewById(R.id.button_brightness_benchmark);
+            if (brightnessBenchmark != null) {
+                brightnessBenchmark.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         startActivity(new Intent(getContext(), BrightnessBenchmarkActivity.class));
+                    }
+                });
+            }
+            Button cpuBenchmark = (Button) view.findViewById(R.id.button_cpu_benchmark);
+            if (cpuBenchmark != null) {
+                cpuBenchmark.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getContext(), CpuBenchmarkActivity.class));
                     }
                 });
             }
@@ -258,6 +340,15 @@ public class PowerBenchActivity extends CommonActivity {
                                  Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_realtime_charger, container, false);
             mChargerPowerValue = (TextView) view.findViewById(R.id.powerbench_power_value);
+            Button runningApplications = (Button) view.findViewById(R.id.button_running_applications);
+            if (runningApplications != null) {
+                runningApplications.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getContext(), RunningApplicationsActivity.class));
+                    }
+                });
+            }
             updatePowerValueFromArguments();
             setRetainInstance(true);
             return view;

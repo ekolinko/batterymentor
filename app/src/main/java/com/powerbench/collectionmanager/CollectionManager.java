@@ -1,6 +1,5 @@
 package com.powerbench.collectionmanager;
 
-import com.powerbench.sensors.CollectionTask;
 import com.powerbench.sensors.Sensor;
 
 import java.util.HashSet;

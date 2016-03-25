@@ -29,4 +29,9 @@ public class UIConstants {
      * The notification rounding factor for more than 10,000.
      */
     public static final int NOTIFICATION_ROUNDING_FACTOR_TENS_OF_THOUSANDS = 100;
+
+    /**
+     * The notification id key.
+     */
+    public static final String NOTIFICATION_ID_KEY = "com.powerbench.notificationId";
 }

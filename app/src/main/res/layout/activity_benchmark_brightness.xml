@@ -11,8 +11,8 @@
             <RelativeLayout android:id="@+id/benchmark_realtime_container"
                 style="@style/benchmark_realtime_container"
                 android:layout_alignParentTop="true">
-                <TextView android:id="@+id/powerbench_power_value"
-                    style="@style/powerbench_power_value"
+                <TextView android:id="@+id/benchmark_duration"
+                    style="@style/benchmark_duration"
                     android:textColor="@color/powerbench_blue"/>
             </RelativeLayout>
             <TextView android:id="@+id/benchmark_brightness_text_view"
@@ -28,15 +28,26 @@
                 <TextView style="@style/gadget_title"
                     android:text="@string/brightness_gadget"/>
                 <TextView android:id="@+id/brightness_gadget_power_value"
-                    style="@style/gadget_power" />
+                    style="@style/gadget_power"
+                    android:paddingBottom="5dp"/>
+                <TextView style="@style/gadget_power"
+                    android:paddingTop="0dp"
+                    android:text="@string/battery_life_remaining"/>
                 <SeekBar android:id="@+id/brightness_gadget_slider"
                     style="@style/gadget_slider"
                     android:max="255" />
+                <TextView style="@style/gadget_hint"
+                    android:text="@string/battery_gadget_slider_hint" />
             </LinearLayout>
             <Button android:id="@+id/button_stop"
                 style="@style/benchmark_button"
+                android:layout_above="@+id/divider_bottom"
                 android:background="@color/powerbench_blue"
                 android:text="@string/stop_benchmark"/>
+            <View android:id="@+id/divider_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_alignParentBottom="true" />
         </RelativeLayout>
     </FrameLayout>
     <include layout="@layout/navigation_drawer" />

@@ -8,6 +8,13 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="red">#FF0000</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Button -->
+    <color name="button_pressed">#44000000</color>
+
+    <!-- Navigation -->
+    <color name="navigation_menu_background">#111</color>
 
     <!-- Personalization -->
     <color name="personalization_battery_default">@color/powerbench_blue</color>
@@ -19,4 +26,6 @@
 
     <!-- Text -->
     <color name="powerbench_text">@color/black</color>
+    <color name="powerbench_text_dark">@color/white</color>
+
 </resources>

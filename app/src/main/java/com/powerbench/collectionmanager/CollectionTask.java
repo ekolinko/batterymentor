@@ -1,10 +1,11 @@
-package com.powerbench.sensors;
+package com.powerbench.collectionmanager;
 
 import android.util.Log;
 
 import com.powerbench.constants.SensorConstants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.datamanager.Statistics;
+import com.powerbench.sensors.Sensor;
 
 import java.util.HashSet;
 import java.util.Set;

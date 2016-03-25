@@ -2,26 +2,45 @@
     <string name="app_name">PowerBench</string>
 
     <!-- Benchmarks -->
-    <string name="brightness_benchmark">Brightness Benchmark</string>
     <string name="benchmark_in_progress">Benchmark in Progress.\n</string>
+    <string name="benchmark_completing">Completing the Benchmark.\n</string>
     <string name="benchmark_complete">Benchmark is Complete.\n</string>
 
     <!-- BrightnessBenchmarkActivity -->
-    <string name="brightness_data_template" formatted="false">Brightness %d: %s mW\n</string>
+    <string name="brightness_data_template" formatted="false">Brightness %d%%: %s mW\n</string>
+    <string name="cpu_load_data_template" formatted="false">CPU Load %d%%: %s mW\n</string>
+    <string name="cpu_frequency_data_template" formatted="false">Frequency %d: %s MHz\n</string>
 
     <!-- Common -->
     <string name="milliwatts">mW</string>
+    <string name="cpu_load">%</string>
+    <string name="seconds">seconds</string>
     <string name="hours">hours</string>
     <string name="stop_benchmark">Stop Benchmark</string>
 
     <!-- Gadgets -->
     <string name="brightness_gadget">Brightness Gadget</string>
+    <string name="cpu_gadget">CPU Gadget</string>
+    <string name="battery_life_remaining">Battery life remaining</string>
+    <string name="battery_gadget_slider_hint">Move the slider to see the impact of screen brightness on battery life</string>
+
+    <!-- Navigation -->
+    <string name="navigation_exit">EXIT</string>
 
     <!-- Notification -->
     <string name="notification_measuring">Measuring...</string>
     <string name="notification_power_template" formatted="false">Power: %d mW</string>
 
     <!-- PowerBenchActivity -->
-    <string name="powerbench_battery_benchmark">Battery Benchmark</string>
-    <string name="powerbench_charger_benchmark">Charger Benchmark</string>
+    <string name="battery_benchmark">Battery Benchmark</string>
+    <string name="brightness_benchmark">Brightness Benchmark</string>
+    <string name="cpu_benchmark">CPU Benchmark</string>
+    <string name="charger_benchmark">Charger Benchmark</string>
+
+    <!-- Process -->
+    <string name="process_stop">STOP</string>
+
+    <!-- Prototype -->
+    <string name="prototype_running_applications">Running Applications</string>
+    <string name="prototype_application_cpu_load_template" formatted="false">%s: %,.2f</string>
 </resources>
