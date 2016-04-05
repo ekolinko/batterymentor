@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.powerbench"
     android:versionCode="1"
-    android:versionName="0.0.0.08">
+    android:versionName="0.0.0.09">
     <!-- Used for changing brightness in brightness benchmark -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
@@ -19,10 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.benchmark.BrightnessBenchmarkActivity"
+        <activity android:name=".ui.benchmark.ScreenTestActivity"
             android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
-        <activity android:name=".ui.benchmark.CpuBenchmarkActivity"
+        <activity android:name=".ui.benchmark.CpuTestActivity"
             android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
         <activity android:name=".ui.prototype.RunningApplicationsActivity"

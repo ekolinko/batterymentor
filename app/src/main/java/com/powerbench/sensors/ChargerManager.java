@@ -88,6 +88,7 @@ public class ChargerManager {
      */
     public void handleBatteryStatusIntent(Context context, Intent batteryStatusIntent) {
         int status = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+        int level = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
         boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
                 status == BatteryManager.BATTERY_STATUS_FULL;
         if (isCharging) {
@@ -95,6 +96,7 @@ public class ChargerManager {
         } else {
             notifyAllListenersOfChargerDisconnected();
         }
+        notifyAllListenersOfBatteryLevelChanged(level);
     }
 
     /**
@@ -109,12 +111,23 @@ public class ChargerManager {
     }
 
     /**
-     * Notify all registered listeners of a charger discconnected event.
+     * Notify all registered listeners of a charger disconnected event.
      */
     public void notifyAllListenersOfChargerDisconnected() {
         synchronized (mChargerListeners) {
             for (ChargerListener ChargerListener : mChargerListeners) {
                 ChargerListener.onChargerDisconnected();
+            }
+        }
+    }
+
+    /**
+     * Notify all registered listeners of a battery level changed event.
+     */
+    public void notifyAllListenersOfBatteryLevelChanged(int level) {
+        synchronized (mChargerListeners) {
+            for (ChargerListener ChargerListener : mChargerListeners) {
+                ChargerListener.onBatteryLevelChanged(level);
             }
         }
     }
@@ -133,6 +146,11 @@ public class ChargerManager {
          * Used to notify listeners when a charger is disconnected.
          */
         public void onChargerDisconnected();
+
+        /**
+         * Used ot notify listeners when the battery level changes.
+         */
+        public void onBatteryLevelChanged(int level);
     }
 
     /**

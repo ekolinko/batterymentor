@@ -1,7 +1,6 @@
 package com.powerbench.ui.benchmark;
 
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -15,17 +14,15 @@ import com.powerbench.constants.BenchmarkConstants;
 import com.powerbench.constants.Constants;
 import com.powerbench.constants.DeviceConstants;
 import com.powerbench.datamanager.Point;
-import com.powerbench.device.Device;
 import com.powerbench.device.Permissions;
-import com.powerbench.model.Model;
+import com.powerbench.model.ModelManager;
 
 import java.text.DecimalFormat;
 
 /**
- * The main powerbench activity that allows a user to view battery power consumption and charging
- * rate in realtime.
+ * The activity that runs the screen test to generate the model for the screen brightness.
  */
-public class BrightnessBenchmarkActivity extends BenchmarkActivity {
+public class ScreenTestActivity extends BenchmarkActivity {
 
     /**
      * The brightness data text view.
@@ -73,11 +70,11 @@ public class BrightnessBenchmarkActivity extends BenchmarkActivity {
         setContentView(R.layout.activity_benchmark_brightness);
         initialize();
         setupButtons();
-        getSupportActionBar().setTitle(getString(R.string.brightness_benchmark));
+        getSupportActionBar().setTitle(getString(R.string.screen_test));
         mBrightnessDataTextView = (TextView) findViewById(R.id.benchmark_brightness_text_view);
         mBrightnessGadgetContainer = (LinearLayout) findViewById(R.id.brightness_gadget_container);
         mBrightnessGadgetPowerValue = (TextView) findViewById(R.id.brightness_gadget_power_value);
-        mBrightnessGadgetSeekBar = (SeekBar) findViewById(R.id.brightness_gadget_slider);
+        mBrightnessGadgetSeekBar = (SeekBar) findViewById(R.id.gadget_screen_brightness_slider);
         mBatteryLifeFormatter = new DecimalFormat(getString(R.string.format_battery_life));
         if (Permissions.getInstance().requestSettingsPermission(this)) {
             startBenchmark();
@@ -108,7 +105,7 @@ public class BrightnessBenchmarkActivity extends BenchmarkActivity {
                             for (Point point : mBrightnessBenchmark.getBrightnessData()) {
                                 int brightness = (int)point.getX();
                                 int percent = (int)Math.round((brightness * Constants.PERCENT) / (double)(BenchmarkConstants.MAX_BRIGHTNESS - BenchmarkConstants.MIN_BRIGHTNESS));
-                                benchmarkText += String.format(getString(R.string.brightness_data_template), percent, getPowerFormatter().format(point.getY()));
+                                benchmarkText += String.format(getString(R.string.screen_test_data_template), percent, getPowerFormatter().format(point.getY()));
                             }
                             mBrightnessBenchmark.unlockData();
                             mBrightnessDataTextView.setText(benchmarkText);
@@ -129,6 +126,9 @@ public class BrightnessBenchmarkActivity extends BenchmarkActivity {
 
     @Override
     protected void showBenchmarkResults() {
+        ModelManager.getInstance().getBatteryModel(this).setScreenModel(mBrightnessBenchmark.getModel());
+        finish();
+        /**
         getHandler().post(new Runnable() {
             @Override
             public void run() {
@@ -138,7 +138,7 @@ public class BrightnessBenchmarkActivity extends BenchmarkActivity {
                     for (Point point : mBrightnessBenchmark.getBrightnessData()) {
                         int brightness = (int)point.getX();
                         int percent = (int)Math.round((brightness * Constants.PERCENT) / (double)(BenchmarkConstants.MAX_BRIGHTNESS - BenchmarkConstants.MIN_BRIGHTNESS));
-                        benchmarkText += String.format(getString(R.string.brightness_data_template), percent, getPowerFormatter().format(point.getY()));
+                        benchmarkText += String.format(getString(R.string.screen_test_data_template), percent, getPowerFormatter().format(point.getY()));
                     }
                     mBrightnessBenchmark.unlockData();
                     mBrightnessDataTextView.setText(benchmarkText);
@@ -151,7 +151,7 @@ public class BrightnessBenchmarkActivity extends BenchmarkActivity {
                     } catch (Settings.SettingNotFoundException e) {
                     }
                     mBrightnessGadgetSeekBar.setProgress(brightness);
-                    final double batteryCapacity = Device.getInstance().getBatteryCapacity(BrightnessBenchmarkActivity.this);
+                    final double batteryCapacity = Device.getInstance().getBatteryCapacity(ScreenTestActivity.this);
                     double power = model.getY(brightness);
                     double batteryLife = batteryCapacity / power;
                     String value = String.format(getString(R.string.value_units_template), mBatteryLifeFormatter.format(batteryLife), getString(R.string.hours));
@@ -182,7 +182,7 @@ public class BrightnessBenchmarkActivity extends BenchmarkActivity {
                     mStopButton.setVisibility(View.GONE);
                 }
             }
-        });
+        });**/
     }
 
     @Override

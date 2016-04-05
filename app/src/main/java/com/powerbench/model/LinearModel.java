@@ -7,7 +7,7 @@ import com.powerbench.datamanager.Point;
 import java.util.ArrayList;
 
 /**
- * Abstract class that represents a linear model.
+ * Class that represents a linear model.
  */
 public class LinearModel extends Model {
 
@@ -62,7 +62,16 @@ public class LinearModel extends Model {
      * @return the modeled y-value for the specified x-value.
      */
     public double getY(double x) {
-        return mSlope*x + mIntercept;
+        return mSlope*x;
+    }
+
+    /**
+     * Return the y-intercept for this model.
+     *
+     * @return the y-intercept for this model.
+     */
+    public double getIntercept() {
+        return mIntercept;
     }
 
 }

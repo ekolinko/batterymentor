@@ -14,18 +14,13 @@ import com.powerbench.constants.BenchmarkConstants;
 import com.powerbench.constants.DeviceConstants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.device.Permissions;
-import com.powerbench.model.Model;
-import com.powerbench.sensors.app.Process;
-import com.powerbench.ui.app.ProcessAdapter;
-
-import java.util.ArrayList;
-import java.util.Collections;
+import com.powerbench.model.ModelManager;
 
 /**
  * The main powerbench activity that allows a user to view battery power consumption and charging
  * rate in realtime.
  */
-public class CpuBenchmarkActivity extends BenchmarkActivity {
+public class CpuTestActivity extends BenchmarkActivity {
 
     /**
      * The cpu data text view.
@@ -68,7 +63,7 @@ public class CpuBenchmarkActivity extends BenchmarkActivity {
         setContentView(R.layout.activity_benchmark_cpu);
         initialize();
         setupButtons();
-        getSupportActionBar().setTitle(getString(R.string.cpu_benchmark));
+        getSupportActionBar().setTitle(getString(R.string.cpu_test));
         mCpuDataTextView = (TextView) findViewById(R.id.benchmark_cpu_text_view);
         mCpuGadgetContainer = (ListView) findViewById(R.id.process_list);
         View header = getLayoutInflater().inflate(R.layout.gadget_cpu_header, null);
@@ -121,52 +116,54 @@ public class CpuBenchmarkActivity extends BenchmarkActivity {
 
     @Override
     protected void showBenchmarkResults() {
-        getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (mCpuDataTextView != null) {
-                    String benchmarkText = getString(R.string.benchmark_complete);
-                    mCpuBenchmark.lockData();
-                    for (Point point : mCpuBenchmark.getPowerData()) {
-                        benchmarkText += String.format(getString(R.string.cpu_load_data_template), (int) point.getX(), getPowerFormatter().format(point.getY()));
-                    }
-//                            for (Point point : mCpuBenchmark.getCpuFrequencyData()) {
-//                                benchmarkText += String.format(getString(R.string.cpu_frequency_data_template), (int)point.getX(), mDurationFormatter.format(point.getY()));
-//                            }
-                    mCpuBenchmark.unlockData();
-                    mCpuDataTextView.setText(benchmarkText);
-                }
-                final Model model = mCpuBenchmark.getModel();
-                if (model != null) {
-                    mApplicationCollectionTask = new ApplicationCollectionTask(CpuBenchmarkActivity.this);
-                    final ArrayList<Process> processes = mApplicationCollectionTask.getProcesses();
-                    final ProcessAdapter processAdapter = new ProcessAdapter(CpuBenchmarkActivity.this, mApplicationCollectionTask, processes, model);
-                    mApplicationMeasurementListener = new ApplicationCollectionTask.MeasurementListener() {
-                        @Override
-                        public void onMeasurementReceived() {
-                            getHandler().post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mApplicationCollectionTask.updateProcesses();
-                                    mApplicationCollectionTask.lock();
-                                    Collections.sort(processes);
-                                    mApplicationCollectionTask.unlock();
-                                    processAdapter.notifyDataSetChanged();
-                                }
-                            });
-                        }
-                    };
-                    ListView processList = (ListView) findViewById(R.id.process_list);
-                    processList.setAdapter(processAdapter);
-                    mApplicationCollectionTask.registerMeasurementListener(mApplicationMeasurementListener);
-                    mApplicationCollectionTask.start();
-                    mCpuGadgetContainer.setVisibility(View.VISIBLE);
-                }
-                if (mStopButton != null) {
-                    mStopButton.setVisibility(View.GONE);
-                }
-            }
-        });
+        ModelManager.getInstance().getBatteryModel(this).setCpuModel(mCpuBenchmark.getModel());
+        finish();
+//        getHandler().post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (mCpuDataTextView != null) {
+//                    String benchmarkText = getString(R.string.benchmark_complete);
+//                    mCpuBenchmark.lockData();
+//                    for (Point point : mCpuBenchmark.getPowerData()) {
+//                        benchmarkText += String.format(getString(R.string.cpu_load_data_template), (int) point.getX(), getPowerFormatter().format(point.getY()));
+//                    }
+////                            for (Point point : mCpuBenchmark.getCpuFrequencyData()) {
+////                                benchmarkText += String.format(getString(R.string.cpu_frequency_data_template), (int)point.getX(), mDurationFormatter.format(point.getY()));
+////                            }
+//                    mCpuBenchmark.unlockData();
+//                    mCpuDataTextView.setText(benchmarkText);
+//                }
+//                final Model model = mCpuBenchmark.getModel();
+//                if (model != null) {
+//                    mApplicationCollectionTask = new ApplicationCollectionTask(CpuTestActivity.this);
+//                    final ArrayList<Process> processes = mApplicationCollectionTask.getProcesses();
+//                    final ProcessAdapter processAdapter = new ProcessAdapter(CpuTestActivity.this, mApplicationCollectionTask, processes, model);
+//                    mApplicationMeasurementListener = new ApplicationCollectionTask.MeasurementListener() {
+//                        @Override
+//                        public void onMeasurementReceived() {
+//                            getHandler().post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    mApplicationCollectionTask.updateProcesses();
+//                                    mApplicationCollectionTask.lock();
+//                                    Collections.sort(processes);
+//                                    mApplicationCollectionTask.unlock();
+//                                    processAdapter.notifyDataSetChanged();
+//                                }
+//                            });
+//                        }
+//                    };
+//                    ListView processList = (ListView) findViewById(R.id.process_list);
+//                    processList.setAdapter(processAdapter);
+//                    mApplicationCollectionTask.registerMeasurementListener(mApplicationMeasurementListener);
+//                    mApplicationCollectionTask.start();
+//                    mCpuGadgetContainer.setVisibility(View.VISIBLE);
+//                }
+//                if (mStopButton != null) {
+//                    mStopButton.setVisibility(View.GONE);
+//                }
+//            }
+//        });
     }
 
     @Override

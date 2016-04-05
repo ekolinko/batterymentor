@@ -7,7 +7,7 @@ import com.powerbench.constants.BenchmarkConstants;
 import com.powerbench.constants.Constants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.device.Device;
-import com.powerbench.model.LinearModelAtOrigin;
+import com.powerbench.model.LinearModel;
 import com.powerbench.model.Model;
 import com.powerbench.sensors.Sensor;
 
@@ -162,7 +162,7 @@ public class CpuBenchmark extends Benchmark {
             }
             if (!mStopped) {
                 lockData();
-                mCpuToPowerModel = new LinearModelAtOrigin(mPowerData);
+                mCpuToPowerModel = new LinearModel(mPowerData);
                 unlockData();
                 notifyListenersOfBenchmarkComplete();
                 CpuBenchmark.this.stop();

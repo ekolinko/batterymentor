@@ -1,13 +1,15 @@
 <resources>
     <string name="app_name">PowerBench</string>
 
-    <!-- Benchmarks -->
-    <string name="benchmark_in_progress">Benchmark in Progress.\n</string>
-    <string name="benchmark_completing">Completing the Benchmark.\n</string>
-    <string name="benchmark_complete">Benchmark is Complete.\n</string>
+    <!-- Tests -->
+    <string name="benchmark_in_progress">Test in Progress.\n</string>
+    <string name="benchmark_completing">Completing the Test.\n</string>
+    <string name="benchmark_complete">Test is Complete.\n</string>
+    <string name="stop_test">STOP TEST</string>
 
-    <!-- BrightnessBenchmarkActivity -->
-    <string name="brightness_data_template" formatted="false">Brightness %d%%: %s mW\n</string>
+    <!-- ScreenTestActivity -->
+    <string name="screen_test">Screen Test</string>
+    <string name="screen_test_data_template" formatted="false">Brightness %d%%: %s mW\n</string>
     <string name="cpu_load_data_template" formatted="false">CPU Load %d%%: %s mW\n</string>
     <string name="cpu_frequency_data_template" formatted="false">Frequency %d: %s MHz\n</string>
 
@@ -16,12 +18,10 @@
     <string name="cpu_load">%</string>
     <string name="seconds">seconds</string>
     <string name="hours">hours</string>
-    <string name="stop_benchmark">Stop Benchmark</string>
 
     <!-- Gadgets -->
     <string name="brightness_gadget">Brightness Gadget</string>
     <string name="cpu_gadget">CPU Gadget</string>
-    <string name="battery_life_remaining">Battery life remaining</string>
     <string name="battery_gadget_slider_hint">Move the slider to see the impact of screen brightness on battery life</string>
 
     <!-- Navigation -->
@@ -32,10 +32,15 @@
     <string name="notification_power_template" formatted="false">Power: %d mW</string>
 
     <!-- PowerBenchActivity -->
-    <string name="battery_benchmark">Battery Benchmark</string>
-    <string name="brightness_benchmark">Brightness Benchmark</string>
-    <string name="cpu_benchmark">CPU Benchmark</string>
+    <string name="battery_test">Battery Test</string>
+    <string name="cpu_test">Apps Test</string>
     <string name="charger_benchmark">Charger Benchmark</string>
+    <string name="battery_life_remaining">Battery life remaining</string>
+    <string name="battery_life_until_full">Until fully charged</string>
+    <string name="battery_life_unknown">~</string>
+    <string name="tab_power">POWER</string>
+    <string name="tab_screen">SCREEN</string>
+    <string name="tab_apps">APPS</string>
 
     <!-- Process -->
     <string name="process_stop">STOP</string>
@@ -43,4 +48,10 @@
     <!-- Prototype -->
     <string name="prototype_running_applications">Running Applications</string>
     <string name="prototype_application_cpu_load_template" formatted="false">%s: %,.2f</string>
+
+    <!-- Test -->
+    <string name="test_screen_run">RUN SCREEN TEST</string>
+    <string name="test_screen_description">See how screen brightness affects your battery life! Run the screen test to unlock this feature.</string>
+    <string name="test_apps_run">RUN APPS TEST</string>
+    <string name="test_apps_description">See how apps affect your battery life! Run the apps test to unlock this feature.</string>
 </resources>

@@ -152,5 +152,7 @@ public class Statistics {
         synchronized (mRecentData) {
             mRecentData.clear();
         }
+        mTotal = 0;
+        mNumPoints = 0;
     }
 }

@@ -277,7 +277,7 @@ public class ApplicationCollectionTask {
                 if (TextUtils.isDigitsOnly(filename)) {
                     int pid = Integer.parseInt(filename);
                     String processName = readProcessName(pid);
-                    if (processName != null) {
+                    if (processName != null && !processName.equals(mContext.getPackageName())) {
                         ProcessInfo processInfo = mProcessInfoCache.get(pid);
                         if (processInfo == null) {
                             String name;

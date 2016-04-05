@@ -2,31 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <RelativeLayout android:id="@+id/powerbench_realtime_container"
-        style="@style/powerbench_realtime_container"
-        android:layout_above="@+id/button_brightness_benchmark">
-        <TextView android:id="@+id/powerbench_power_value"
-            style="@style/powerbench_power_value"
-            android:textColor="@color/powerbench_blue"/>
-    </RelativeLayout>
-    <Button android:id="@+id/button_brightness_benchmark"
-        style="@style/powerbench_button"
-        android:background="@color/powerbench_blue"
-        android:drawableLeft="@drawable/powerbench_battery_benchmark_white"
-        android:layout_above="@+id/divider"
-        android:text="@string/brightness_benchmark"/>
-    <View android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_above="@+id/button_cpu_benchmark" />
-    <Button android:id="@+id/button_cpu_benchmark"
-        style="@style/powerbench_button"
-        android:background="@color/powerbench_blue"
-        android:drawableLeft="@drawable/powerbench_battery_benchmark_white"
-        android:layout_above="@id/divider_bottom"
-        android:text="@string/cpu_benchmark"/>
-    <View android:id="@+id/divider_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_alignParentBottom="true" />
+    <TextView android:id="@+id/powerbench_power_value"
+        style="@style/powerbench_power_value"
+        android:layout_centerInParent="true"
+        android:textColor="@color/powerbench_blue"/>
 </RelativeLayout>

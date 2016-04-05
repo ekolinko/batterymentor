@@ -193,6 +193,16 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     public void onChargerDisconnected() {
     }
 
+    /**
+     * Method that indicates to all activities that inherit form this class that the battery level
+     * has changed.
+     *
+     * @param level the new battery level.
+     */
+    @Override
+    public void onBatteryLevelChanged(int level) {
+    }
+
     protected Handler getHandler() {
         return mHandler;
     }

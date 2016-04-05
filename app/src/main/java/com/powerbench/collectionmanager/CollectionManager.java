@@ -1,5 +1,7 @@
 package com.powerbench.collectionmanager;
 
+import android.content.Context;
+
 import com.powerbench.sensors.Sensor;
 
 import java.util.HashSet;
@@ -14,6 +16,11 @@ public class CollectionManager {
      * The primary battery collection task.
      */
     private CollectionTask mPowerCollectionTask;
+
+    /**
+     * The primary application collection task.
+     */
+    private ApplicationCollectionTask mApplicationCollectionTask;
 
     /**
      * The set of collection tasks that are collecting data in the background.
@@ -36,6 +43,13 @@ public class CollectionManager {
             mPowerCollectionTask = new CollectionTask(Sensor.POWER);
         }
         return mPowerCollectionTask;
+    }
+
+    public ApplicationCollectionTask getApplicationCollectionTask(Context context) {
+        if (mApplicationCollectionTask == null) {
+            mApplicationCollectionTask = new ApplicationCollectionTask(context);
+        }
+        return mApplicationCollectionTask;
     }
 
     /**

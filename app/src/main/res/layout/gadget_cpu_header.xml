@@ -4,7 +4,7 @@
     style="@style/gadget_container"
     android:layout_above="@+id/button_stop"
     android:layout_alignParentBottom="true">
-    <TextView style="@style/gadget_title"
+    <TextView style="@style/gadget_screen_title"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:text="@string/cpu_gadget" />

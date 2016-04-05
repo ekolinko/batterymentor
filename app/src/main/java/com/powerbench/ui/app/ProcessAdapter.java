@@ -65,7 +65,7 @@ public class ProcessAdapter extends ArrayAdapter<Process> {
     /**
      * The model associated with this process adapter.
      */
-    private final Model mModel;
+    private Model mModel;
 
     public ProcessAdapter(Context context, ApplicationCollectionTask applicationCollectionTask, ArrayList<Process> values) {
         this(context, applicationCollectionTask, values, null);
@@ -133,6 +133,10 @@ public class ProcessAdapter extends ArrayAdapter<Process> {
         }
 
         return convertView;
+    }
+
+    public void setModel(Model model) {
+        mModel = model;
     }
 
     /**

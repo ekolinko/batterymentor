@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">@color/powerbench_blue_dark</color>
+    <color name="colorPrimaryDark">@color/powerbench_blue</color>
     <color name="colorAccent">#FF4081</color>
 
     <!-- Common -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="red">#FF0000</color>
+    <color name="light_gray">#E0E0E0</color>
+    <color name="gray">#9E9E9E</color>
+    <color name="dark_gray">#616161</color>
     <color name="transparent">#00000000</color>
 
     <!-- Button -->
     <color name="button_pressed">#44000000</color>
+    <color name="powerbench_blue_pressed">#AA3F51B5</color>
+    <color name="powerbench_red_pressed">#AAF44336</color>
 
     <!-- Navigation -->
     <color name="navigation_menu_background">#111</color>
@@ -21,8 +26,10 @@
     <color name="personalization_charger_default">@color/powerbench_red</color>
 
     <!-- PowerBench -->
-    <color name="powerbench_blue">#0070C0</color>
-    <color name="powerbench_red">#FF0000</color>
+    <color name="powerbench_blue_dark">#303F9F</color>
+    <color name="powerbench_blue">#3F51B5</color>
+    <color name="powerbench_red_dark">#D32F2F</color>
+    <color name="powerbench_red">#F44336</color>
 
     <!-- Text -->
     <color name="powerbench_text">@color/black</color>

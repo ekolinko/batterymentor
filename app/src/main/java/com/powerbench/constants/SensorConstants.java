@@ -96,4 +96,9 @@ public class SensorConstants {
      * The percentage threshold at which an application is considered running.
      */
     public static final double APPLICATION_RUNNING_CPU_LOAD_THRESHOLD = 0.1;
+
+    /**
+     * The constant for a full battery level.
+     */
+    public static final int BATTERY_LEVEL_FULL = 100;
 }

@@ -52,7 +52,7 @@
                 style="@style/benchmark_button"
                 android:layout_above="@+id/divider_bottom"
                 android:background="@color/powerbench_blue"
-                android:text="@string/stop_benchmark"/>
+                android:text="@string/stop_test"/>
             <View android:id="@+id/divider_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="10dp"

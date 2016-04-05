@@ -31,4 +31,11 @@ public abstract class Model {
      */
     public abstract double getY(double x);
 
+    /**
+     * Return the y-intercept for this model.
+     *
+     * @return the y-intercept for this model.
+     */
+    public abstract double getIntercept();
+
 }

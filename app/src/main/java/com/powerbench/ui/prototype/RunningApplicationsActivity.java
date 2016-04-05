@@ -37,9 +37,9 @@ public class RunningApplicationsActivity extends CommonActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_process_list);
+        setContentView(R.layout.fragment_process_list);
         initialize();
-        getSupportActionBar().setTitle(getString(R.string.cpu_benchmark));
+        getSupportActionBar().setTitle(getString(R.string.cpu_test));
         mHandler = new Handler();
         mApplicationCollectionTask = new ApplicationCollectionTask(this);
         final ArrayList<Process> processes = mApplicationCollectionTask.getProcesses();

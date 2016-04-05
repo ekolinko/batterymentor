@@ -40,15 +40,15 @@ public class Device {
      * Get the battery capacity of the device in milliwatt hours. Measure this value if it is
      * invalid.
      *
-     * @param activity the activity containing the application context.
+     * @param context the application context.
      * @return the battery capacity of the device in milliwatt hours.
      */
-    public double getBatteryCapacity(CommonActivity activity) {
+    public double getBatteryCapacity(Context context) {
         if (mBatteryCapacity < 0) {
             Object mPowerProfile = null;
             try {
                 mPowerProfile = Class.forName(DeviceConstants.POWER_PROFILE_CLASS)
-                        .getConstructor(Context.class).newInstance(activity);
+                        .getConstructor(Context.class).newInstance(context);
             } catch (Exception e) {
                 mBatteryCapacity = 0;
             }

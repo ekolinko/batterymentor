@@ -16,8 +16,15 @@
         <item name="android:paddingBottom">10dp</item>
     </style>
 
-    <style name="benchmark_button" parent="powerbench_button">
+    <style name="benchmark_button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">60dp</item>
         <item name="android:gravity">center</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
     </style>
 
     <style name="benchmark_duration">
@@ -52,6 +59,22 @@
         <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
     </style>
 
+    <style name="image_button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:background">@color/button_material</item>
+    </style>
+
+    <style name="help_text">
+        <item name="android:layout_width">350dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/powerbench_text</item>
+        <item name="android:padding">15dp</item>
+    </style>
+
     <!-- Gadgets -->
     <style name="gadget_container">
         <item name="android:layout_width">match_parent</item>
@@ -59,9 +82,9 @@
         <item name="android:orientation">vertical</item>
     </style>
 
-    <style name="gadget_title">
+    <style name="gadget_screen_title">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">18sp</item>
         <item name="android:gravity">center_horizontal</item>
@@ -81,9 +104,9 @@
 
     <style name="gadget_slider">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">40dp</item>
+        <item name="android:paddingBottom">40dp</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
     </style>
@@ -104,15 +127,55 @@
     </style>
 
     <!-- PowerBenchActivity -->
-    <style name="powerbench_button">
+    <style name="powerbench_battery_life_container">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">80dp</item>
-        <item name="android:gravity">left|center_vertical</item>
-        <item name="android:padding">10dp</item>
-        <item name="android:drawablePadding">10dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:background">@color/powerbench_blue</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="powerbench_battery_life_remaining">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
+
+    <style name="powerbench_battery_life_remaining_label">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="powerbench_pager_tab_container">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="powerbench_pager_tab">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/tab_material_blue</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/tab_material_blue</item>
+    </style>
+
+    <style name="powerbench_button" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:layout_width">300dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:gravity">center</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
+        <item name="android:background">@drawable/button_material_blue</item>
     </style>
 
     <style name="powerbench_power_value">

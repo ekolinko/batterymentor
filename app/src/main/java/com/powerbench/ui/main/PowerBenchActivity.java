@@ -1,33 +1,37 @@
 package com.powerbench.ui.main;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.powerbench.R;
+import com.powerbench.collectionmanager.ApplicationCollectionTask;
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.Constants;
 import com.powerbench.datamanager.Statistics;
 import com.powerbench.device.Device;
 import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.datamanager.Point;
-import com.powerbench.ui.benchmark.BrightnessBenchmarkActivity;
-import com.powerbench.ui.benchmark.CpuBenchmarkActivity;
+import com.powerbench.model.BatteryModel;
+import com.powerbench.model.ModelManager;
 import com.powerbench.ui.common.CommonActivity;
-import com.powerbench.ui.prototype.RunningApplicationsActivity;
+import com.powerbench.ui.theme.Theme;
+import com.powerbench.ui.theme.ThemeManager;
 
 import java.text.DecimalFormat;
 
@@ -36,6 +40,11 @@ import java.text.DecimalFormat;
  * rate in realtime.
  */
 public class PowerBenchActivity extends CommonActivity {
+
+    /**
+     * The theme manager.
+     */
+    private ThemeManager mThemeManager = ThemeManager.getInstance();
 
     /**
      * The primary battery collection task.
@@ -58,9 +67,69 @@ public class PowerBenchActivity extends CommonActivity {
     private ActionBarDrawerToggle mDrawerToggle;
 
     /**
+     * The view pager.
+     */
+    private ViewPager mViewPager;
+
+    /**
+     * The pager adapter
+     */
+    private PagerAdapter mPagerAdapter;
+
+    /**
+     * The list of tab fragments.
+     */
+    private TabFragment[] mTabFragments;
+
+    /**
+     * The power tab fragment.
+     */
+    private PowerFragment mPowerFragment;
+
+    /**
+     * The screen tab fragment.
+     */
+    private ScreenFragment mScreenFragment;
+
+    /**
+     * The apps tab fragment.
+     */
+    private AppsFragment mAppsFragment;
+
+    /**
+     * The list of buttons representing the pager adapter tabs.
+     */
+    private Button[] mPagerTabs;
+
+    /**
+     * The battery life container.
+     */
+    private View mBatteryLifeContainer;
+
+    /**
+     * The battery life view.
+     */
+    private TextView mBatteryLife;
+
+    /**
+     * The battery life remaining label.
+     */
+    private TextView mBatteryLifeLabel;
+
+    /**
      * The measurement listener.
      */
     private CollectionTask.MeasurementListener mMeasurementListener;
+
+    /**
+     * The primary application collection task.
+     */
+    private ApplicationCollectionTask mApplicationCollectionTask;
+
+    /**
+     * The battery life formatter.
+     */
+    private DecimalFormat mBatteryLifeFormatter;
 
     /**
      * The handler used to measure the UI.
@@ -70,22 +139,12 @@ public class PowerBenchActivity extends CommonActivity {
     /**
      * The current median.
      */
-    private double mValue;
+    private double mPower;
 
     /**
-     * The current realtime fragment being shown on the screen.
+     * The battery model;
      */
-    private RealtimeFragment mFragment;
-
-    /**
-     * The fragment for showing realtime battery power measurements.
-     */
-    private BatteryFragment mBatteryFragment;
-
-    /**
-     * The fragment for showing realtime charger power measurements.
-     */
-    private ChargerFragment mChargerFragment;
+    private BatteryModel mBatteryModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,26 +158,52 @@ public class PowerBenchActivity extends CommonActivity {
         } catch (PackageManager.NameNotFoundException e) {
         }
         getSupportActionBar().setTitle(getString(R.string.app_name) + Constants.SPACE + version);
-        mBatteryFragment = new BatteryFragment();
-        mChargerFragment = new ChargerFragment();
         mHandler = new Handler();
+        mPowerFragment = new PowerFragment();
+        mScreenFragment = new ScreenFragment();
+        mAppsFragment = new AppsFragment();
+        mTabFragments = new TabFragment[] { mPowerFragment, mScreenFragment, mAppsFragment };
+        mPagerAdapter = new PowerbenchPagerAdapter(getSupportFragmentManager(), mTabFragments);
+        mViewPager = (ViewPager) findViewById(R.id.powerbench_pager);
+        mViewPager.setAdapter(mPagerAdapter);
+        mBatteryLifeContainer = findViewById(R.id.battery_life_container);
+        mBatteryLife = (TextView) findViewById(R.id.battery_life);
+        mBatteryLifeLabel = (TextView) findViewById(R.id.battery_life_label);
+        setupTabs();
+        applyTheme();
+        mBatteryModel = ModelManager.getInstance().getBatteryModel(this);
+        mBatteryModel.registerOnModelChangedListener(new BatteryModel.OnModelChangedListener() {
+            @Override
+            public void onModelChanged() {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateBatteryLife();
+                    }
+                });
+            }
+        });
+        mBatteryLifeFormatter = new DecimalFormat(getString(R.string.format_battery_life));
         mMeasurementListener = new CollectionTask.MeasurementListener() {
             @Override
             public void onMeasurementReceived(final Point point) {
                 if (mBatteryStatistics != null) {
-                    mValue = Math.abs(mBatteryStatistics.getAverage());
+                    mPower = Math.abs(mBatteryStatistics.getAverage());
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            mFragment.updatePowerValue(mValue);
+                            mPowerFragment.updatePowerValue(mPower);
                         }
                     });
                 }
             }
         };
+
         mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask();
+        mApplicationCollectionTask = CollectionManager.getInstance().getApplicationCollectionTask(this);
         mBatteryStatistics = mPowerCollectionTask.getStatistics();
         mPowerCollectionTask.start();
+        mApplicationCollectionTask.start();
         Device.getInstance().getBatteryCapacity(this);
     }
 
@@ -127,7 +212,7 @@ public class PowerBenchActivity extends CommonActivity {
      */
     private void setupNavigationDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        final FrameLayout contentFrame = (FrameLayout)findViewById(R.id.fragment_container);
+        final FrameLayout contentFrame = (FrameLayout)findViewById(R.id.powerbench_container);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
@@ -163,6 +248,89 @@ public class PowerBenchActivity extends CommonActivity {
         }
     }
 
+    /**
+     * Setup the tabs.
+     */
+    protected void setupTabs() {
+        Button powerTab = (Button) findViewById(R.id.powerbench_tab_power);
+        Button displayTab = (Button) findViewById(R.id.powerbench_tab_display);
+        Button appsTab = (Button) findViewById(R.id.powerbench_tab_apps);
+        mPagerTabs = new Button[] { powerTab, displayTab, appsTab };
+        for (int position = 0; position < mPagerTabs.length; position++) {
+            Button button = mPagerTabs[position];
+            final int item = position;
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mViewPager.setCurrentItem(item);
+                    updateTabs(item);
+                }
+            });
+        }
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                updateTabs(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        updateTabs(0);
+    }
+
+    /**
+     * Update the tabs with the specified position as the selected item.
+     */
+    protected void updateTabs(int item) {
+        for (int position = 0; position < mPagerTabs.length; position++) {
+            Button button = mPagerTabs[position];
+            button.setEnabled(position != item);
+        }
+    }
+
+    /**
+     * Update the remaining battery life.
+     */
+    protected void updateBatteryLife() {
+        double batteryLife = mBatteryModel.getBatteryLife();
+        String value = String.format(getString(R.string.value_units_template), mBatteryLifeFormatter.format(batteryLife), getString(R.string.hours));
+        mBatteryLife.setText(value);
+    }
+
+    /**
+     * Apply the theme to this activity.
+     */
+    protected void applyTheme() {
+        Theme theme = mThemeManager.getCurrentTheme(this);
+        // Apply the theme to the action bar.
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, theme.getActionBarColorResource())));
+        // Apply the theme to the battery life container.
+        if (mBatteryLifeContainer != null) {
+            mBatteryLifeContainer.setBackgroundResource(theme.getColorResource());
+        }
+        // Apply the theme to the tabs
+        if (mPagerTabs != null) {
+            for (Button button : mPagerTabs) {
+                button.setTextColor(ContextCompat.getColorStateList(this, theme.getTabTextColorResource()));
+                button.setBackgroundResource(theme.getTabDrawableResource());
+            }
+        }
+        // Apply the theme to the fragments
+        if (mTabFragments != null) {
+            for (TabFragment tabFragment : mTabFragments) {
+                tabFragment.applyTheme(theme);
+            }
+        }
+    }
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -191,6 +359,9 @@ public class PowerBenchActivity extends CommonActivity {
     protected void onResume() {
         super.onResume();
         mPowerCollectionTask.registerMeasurementListener(mMeasurementListener);
+        for (TabFragment tabFragment : mTabFragments) {
+            tabFragment.refresh();
+        }
     }
 
     @Override
@@ -200,163 +371,58 @@ public class PowerBenchActivity extends CommonActivity {
     }
 
     @Override
+    public void onDestroy() {
+        mApplicationCollectionTask.stop();
+        super.onDestroy();
+    }
+
+    @Override
     public void onChargerConnected() {
-        showFragment(mChargerFragment);
+        mThemeManager.setCurrentTheme(this, Theme.CHARGER_THEME);
+        applyTheme();
         mBatteryStatistics.clearRecentData();
+        if (mBatteryLifeLabel != null)
+            mBatteryLifeLabel.setText(getString(R.string.battery_life_until_full));
+
     }
 
     @Override
     public void onChargerDisconnected() {
-        showFragment(mBatteryFragment);
+        mThemeManager.setCurrentTheme(this, Theme.BATTERY_THEME);
+        applyTheme();
         mBatteryStatistics.clearRecentData();
+        if (mBatteryLifeLabel != null)
+            mBatteryLifeLabel.setText(getString(R.string.battery_life_remaining));
     }
 
     /**
-     * Show the specified fragment as the main screen of this activity.
+     * The pager adapter for showing the various modes of powerbench.
      */
-    public void showFragment(RealtimeFragment fragment) {
-        if (fragment == null)
-            return;
-
-        if (mFragment != fragment) {
-            mFragment = fragment;
-            Bundle args = new Bundle();
-            args.putDouble(Constants.BUNDLE_KEY_VALUE, mValue);
-            if (mFragment.getArguments() == null) {
-                mFragment.setArguments(args);
-            } else {
-                mFragment.getArguments().putAll(args);
-            }
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, mFragment);
-            transaction.commit();
-        }
-    }
-
-    /**
-     * Fragment for showing realtime measurements.
-     */
-    public abstract static class RealtimeFragment extends  Fragment {
-        /**
-         * The power formatter.
-         */
-        private DecimalFormat mPowerFormatter;
-
-        public abstract TextView getPowerValueTextView();
+    public class PowerbenchPagerAdapter extends FragmentPagerAdapter {
 
         /**
-         * Update the power value from the fragment arguments.
+         * The array of fragments supported by this pager adapter.
          */
-        public void updatePowerValueFromArguments() {
-            double value = getArguments().getDouble(Constants.BUNDLE_KEY_VALUE);
-            updatePowerValue(value);
-        }
+        private TabFragment[] mFragments;
 
-        /**
-         * Update the power value using the specified point.
-         *
-         * @param point the point to use to measure the arguments.
-         */
-        public void updatePowerValue(Point point) {
-            if (point == null)
-                return;
-
-            updatePowerValue(point.getY());
-        }
-
-        /**
-         * Update the power value using the specified value
-         *
-         * @param powerValue the value to use to measure the arguments.
-         */
-        public void updatePowerValue(double powerValue) {
-            if (mPowerFormatter == null)
-                mPowerFormatter = new DecimalFormat(getString(R.string.format_power));
-
-            TextView powerValueTextView = getPowerValueTextView();
-            if (powerValueTextView != null) {
-                String value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.milliwatts));
-                powerValueTextView.setText(value);
-            }
-        }
-
-    }
-
-    /**
-     * Fragment for showing the realtime battery measurements.
-     */
-    public static class BatteryFragment extends RealtimeFragment {
-
-        /**
-         * The battery power value associated with this fragment.
-         */
-        private TextView mBatteryPowerValue;
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_realtime_battery, container, false);
-            mBatteryPowerValue = (TextView) view.findViewById(R.id.powerbench_power_value);
-            Button brightnessBenchmark = (Button) view.findViewById(R.id.button_brightness_benchmark);
-            if (brightnessBenchmark != null) {
-                brightnessBenchmark.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(getContext(), BrightnessBenchmarkActivity.class));
-                    }
-                });
-            }
-            Button cpuBenchmark = (Button) view.findViewById(R.id.button_cpu_benchmark);
-            if (cpuBenchmark != null) {
-                cpuBenchmark.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(getContext(), CpuBenchmarkActivity.class));
-                    }
-                });
-            }
-            updatePowerValueFromArguments();
-            setRetainInstance(true);
-            return view;
+        public PowerbenchPagerAdapter(FragmentManager fm, TabFragment[] fragments) {
+            super(fm);
+            mFragments = fragments;
         }
 
         @Override
-        public TextView getPowerValueTextView() {
-            return mBatteryPowerValue;
-        }
-    }
-
-    /**
-     * Fragment for showing the realtime charger measurements.
-     */
-    public static  class ChargerFragment extends RealtimeFragment {
-        /**
-         * The battery power value associated with this fragment.
-         */
-        private TextView mChargerPowerValue;
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_realtime_charger, container, false);
-            mChargerPowerValue = (TextView) view.findViewById(R.id.powerbench_power_value);
-            Button runningApplications = (Button) view.findViewById(R.id.button_running_applications);
-            if (runningApplications != null) {
-                runningApplications.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(getContext(), RunningApplicationsActivity.class));
-                    }
-                });
-            }
-            updatePowerValueFromArguments();
-            setRetainInstance(true);
-            return view;
+        public Fragment getItem(int position) {
+            return mFragments[position];
         }
 
         @Override
-        public TextView getPowerValueTextView() {
-            return mChargerPowerValue;
+        public int getCount() {
+            return mFragments.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return Constants.EMPTY_STRING;
         }
     }
 }
