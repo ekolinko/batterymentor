@@ -1,5 +1,6 @@
 package com.powerbench.ui.main;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
@@ -23,15 +24,21 @@ import com.powerbench.R;
 import com.powerbench.collectionmanager.ApplicationCollectionTask;
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.Constants;
+import com.powerbench.constants.UIConstants;
 import com.powerbench.datamanager.Statistics;
 import com.powerbench.device.Device;
 import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.datamanager.Point;
+import com.powerbench.device.Permissions;
 import com.powerbench.model.BatteryModel;
 import com.powerbench.model.ModelManager;
+import com.powerbench.settings.Settings;
+import com.powerbench.ui.benchmark.ScreenTestActivity;
 import com.powerbench.ui.common.CommonActivity;
+import com.powerbench.ui.common.CommonFragment;
 import com.powerbench.ui.theme.Theme;
 import com.powerbench.ui.theme.ThemeManager;
+import com.powerbench.ui.tutorial.TutorialActivity;
 
 import java.text.DecimalFormat;
 
@@ -79,7 +86,7 @@ public class PowerBenchActivity extends CommonActivity {
     /**
      * The list of tab fragments.
      */
-    private TabFragment[] mTabFragments;
+    private CommonFragment[] mTabFragments;
 
     /**
      * The power tab fragment.
@@ -149,6 +156,10 @@ public class PowerBenchActivity extends CommonActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        boolean showTutorialActivity = Settings.getInstance().getShowTutorial(this) || !Permissions.getInstance().isSettingsPermissionGranted(this);
+        if (showTutorialActivity) {
+            startActivityForResult(new Intent(this, TutorialActivity.class), UIConstants.TUTORIAL_REQUEST_CODE);
+        }
         setContentView(R.layout.activity_main);
         setupNavigationDrawer();
         initialize();
@@ -162,7 +173,7 @@ public class PowerBenchActivity extends CommonActivity {
         mPowerFragment = new PowerFragment();
         mScreenFragment = new ScreenFragment();
         mAppsFragment = new AppsFragment();
-        mTabFragments = new TabFragment[] { mPowerFragment, mScreenFragment, mAppsFragment };
+        mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment, mAppsFragment };
         mPagerAdapter = new PowerbenchPagerAdapter(getSupportFragmentManager(), mTabFragments);
         mViewPager = (ViewPager) findViewById(R.id.powerbench_pager);
         mViewPager.setAdapter(mPagerAdapter);
@@ -171,6 +182,7 @@ public class PowerBenchActivity extends CommonActivity {
         mBatteryLifeLabel = (TextView) findViewById(R.id.battery_life_label);
         setupTabs();
         applyTheme();
+        ModelManager.getInstance().initialize(this);
         mBatteryModel = ModelManager.getInstance().getBatteryModel(this);
         mBatteryModel.registerOnModelChangedListener(new BatteryModel.OnModelChangedListener() {
             @Override
@@ -236,6 +248,17 @@ public class PowerBenchActivity extends CommonActivity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_menu);
+
+        Button tutorialButton = (Button) findViewById(R.id.button_tutorial);
+        if (tutorialButton != null) {
+            tutorialButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Settings.getInstance().setShowTutorial(PowerBenchActivity.this, true);
+                    startActivityForResult(new Intent(PowerBenchActivity.this, TutorialActivity.class), UIConstants.TUTORIAL_REFRESH_REQUEST_CODE);
+                }
+            });
+        }
 
         Button exitButton = (Button) findViewById(R.id.button_exit);
         if (exitButton != null) {
@@ -325,7 +348,7 @@ public class PowerBenchActivity extends CommonActivity {
         }
         // Apply the theme to the fragments
         if (mTabFragments != null) {
-            for (TabFragment tabFragment : mTabFragments) {
+            for (CommonFragment tabFragment : mTabFragments) {
                 tabFragment.applyTheme(theme);
             }
         }
@@ -359,7 +382,7 @@ public class PowerBenchActivity extends CommonActivity {
     protected void onResume() {
         super.onResume();
         mPowerCollectionTask.registerMeasurementListener(mMeasurementListener);
-        for (TabFragment tabFragment : mTabFragments) {
+        for (CommonFragment tabFragment : mTabFragments) {
             tabFragment.refresh();
         }
     }
@@ -403,9 +426,9 @@ public class PowerBenchActivity extends CommonActivity {
         /**
          * The array of fragments supported by this pager adapter.
          */
-        private TabFragment[] mFragments;
+        private CommonFragment[] mFragments;
 
-        public PowerbenchPagerAdapter(FragmentManager fm, TabFragment[] fragments) {
+        public PowerbenchPagerAdapter(FragmentManager fm, CommonFragment[] fragments) {
             super(fm);
             mFragments = fragments;
         }

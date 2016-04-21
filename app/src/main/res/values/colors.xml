@@ -12,9 +12,10 @@
     <color name="gray">#9E9E9E</color>
     <color name="dark_gray">#616161</color>
     <color name="transparent">#00000000</color>
+    <color name="background">#FAFAFA</color>
 
     <!-- Button -->
-    <color name="button_pressed">#44000000</color>
+    <color name="button_pressed">#22000000</color>
     <color name="powerbench_blue_pressed">#AA3F51B5</color>
     <color name="powerbench_red_pressed">#AAF44336</color>
 

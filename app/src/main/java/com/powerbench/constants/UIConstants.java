@@ -34,4 +34,34 @@ public class UIConstants {
      * The notification id key.
      */
     public static final String NOTIFICATION_ID_KEY = "com.powerbench.notificationId";
+
+    /**
+     * The key indicating that the app should close.
+     */
+    public static final String CLOSE_APP = "com.powerbench.closeApp";
+
+    /**
+     * The sun view origin angle.
+     */
+    public static final int SUN_VIEW_ORIGIN_ANGLE = -90;
+
+    /**
+     * The sun view offset angle.
+     */
+    public static final int SUN_VIEW_OFFSET_ANGLE = 25;
+
+    /**
+     * The maximum threshold of the sun view max angle.
+     */
+    public static final int SUN_VIEW_MAX_ANGLE_THRESHOLD = (int)(UIConstants.SUN_VIEW_ORIGIN_ANGLE + Constants.CIRCLE_MAX_ANGLE);
+
+    /**
+     * The tutorial request code.
+     */
+    public static final int TUTORIAL_REQUEST_CODE = 1;
+
+    /**
+     * The tutorial refresh request code.
+     */
+    public static final int TUTORIAL_REFRESH_REQUEST_CODE = 2;
 }

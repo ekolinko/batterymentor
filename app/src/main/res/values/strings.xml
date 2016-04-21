@@ -18,6 +18,9 @@
     <string name="cpu_load">%</string>
     <string name="seconds">seconds</string>
     <string name="hours">hours</string>
+    <string name="skip">SKIP</string>
+    <string name="next">NEXT</string>
+    <string name="finish">FINISH</string>
 
     <!-- Gadgets -->
     <string name="brightness_gadget">Brightness Gadget</string>
@@ -25,6 +28,7 @@
     <string name="battery_gadget_slider_hint">Move the slider to see the impact of screen brightness on battery life</string>
 
     <!-- Navigation -->
+    <string name="navigation_tutorial">TUTORIAL</string>
     <string name="navigation_exit">EXIT</string>
 
     <!-- Notification -->
@@ -54,4 +58,20 @@
     <string name="test_screen_description">See how screen brightness affects your battery life! Run the screen test to unlock this feature.</string>
     <string name="test_apps_run">RUN APPS TEST</string>
     <string name="test_apps_description">See how apps affect your battery life! Run the apps test to unlock this feature.</string>
+
+    <!-- Tutorial -->
+    <string name="tutorial_welcome_title">Welcome</string>
+    <string name="tutorial_welcome_text">This page will contain welcome information about the app.</string>
+    <string name="tutorial_realtime_power_title">Power</string>
+    <string name="tutorial_realtime_power_text">This page will contain information about the realtime power feature.</string>
+    <string name="tutorial_brightness_title">Brightness</string>
+    <string name="tutorial_brightness_text">This page will contain information about the brightness gadget feature.</string>
+    <string name="tutorial_apps_title">Apps</string>
+    <string name="tutorial_apps_text">This page will contain information about the apps feature.</string>
+    <string name="tutorial_settings_title">System Settings</string>
+    <string name="tutorial_settings_text">This app needs permissions to access system settings for the brightness feature to work properly. On the next page, please allow PowerBench to edit system settings and press <b>Back</b> when you are done.</string>
+    <string name="tutorial_opening_device_settings_title">Device Settings</string>
+    <string name="tutorial_opening_device_settings_text">Opening the device settings.</string>
+    <string name="tutorial_starting_powerbench_title">Welcome to PowerBench!</string>
+    <string name="tutorial_starting_powerbench_text">Welcome to PowerBench!</string>
 </resources>

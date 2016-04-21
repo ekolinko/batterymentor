@@ -49,7 +49,7 @@ public class BrightnessBenchmark extends Benchmark {
     /**
      * The model used to predict the power used the brightness as the parameter.
      */
-    private Model mBrightnessToPowerModel;
+    private LinearModel mBrightnessToPowerModel;
 
     /**
      * The benchmark data at various brightness levels used to construct the brightness model.
@@ -104,7 +104,7 @@ public class BrightnessBenchmark extends Benchmark {
         return mBrightnessData;
     }
 
-    public Model getModel() {
+    public LinearModel getModel() {
         return mBrightnessToPowerModel;
     }
 

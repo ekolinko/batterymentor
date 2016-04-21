@@ -126,7 +126,7 @@ public class ScreenTestActivity extends BenchmarkActivity {
 
     @Override
     protected void showBenchmarkResults() {
-        ModelManager.getInstance().getBatteryModel(this).setScreenModel(mBrightnessBenchmark.getModel());
+        ModelManager.getInstance().setScreenModel(this, mBrightnessBenchmark.getModel());
         finish();
         /**
         getHandler().post(new Runnable() {

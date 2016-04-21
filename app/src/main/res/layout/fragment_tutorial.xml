@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView android:id="@+id/powerbench_tutorial_title"
+        style="@style/powerbench_tutorial_title"
+        android:layout_alignParentTop="true" />
+    <ImageView android:id="@+id/powerbench_tutorial_image"
+        style="@style/powerbench_tutorial_image"
+        android:src="@drawable/remove_icon_screen_test_blue"
+        android:layout_below="@id/powerbench_tutorial_title" />
+    <TextView android:id="@+id/powerbench_tutorial_text"
+        style="@style/powerbench_tutorial_text"
+        android:layout_below="@+id/powerbench_tutorial_image" />
+</RelativeLayout>

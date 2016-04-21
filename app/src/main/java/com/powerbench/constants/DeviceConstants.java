@@ -24,4 +24,9 @@ public class DeviceConstants {
      * The battery capacity field.
      */
     public static final String BATTERY_CAPACITY_FIELD = "battery.capacity";
+
+    /**
+     * The default battery capacity.
+     */
+    public static final double BATTERY_CAPACITY_DEFAULT = 2400;
 }

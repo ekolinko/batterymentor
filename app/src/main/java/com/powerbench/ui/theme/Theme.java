@@ -1,7 +1,5 @@
 package com.powerbench.ui.theme;
 
-import android.content.Context;
-
 import com.powerbench.R;
 
 /**
@@ -41,6 +39,16 @@ public abstract class Theme {
     private final int mScreenTestIconResource;
 
     /**
+     * The screen sun resource.
+     */
+    private final int mScreenSunResource;
+
+    /**
+     * The screen sun rays resource.
+     */
+    private final int mScreenRaysResource;
+
+    /**
      * The button resource.
      */
     private final int mButtonResource;
@@ -50,7 +58,9 @@ public abstract class Theme {
         mActionBarColorResource = initializeActionBarColorResource();
         mTabDrawableResource = initializeTabDrawableResource();
         mTabTextColorResource = initializeTabTextColorResource();
-        mScreenTestIconResource = initializeScreenTestIconResource();
+        mScreenTestIconResource = initializeScreenTestResource();
+        mScreenSunResource = initializeScreenSunResource();
+        mScreenRaysResource = initializeScreenRaysResource();
         mButtonResource = initializeButtonResource();
     }
 
@@ -95,8 +105,26 @@ public abstract class Theme {
      *
      * @return the screen test icon resource.
      */
-    public int initializeScreenTestIconResource() {
+    public int initializeScreenTestResource() {
         return R.drawable.remove_icon_screen_test_blue;
+    }
+
+    /**
+     * Initialize the screen sun resource.
+     *
+     * @return the screen sun resource.
+     */
+    public int initializeScreenSunResource() {
+        return R.drawable.screen_sun_blue;
+    }
+
+    /**
+     * Initialize the screen rays resource.
+     *
+     * @return the screen rays resource.
+     */
+    public int initializeScreenRaysResource() {
+        return R.drawable.screen_rays_blue;
     }
 
     /**
@@ -126,6 +154,14 @@ public abstract class Theme {
 
     public int getScreenTestIconResource() {
         return mScreenTestIconResource;
+    }
+
+    public int getScreenSunResource() {
+        return mScreenSunResource;
+    }
+
+    public int getScreenRaysResource() {
+        return mScreenRaysResource;
     }
 
     public int getButtonResource() {

@@ -116,7 +116,7 @@ public class CpuTestActivity extends BenchmarkActivity {
 
     @Override
     protected void showBenchmarkResults() {
-        ModelManager.getInstance().getBatteryModel(this).setCpuModel(mCpuBenchmark.getModel());
+        ModelManager.getInstance().setCpuModel(this, mCpuBenchmark.getModel());
         finish();
 //        getHandler().post(new Runnable() {
 //            @Override

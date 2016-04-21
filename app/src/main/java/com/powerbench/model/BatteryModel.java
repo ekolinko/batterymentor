@@ -3,6 +3,8 @@ package com.powerbench.model;
 import android.content.Context;
 
 import com.powerbench.constants.Constants;
+import com.powerbench.constants.DeviceConstants;
+import com.powerbench.constants.ModelConstants;
 import com.powerbench.constants.SensorConstants;
 import com.powerbench.device.Device;
 
@@ -17,22 +19,22 @@ public class BatteryModel {
     /**
      * The predicted battery life.
      */
-    private double mBatteryLife = Constants.INVALID_VALUE;
+    private Double mBatteryLife;
 
     /**
      * The last measured absolute power.
      */
-    private double mPower;
+    private Double mPower;
 
     /**
      * The base power that is not covered by any of the models.
      */
-    private double mBasePower;
+    private Double mBasePower;
 
     /**
      * The battery capacity;
      */
-    private double mBatteryCapacity;
+    private double mBatteryCapacity = DeviceConstants.BATTERY_CAPACITY_DEFAULT;
 
     /**
      * The current battery level.
@@ -52,7 +54,12 @@ public class BatteryModel {
     /**
      * The screen brightness.
      */
-    private int mScreenBrightness;
+    private Integer mScreenBrightness;
+
+    /**
+     * The device cpu.
+     */
+    private Double mCpu;
 
     /**
      * Flag indicating whether the device is charging.
@@ -73,14 +80,58 @@ public class BatteryModel {
     }
 
     public void updateModel() {
-        mBasePower = mPower;
+        double sensorBasePower = (mPower != null) ? mPower : Constants.INVALID_VALUE;
+        double modelBasePower = 0;
+        int numModels = 0;
+        if (mScreenModel != null) {
+            double screenBasePower = mScreenModel.getIntercept();
+            if (mScreenBrightness != null) {
+                sensorBasePower -= mScreenModel.getY(mScreenBrightness);
+            }
+            modelBasePower += screenBasePower;
+            numModels++;
+        }
+        if (mCpuModel != null) {
+            double cpuBasePower = mScreenModel.getIntercept();
+            if (mCpu != null) {
+                sensorBasePower -= mCpuModel.getY(mCpu);
+            }
+            modelBasePower += cpuBasePower;
+            numModels++;
+        }
+        if (numModels > 0 && !mCharging) {
+            modelBasePower /= numModels;
+            if (mPower == null) {
+                mBasePower = modelBasePower;
+            } else {
+                if (mBasePower == null) {
+                    double stableThreshold = sensorBasePower * ModelConstants.STABLE_THRESHOLD;
+                    if (Math.abs(sensorBasePower - modelBasePower) > stableThreshold) {
+                        mBasePower = sensorBasePower;
+                    } else {
+                        mBasePower = modelBasePower;
+                    }
+                } else {
+                    double stableThreshold = mBasePower * ModelConstants.STABLE_THRESHOLD;
+                    if (Math.abs(sensorBasePower - mBasePower) > stableThreshold) {
+                        mBasePower = sensorBasePower;
+                    }
+                }
+            }
+        } else if (mBasePower == null) {
+            mBasePower = sensorBasePower;
+        } else {
+            double stableThreshold = mBasePower * ModelConstants.STABLE_THRESHOLD;
+            if (Math.abs(sensorBasePower - mBasePower) > stableThreshold) {
+                mBasePower = sensorBasePower;
+            }
+        }
+
         int batteryLevel = (!mCharging) ? mBatteryLevel : SensorConstants.BATTERY_LEVEL_FULL - mBatteryLevel;
         double power = mBasePower;
         if (mScreenModel != null) {
-            if (!mCharging) {
-                power = mScreenModel.getIntercept() + mScreenModel.getY(mScreenBrightness);
-            } else {
-                power = mBasePower;
+            if (!mCharging && mScreenBrightness != null) {
+                power += mScreenModel.getY(mScreenBrightness);
             }
         }
         mBatteryLife = (mBatteryCapacity * batteryLevel) / (SensorConstants.BATTERY_LEVEL_FULL * power);
@@ -99,11 +150,13 @@ public class BatteryModel {
 
     public void setScreenModel(Model screenModel) {
         mScreenModel = screenModel;
+        mBasePower = null;
         updateModel();
     }
 
     public void setCpuModel(Model cpuModel) {
         mCpuModel = cpuModel;
+        mBasePower = null;
         updateModel();
     }
 

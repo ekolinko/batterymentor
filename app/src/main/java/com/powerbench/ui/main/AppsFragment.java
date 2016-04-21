@@ -3,12 +3,10 @@ package com.powerbench.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.powerbench.R;
@@ -19,6 +17,7 @@ import com.powerbench.model.ModelManager;
 import com.powerbench.sensors.app.Process;
 import com.powerbench.ui.app.ProcessAdapter;
 import com.powerbench.ui.benchmark.CpuTestActivity;
+import com.powerbench.ui.common.CommonFragment;
 import com.powerbench.ui.theme.Theme;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ import java.util.Collections;
 /**
  * Fragment for showing the apps gadget.
  */
-public class AppsFragment extends TabFragment {
+public class AppsFragment extends CommonFragment {
 
     /**
      * The battery model.
@@ -81,6 +80,9 @@ public class AppsFragment extends TabFragment {
         mApplicationCollectionTask.lock();
         final ArrayList<Process> processes = mApplicationCollectionTask.getProcesses();
         mProcessAdapter = new ProcessAdapter(getContext(), mApplicationCollectionTask, processes);
+        if (mBatteryModel.getCpuModel() != null) {
+            mProcessAdapter.setModel(mBatteryModel.getCpuModel());
+        }
         mApplicationCollectionTask.unlock();
         mMeasurementListener = new ApplicationCollectionTask.MeasurementListener() {
             @Override

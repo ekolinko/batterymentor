@@ -1,4 +1,10 @@
 <resources>
+
+    <!-- Arguments -->
+    <string name="argument_tutorial_title_res_id">argument_tutorial_title_res_id</string>
+    <string name="argument_tutorial_image_res_id">argument_tutorial_image_res_id</string>
+    <string name="argument_tutorial_text_res_id">argument_tutorial_text_res_id</string>
+
     <!-- Common -->
     <string name="value_units_template" formatted="false">%s %s</string>
     <string name="value_units_condensed_template" formatted="false">%s%s</string>
@@ -9,4 +15,6 @@
     <string name="format_battery_life">#0.0</string>
     <string name="format_cpu">#0.0</string>
     <string name="format_duration">#0.0</string>
+
+
 </resources>

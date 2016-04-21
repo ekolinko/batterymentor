@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +13,18 @@ import android.widget.SeekBar;
 
 import com.powerbench.R;
 import com.powerbench.constants.BenchmarkConstants;
+import com.powerbench.constants.Constants;
 import com.powerbench.model.BatteryModel;
 import com.powerbench.model.ModelManager;
 import com.powerbench.ui.benchmark.ScreenTestActivity;
+import com.powerbench.ui.common.CommonFragment;
+import com.powerbench.ui.common.SunView;
 import com.powerbench.ui.theme.Theme;
 
 /**
  * Fragment for showing the screen gadget.
  */
-public class ScreenFragment extends TabFragment {
+public class ScreenFragment extends CommonFragment {
 
     /**
      * The welcome container.
@@ -40,7 +42,7 @@ public class ScreenFragment extends TabFragment {
     private BatteryModel mBatteryModel;
 
     /**
-     * The icon for running the screen test.
+     * The icon that shows on the run screen test tab.
      */
     private ImageView mScreenTestIcon;
 
@@ -53,6 +55,11 @@ public class ScreenFragment extends TabFragment {
      * The seek bar for controlling the brightness.
      */
     private SeekBar mScreenBrightnessSeekBar;
+
+    /**
+     * The sun view.
+     */
+    private SunView mSunView;
 
     /**
      * The current theme.
@@ -74,6 +81,7 @@ public class ScreenFragment extends TabFragment {
                 startActivity(new Intent(getContext(), ScreenTestActivity.class));
             }
         });
+        mSunView = (SunView) view.findViewById(R.id.gadget_screen_sun_view);
         mScreenBrightnessSeekBar = (SeekBar) view.findViewById(R.id.gadget_screen_brightness_slider);
         int brightness = BenchmarkConstants.MAX_BRIGHTNESS;
         try {
@@ -81,12 +89,15 @@ public class ScreenFragment extends TabFragment {
         } catch (Settings.SettingNotFoundException e) {
         }
         mScreenBrightnessSeekBar.setProgress(brightness);
+        mSunView.setBrightness(brightness * Constants.PERCENT / BenchmarkConstants.MAX_BRIGHTNESS);
         mBatteryModel.setScreenBrightness(brightness);
+
         mScreenBrightnessSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int brightness, boolean fromUser) {
                 Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, brightness);
                 mBatteryModel.setScreenBrightness(brightness);
+                mSunView.setBrightness(brightness * Constants.PERCENT / BenchmarkConstants.MAX_BRIGHTNESS);
             }
 
             @Override
@@ -118,6 +129,9 @@ public class ScreenFragment extends TabFragment {
         }
         if (mScreenTestButton != null) {
             mScreenTestButton.setBackgroundResource(mTheme.getButtonResource());
+        }
+        if (mSunView != null) {
+            mSunView.applyTheme(theme);
         }
     }
 

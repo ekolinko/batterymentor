@@ -4,12 +4,13 @@ import android.util.Log;
 
 import com.powerbench.datamanager.Point;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Class that represents a linear model.
  */
-public class LinearModel extends Model {
+public class LinearModel extends Model implements Serializable {
 
     /**
      * The slope of the line in the model.

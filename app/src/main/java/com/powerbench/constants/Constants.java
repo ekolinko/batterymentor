@@ -46,6 +46,11 @@ public class Constants {
     public static final double PERCENT = 100;
 
     /**
+     * The maximum angle of a circle.
+     */
+    public static final double CIRCLE_MAX_ANGLE = 360;
+
+    /**
      * The number of milliseconds in a nanosecond.
      */
     public static final long NANOSECONDS_IN_MILLISECOND = 1000000;

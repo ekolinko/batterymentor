@@ -11,6 +11,12 @@ import java.util.ArrayList;
 public abstract class Model {
 
     /**
+     * Create a new model.
+     */
+    public Model() {
+    }
+
+    /**
      * Create a new model using the specified data.
      */
     public Model(ArrayList<Point> data) {

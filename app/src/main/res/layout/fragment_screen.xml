@@ -24,8 +24,9 @@
             android:gravity="center"
             android:visibility="gone"
             android:orientation="vertical">
-            <TextView style="@style/gadget_screen_title"
-                android:text="@string/brightness_gadget"/>
+            <com.powerbench.ui.common.SunView android:id="@+id/gadget_screen_sun_view"
+                android:layout_width="150dp"
+                android:layout_height="150dp" />
             <SeekBar android:id="@+id/gadget_screen_brightness_slider"
                 style="@style/gadget_slider"
                 android:max="255" />

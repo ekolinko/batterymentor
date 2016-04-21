@@ -4,8 +4,12 @@
     android:layout_width="240dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:background="@color/navigation_menu_background">
+    <Button android:id="@+id/button_tutorial"
+        style="@style/navigation_button"
+        android:text="@string/navigation_tutorial"
+        android:drawableLeft="@drawable/icon_tutorial"/>
     <Button android:id="@+id/button_exit"
         style="@style/navigation_button"
         android:text="@string/navigation_exit"

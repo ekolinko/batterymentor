@@ -31,8 +31,16 @@ public class ChargerTheme extends Theme {
     }
 
     @Override
-    public int initializeScreenTestIconResource() {
+    public int initializeScreenTestResource() {
         return R.drawable.remove_icon_screen_test_red;
+    }
+
+    public int initializeScreenSunResource() {
+        return R.drawable.screen_sun_red;
+    }
+
+    public int initializeScreenRaysResource() {
+        return R.drawable.screen_rays_red;
     }
 
     @Override

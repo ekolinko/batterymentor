@@ -32,8 +32,16 @@ public class BatteryTheme extends Theme {
     }
 
     @Override
-    public int initializeScreenTestIconResource() {
+    public int initializeScreenTestResource() {
         return R.drawable.remove_icon_screen_test_blue;
+    }
+
+    public int initializeScreenSunResource() {
+        return R.drawable.screen_sun_blue;
+    }
+
+    public int initializeScreenRaysResource() {
+        return R.drawable.screen_rays_blue;
     }
 
     @Override

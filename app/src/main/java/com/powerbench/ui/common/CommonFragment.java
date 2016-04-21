@@ -1,13 +1,13 @@
-package com.powerbench.ui.main;
+package com.powerbench.ui.common;
 
 import android.support.v4.app.Fragment;
 
 import com.powerbench.ui.theme.Theme;
 
 /**
- * Fragment that can be used within a tab context.
+ * Common fragment that is used by different parts of the app.
  */
-public abstract class TabFragment extends Fragment {
+public abstract class CommonFragment extends Fragment {
 
     /**
      * Apply the specified theme to this fragment.

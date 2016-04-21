@@ -14,11 +14,13 @@ import android.support.v4.content.ContextCompat;
 import com.powerbench.R;
 import com.powerbench.constants.DeviceConstants;
 import com.powerbench.ui.common.CommonActivity;
+import com.powerbench.ui.tutorial.TutorialActivity;
 
 /**
  * Class that handles device interactions, such as permission requests.
  */
 public class Permissions {
+
 
     private static class SingletonHolder {
         private static final Permissions INSTANCE = new Permissions();
@@ -32,9 +34,23 @@ public class Permissions {
     }
 
     /**
+     * Check if the permission to write settings is granted.
+     *
+     * @param activity the common activity requesting the permission.
+     * @return true if the permission to write settings is granted, false otherwise.
+     */
+    public boolean isSettingsPermissionGranted(CommonActivity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Settings.System.canWrite(activity);
+        }
+
+        return true;
+    }
+
+    /**
      * Request the permission to write to settings.
      *
-     * @param activity the common activity request the permission.
+     * @param activity the common activity requesting the permission.
      */
     public boolean requestSettingsPermission(CommonActivity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

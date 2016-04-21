@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.powerbench.R;
 import com.powerbench.constants.Constants;
+import com.powerbench.ui.common.CommonFragment;
 import com.powerbench.ui.theme.Theme;
 
 import java.text.DecimalFormat;
@@ -16,7 +17,7 @@ import java.text.DecimalFormat;
 /**
  * Fragment for showing the realtime battery power measurements.
  */
-public class PowerFragment extends TabFragment {
+public class PowerFragment extends CommonFragment {
 
     /**
      * The power formatter.

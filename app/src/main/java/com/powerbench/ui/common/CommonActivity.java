@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import com.powerbench.PowerBenchService;
 import com.powerbench.R;
 import com.powerbench.constants.DeviceConstants;
+import com.powerbench.constants.UIConstants;
 import com.powerbench.sensors.ChargerManager;
 
 import java.text.DecimalFormat;
@@ -105,6 +106,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == DeviceConstants.PERMISSIONS_WRITE_SETTINGS) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (Settings.System.canWrite(this)) {
@@ -112,6 +114,19 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
                 } else {
                     onPermissionDenied(DeviceConstants.PERMISSIONS_WRITE_SETTINGS);
                 }
+            }
+        }
+
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case UIConstants.TUTORIAL_REQUEST_CODE:
+                    if (data.getBooleanExtra(UIConstants.CLOSE_APP, false)) {
+                        finish();
+                    }
+                    break;
+                case UIConstants.TUTORIAL_REFRESH_REQUEST_CODE:
+                    com.powerbench.settings.Settings.getInstance().setShowTutorial(CommonActivity.this, false);
+                    break;
             }
         }
     }
@@ -175,7 +190,8 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      * Method that indicates to all activities that inherit from this class that the service has
      * been bound.
      */
-    protected abstract void onServiceBound();
+    protected void onServiceBound() {
+    }
 
     /**
      * Method that indicates to all activities that inherit from this class that a charger has been
