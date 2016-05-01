@@ -92,7 +92,7 @@ public class BatteryModel {
             numModels++;
         }
         if (mCpuModel != null) {
-            double cpuBasePower = mScreenModel.getIntercept();
+            double cpuBasePower = mCpuModel.getIntercept();
             if (mCpu != null) {
                 sensorBasePower -= mCpuModel.getY(mCpu);
             }

@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.powerbench.R;
 import com.powerbench.constants.Constants;
+import com.powerbench.constants.SettingsConstants;
+import com.powerbench.sensors.Sensor;
+import com.powerbench.settings.Settings;
 import com.powerbench.ui.common.CommonFragment;
 import com.powerbench.ui.theme.Theme;
 
@@ -65,7 +68,13 @@ public class PowerFragment extends CommonFragment {
             if (mPowerFormatter == null)
                 mPowerFormatter = new DecimalFormat(getString(R.string.format_power));
 
-            String value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.milliwatts));
+            String value;
+            if (Settings.getInstance().getPowerTabUnits(getContext()) == SettingsConstants.UNITS_MILLIAMP) {
+                value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue / Sensor.VOLTAGE.measure()), getString(R.string.milliamps));
+            } else {
+                value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.milliwatts));
+            }
+
             mBatteryPowerValue.setText(value);
         }
     }
@@ -81,5 +90,13 @@ public class PowerFragment extends CommonFragment {
         if (mBatteryPowerValue != null) {
             mBatteryPowerValue.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
         }
+    }
+
+    /**
+     * Refresh this fragment.
+     */
+    @Override
+    public void refresh() {
+        updatePowerValue(mPowerValue);
     }
 }

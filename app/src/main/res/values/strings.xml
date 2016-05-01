@@ -15,6 +15,7 @@
 
     <!-- Common -->
     <string name="milliwatts">mW</string>
+    <string name="milliamps">mA</string>
     <string name="cpu_load">%</string>
     <string name="seconds">seconds</string>
     <string name="hours">hours</string>
@@ -29,11 +30,16 @@
 
     <!-- Navigation -->
     <string name="navigation_tutorial">TUTORIAL</string>
+    <string name="navigation_launch_on_device_bootup">START ON BOOTUP</string>
+    <string name="navigation_status_bar_units">STATUS BAR UNITS</string>
+    <string name="navigation_power_tab_units">POWER TAB UNITS</string>
     <string name="navigation_exit">EXIT</string>
 
     <!-- Notification -->
     <string name="notification_measuring">Measuring...</string>
     <string name="notification_power_template" formatted="false">Power: %d mW</string>
+    <string name="notification_current_template" formatted="false">Current: %d mA</string>
+    <string name="notification_battery_life_template" formatted="false">Battery Life: %s h</string>
 
     <!-- PowerBenchActivity -->
     <string name="battery_test">Battery Test</string>

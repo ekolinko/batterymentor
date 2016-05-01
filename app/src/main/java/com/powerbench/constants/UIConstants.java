@@ -31,6 +31,11 @@ public class UIConstants {
     public static final int NOTIFICATION_ROUNDING_FACTOR_TENS_OF_THOUSANDS = 100;
 
     /**
+     * The notification scaling factor for battery life.
+     */
+    public static int NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR = 10;
+
+    /**
      * The notification id key.
      */
     public static final String NOTIFICATION_ID_KEY = "com.powerbench.notificationId";

@@ -14,16 +14,20 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SwitchCompat;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.powerbench.R;
 import com.powerbench.collectionmanager.ApplicationCollectionTask;
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.Constants;
+import com.powerbench.constants.SettingsConstants;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.datamanager.Statistics;
 import com.powerbench.device.Device;
@@ -33,9 +37,9 @@ import com.powerbench.device.Permissions;
 import com.powerbench.model.BatteryModel;
 import com.powerbench.model.ModelManager;
 import com.powerbench.settings.Settings;
-import com.powerbench.ui.benchmark.ScreenTestActivity;
 import com.powerbench.ui.common.CommonActivity;
 import com.powerbench.ui.common.CommonFragment;
+import com.powerbench.ui.common.listeners.ToggleSettingListener;
 import com.powerbench.ui.theme.Theme;
 import com.powerbench.ui.theme.ThemeManager;
 import com.powerbench.ui.tutorial.TutorialActivity;
@@ -260,6 +264,50 @@ public class PowerBenchActivity extends CommonActivity {
             });
         }
 
+        SwitchCompat launchOnDeviceBootupSwitch = (SwitchCompat) findViewById(R.id.switch_launch_on_device_bootup);
+        if (launchOnDeviceBootupSwitch != null) {
+            launchOnDeviceBootupSwitch.setChecked(Settings.getInstance().getLaunchOnDeviceBootup(PowerBenchActivity.this));
+            launchOnDeviceBootupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Settings.getInstance().setLaunchOnDeviceBootup(PowerBenchActivity.this, isChecked);
+                }
+            });
+        }
+
+        final RelativeLayout statusBarUnitsButton = (RelativeLayout) findViewById(R.id.button_status_bar_units);
+        if (statusBarUnitsButton != null) {
+            final TextView statusBarUnitsValue = (TextView) findViewById(R.id.button_status_bar_value);
+            if (statusBarUnitsValue != null) {
+                statusBarUnitsValue.setText(Settings.getInstance().getStatusBarUnits(PowerBenchActivity.this));
+                ToggleSettingListener toggleSettingListener = new ToggleSettingListener(statusBarUnitsValue, SettingsConstants.STATUS_BAR_UNITS_OPTIONS, new ToggleSettingListener.SettingSelectedListener() {
+                    @Override
+                    public void onSettingSelected(String setting) {
+                        Settings.getInstance().setStatusBarUnits(PowerBenchActivity.this, setting);
+                        refreshFragments();
+                        getService().updateNotification();
+                    }
+                });
+                statusBarUnitsButton.setOnClickListener(toggleSettingListener);
+            }
+        }
+
+        final RelativeLayout powerTabUnitsButton = (RelativeLayout) findViewById(R.id.button_power_tab_units);
+        if (powerTabUnitsButton != null) {
+            final TextView powerTabUnitsValue = (TextView) findViewById(R.id.button_power_tab_value);
+            if (powerTabUnitsValue != null) {
+                powerTabUnitsValue.setText(Settings.getInstance().getPowerTabUnits(PowerBenchActivity.this));
+                ToggleSettingListener toggleSettingListener = new ToggleSettingListener(powerTabUnitsValue, SettingsConstants.POWER_TAB_UNITS_OPTIONS, new ToggleSettingListener.SettingSelectedListener() {
+                    @Override
+                    public void onSettingSelected(String setting) {
+                        Settings.getInstance().setPowerTabUnits(PowerBenchActivity.this, setting);
+                        refreshFragments();
+                    }
+                });
+                powerTabUnitsButton.setOnClickListener(toggleSettingListener);
+            }
+        }
+
         Button exitButton = (Button) findViewById(R.id.button_exit);
         if (exitButton != null) {
             exitButton.setOnClickListener(new View.OnClickListener() {
@@ -354,6 +402,15 @@ public class PowerBenchActivity extends CommonActivity {
         }
     }
 
+    /**
+     * Refresh all the tab fragments that are part of this view.
+     */
+    private void refreshFragments() {
+        for (CommonFragment tabFragment : mTabFragments) {
+            tabFragment.refresh();
+        }
+    }
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -382,9 +439,7 @@ public class PowerBenchActivity extends CommonActivity {
     protected void onResume() {
         super.onResume();
         mPowerCollectionTask.registerMeasurementListener(mMeasurementListener);
-        for (CommonFragment tabFragment : mTabFragments) {
-            tabFragment.refresh();
-        }
+        refreshFragments();
     }
 
     @Override

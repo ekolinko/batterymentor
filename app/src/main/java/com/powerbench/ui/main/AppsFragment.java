@@ -128,7 +128,7 @@ public class AppsFragment extends CommonFragment {
             mBatteryModel = ModelManager.getInstance().getBatteryModel(getActivity());
         }
 
-        if (mBatteryModel.getCpuModel() != null) {
+        if (mProcessAdapter != null && mBatteryModel.getCpuModel() != null) {
             mProcessAdapter.setModel(mBatteryModel.getCpuModel());
             mProcessAdapter.notifyDataSetChanged();
         }
