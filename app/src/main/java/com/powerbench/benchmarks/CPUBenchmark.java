@@ -139,9 +139,9 @@ public class CpuBenchmark extends Benchmark {
                     Thread.sleep(BenchmarkConstants.CPU_CHANGE_SETTLE_DURATION);
                 } catch (InterruptedException e) {
                 }
-                CollectionTask powerCollectionTask = new CollectionTask(Sensor.POWER);
-                CollectionTask loadCollectionTask = new CollectionTask(Sensor.LOAD_SENSOR);
-                CollectionTask frequencyCollectionTask = new CollectionTask(Sensor.FREQUENCY_SENSOR);
+                CollectionTask powerCollectionTask = new CollectionTask(getContext(), Sensor.POWER);
+                CollectionTask loadCollectionTask = new CollectionTask(getContext(), Sensor.LOAD_SENSOR);
+                CollectionTask frequencyCollectionTask = new CollectionTask(getContext(), Sensor.FREQUENCY_SENSOR);
                 powerCollectionTask.start();
                 loadCollectionTask.start();
                 frequencyCollectionTask.start();

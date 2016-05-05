@@ -4,9 +4,10 @@ import android.content.Context;
 
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.collectionmanager.CollectionTask;
+import com.powerbench.collectionmanager.LifetimeCollectionTask;
 import com.powerbench.constants.ModelConstants;
 import com.powerbench.datamanager.Point;
-import com.powerbench.datamanager.Statistics;
+import com.powerbench.datamanager.RealtimeStatistics;
 import com.powerbench.sensors.ChargerManager;
 
 import java.io.FileInputStream;
@@ -68,12 +69,12 @@ public class ModelManager implements ChargerManager.ChargerListener {
         if (mBatteryModel == null) {
             mBatteryModel = new BatteryModel(context);
             ChargerManager.getInstance().registerChargerListener(context, this);
-            CollectionTask powerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask();
-            final Statistics statistics = powerCollectionTask.getStatistics();
+            LifetimeCollectionTask powerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(context);
+            final double average = powerCollectionTask.getStatistics().getAverage();
             powerCollectionTask.registerMeasurementListener(new CollectionTask.MeasurementListener() {
                 @Override
                 public void onMeasurementReceived(Point point) {
-                    mBatteryModel.setPower(statistics.getAverage());
+                    mBatteryModel.setPower(average);
                 }
             });
         }

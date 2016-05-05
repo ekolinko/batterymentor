@@ -1,9 +1,5 @@
 package com.powerbench.ui.theme;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.support.v4.content.ContextCompat;
-
 import com.powerbench.R;
 
 /**
@@ -47,5 +43,10 @@ public class BatteryTheme extends Theme {
     @Override
     public int initializeButtonResource() {
         return R.drawable.button_material_blue;
+    }
+
+    @Override
+    public int initializeSemitransparentColorResource() {
+        return R.color.powerbench_blue_semitransparent;
     }
 }

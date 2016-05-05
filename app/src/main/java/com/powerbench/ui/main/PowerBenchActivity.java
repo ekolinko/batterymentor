@@ -29,7 +29,7 @@ import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.Constants;
 import com.powerbench.constants.SettingsConstants;
 import com.powerbench.constants.UIConstants;
-import com.powerbench.datamanager.Statistics;
+import com.powerbench.datamanager.RealtimeStatistics;
 import com.powerbench.device.Device;
 import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.datamanager.Point;
@@ -61,11 +61,6 @@ public class PowerBenchActivity extends CommonActivity {
      * The primary battery collection task.
      */
     private CollectionTask mPowerCollectionTask;
-
-    /**
-     * The statistics associated with the battery collection task.
-     */
-    private Statistics mBatteryStatistics;
 
     /**
      * The drawer layout.
@@ -203,21 +198,17 @@ public class PowerBenchActivity extends CommonActivity {
         mMeasurementListener = new CollectionTask.MeasurementListener() {
             @Override
             public void onMeasurementReceived(final Point point) {
-                if (mBatteryStatistics != null) {
-                    mPower = Math.abs(mBatteryStatistics.getAverage());
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mPowerFragment.updatePowerValue(mPower);
-                        }
-                    });
-                }
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPowerFragment.updatePowerViews();
+                    }
+                });
             }
         };
 
-        mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask();
+        mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(this);
         mApplicationCollectionTask = CollectionManager.getInstance().getApplicationCollectionTask(this);
-        mBatteryStatistics = mPowerCollectionTask.getStatistics();
         mPowerCollectionTask.start();
         mApplicationCollectionTask.start();
         Device.getInstance().getBatteryCapacity(this);
@@ -228,7 +219,7 @@ public class PowerBenchActivity extends CommonActivity {
      */
     private void setupNavigationDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        final FrameLayout contentFrame = (FrameLayout)findViewById(R.id.powerbench_container);
+        final FrameLayout contentFrame = (FrameLayout)findViewById(R.id.powerbench_power_container);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
@@ -456,9 +447,12 @@ public class PowerBenchActivity extends CommonActivity {
 
     @Override
     public void onChargerConnected() {
+        super.onChargerConnected();
         mThemeManager.setCurrentTheme(this, Theme.CHARGER_THEME);
         applyTheme();
-        mBatteryStatistics.clearRecentData();
+        for (CommonFragment tabFragment : mTabFragments) {
+            tabFragment.onChargerConnected();
+        }
         if (mBatteryLifeLabel != null)
             mBatteryLifeLabel.setText(getString(R.string.battery_life_until_full));
 
@@ -466,9 +460,12 @@ public class PowerBenchActivity extends CommonActivity {
 
     @Override
     public void onChargerDisconnected() {
+        super.onChargerDisconnected();
         mThemeManager.setCurrentTheme(this, Theme.BATTERY_THEME);
         applyTheme();
-        mBatteryStatistics.clearRecentData();
+        for (CommonFragment tabFragment : mTabFragments) {
+            tabFragment.onChargerDisconnected();
+        }
         if (mBatteryLifeLabel != null)
             mBatteryLifeLabel.setText(getString(R.string.battery_life_remaining));
     }

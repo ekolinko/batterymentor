@@ -101,4 +101,19 @@ public class SensorConstants {
      * The constant for a full battery level.
      */
     public static final int BATTERY_LEVEL_FULL = 100;
+
+    /**
+     * The filename where persistent battery lifetime statistics are saved.
+     */
+    public static final String LIFETIME_STATISTICS_BATTERY_FILENAME = "powerbench_battery_lifetime_statistics";
+
+    /**
+     * The filename where persistent charger lifetime statistics are saved.
+     */
+    public static final String LIFETIME_STATISTICS_CHARGER_FILENAME = "powerbench_charger_lifetime_statistics";
+
+    /**
+     * The interval at which data gets saved in a persistent collection task.
+     */
+    public static final long PERSISTENT_SAVE_INTERVAL = 30 * Constants.SECOND;
 }

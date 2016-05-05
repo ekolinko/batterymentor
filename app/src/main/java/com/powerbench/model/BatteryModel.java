@@ -2,6 +2,7 @@ package com.powerbench.model;
 
 import android.content.Context;
 
+import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.Constants;
 import com.powerbench.constants.DeviceConstants;
 import com.powerbench.constants.ModelConstants;
@@ -15,6 +16,11 @@ import java.util.Set;
  * Class that represents a battery model.
  */
 public class BatteryModel {
+
+    /**
+     * The context associated with the app.
+     */
+    private Context mContext;
 
     /**
      * The predicted battery life.
@@ -72,6 +78,7 @@ public class BatteryModel {
     private Set<OnModelChangedListener> mModelChangedListeners = new HashSet<OnModelChangedListener>();
 
     public BatteryModel(Context context) {
+        mContext = context;
         mBatteryCapacity = Device.getInstance().getBatteryCapacity(context);
     }
 
@@ -80,7 +87,7 @@ public class BatteryModel {
     }
 
     public void updateModel() {
-        double sensorBasePower = (mPower != null) ? mPower : Constants.INVALID_VALUE;
+        double sensorBasePower = CollectionManager.getInstance().getPowerCollectionTask(mContext).getAverage();
         double modelBasePower = 0;
         int numModels = 0;
         if (mScreenModel != null) {

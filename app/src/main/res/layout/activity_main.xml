@@ -4,7 +4,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <FrameLayout android:id="@+id/powerbench_container"
+    <FrameLayout android:id="@+id/powerbench_power_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <RelativeLayout android:layout_width="match_parent"

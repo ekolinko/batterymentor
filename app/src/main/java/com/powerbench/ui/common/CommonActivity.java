@@ -10,15 +10,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.powerbench.PowerBenchService;
 import com.powerbench.R;
 import com.powerbench.constants.DeviceConstants;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.sensors.ChargerManager;
+import com.powerbench.ui.theme.ThemeManager;
 
 import java.text.DecimalFormat;
 
@@ -199,6 +202,10 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     @Override
     public void onChargerConnected() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, ThemeManager.getInstance().getCurrentTheme(this).getActionBarColorResource()));
+        }
     }
 
     /**
@@ -207,6 +214,10 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     @Override
     public void onChargerDisconnected() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, ThemeManager.getInstance().getCurrentTheme(this).getActionBarColorResource()));
+        }
     }
 
     /**

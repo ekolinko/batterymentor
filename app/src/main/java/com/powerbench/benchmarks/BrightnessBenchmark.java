@@ -4,11 +4,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.provider.Settings;
 
+import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.constants.BenchmarkConstants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.model.LinearModel;
-import com.powerbench.model.Model;
-import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.sensors.Sensor;
 
 import java.util.ArrayList;
@@ -144,7 +143,7 @@ public class BrightnessBenchmark extends Benchmark {
                     Thread.sleep(BenchmarkConstants.BRIGHTNESS_CHANGE_SETTLE_DURATION);
                 } catch (InterruptedException e) {
                 }
-                CollectionTask collectionTask = new CollectionTask(Sensor.POWER);
+                CollectionTask collectionTask = new CollectionTask(getContext(), Sensor.POWER);
                 collectionTask.start();
                 try {
                     Thread.sleep(mDurationStep);

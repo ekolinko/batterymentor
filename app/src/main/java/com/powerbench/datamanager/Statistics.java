@@ -2,157 +2,111 @@ package com.powerbench.datamanager;
 
 import com.powerbench.constants.DataConstants;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.io.Serializable;
 
 /**
- * Class representing statistics for a specified set of data. Manages the mean, median, spike
- * elimination, and other statistical aspects of the data.
+ * Class that contains the lifetime statistics about the application such as the average.
  */
-public class Statistics {
+public class Statistics implements Serializable, Histogram {
 
     /**
-     * The global median of the data.
-     */
-    private double mMedian;
-
-    /**
-     * The global average of the data.
-     */
-    private double mAverage;
-
-    /**
-     * The total sum of the data.
+     * The total sum of the lifetime statistics. Used for calculating the average.
      */
     private double mTotal;
 
     /**
-     * The number of points.
+     * The number of points that have been collected. Used for calculating the average.
      */
     private double mNumPoints;
 
     /**
-     * The last value received by the statistics.
+     * The histogram points associated with the statistics.
      */
-    private double mValue;
+    private HistogramPoint[] mHistogramData;
+
+    public Statistics() {
+        mTotal = 0;
+        mNumPoints = 0;
+        mHistogramData = new HistogramPoint[DataConstants.HISTOGRAM_NUM_BUCKETS - 1];
+        for (int i = 0; i < mHistogramData.length - 1; i++) {
+            double minX = DataConstants.HISTOGRAM_MIN_POWER + i * DataConstants.HISTOGRAM_BUCKET_RANGE;
+            double maxX = minX + DataConstants.HISTOGRAM_BUCKET_RANGE;
+            mHistogramData[i] = new HistogramPoint(minX, maxX, 0);
+        }
+        double maxX = DataConstants.HISTOGRAM_MIN_POWER;
+        mHistogramData[mHistogramData.length - 1] = new HistogramPoint(maxX, maxX, 0);
+    }
 
     /**
-     * Flag indicating that the median has already been calculated and no data has come in to
-     * change it.
-     */
-    private boolean mMedianCalculated = false;
-
-    /**
-     * Flag indicating that the adjusted average has already been calculated and no data has come
-     * int to change it.
-     */
-    private boolean mAverageCalculated = false;
-
-    /**
-     * The linked list of the most recent data points used for statistic calculation.
-     */
-    private LinkedList<Point> mRecentData = new LinkedList<Point>();
-
-    /**
-     * Add a point to the statistics. Remove the earliest point if the size of the queue
-     * is about the threshold.
+     * Add a point to the lifetime statistics. Add the y-value to the total and increment the number of
+     * points.
      *
-     * @param point the point to add to the statistics.
+     * @param point the point to add to the usage data.
      */
     public void addPoint(Point point) {
         if (point == null)
             return;
 
-        synchronized (mRecentData) {
-            mRecentData.add(point);
-            if (mRecentData.size() > DataConstants.STATISTICS_RECENT_DATA_MAX_QUEUE_SIZE) {
-                mRecentData.removeFirst();
-            }
-            mMedianCalculated = false;
-            mAverageCalculated = false;
-            mValue = point.getY();
-            mTotal += Math.abs(mValue);
-            mNumPoints++;
-        }
+        double value = point.getY();
+        mTotal += Math.abs(value);
+        mNumPoints++;
+
+        addPointToHistogram(point);
     }
 
     /**
-     * Calculate the median of the recent data.
+     * Return the lifetime average.
      *
-     * @return the median of the recent data.
-     */
-    public double getMedian() {
-        synchronized (mRecentData) {
-            if (!mMedianCalculated) {
-                ArrayList<Point> sortedRecentData = new ArrayList<Point>(mRecentData);
-                Collections.sort(sortedRecentData);
-                int size = sortedRecentData.size();
-                if (size > 0) {
-                    int nonSpikeMidpoint = (int) (size * (1 - DataConstants.STATISTICS_PERCENT_OF_SPIKES_TO_DROP) / 2);
-                    mMedian = sortedRecentData.get(nonSpikeMidpoint).getY();
-                    StringBuilder sb = new StringBuilder();
-                    for (Point point : sortedRecentData) {
-                        sb.append(Math.abs(point.getY()) + " ");
-                    }
-                } else {
-                    mMedian = 0;
-                }
-                mMedianCalculated = true;
-            }
-        }
-        return mMedian;
-    }
-
-    /**
-     * Calculate the average of the recent data.
-     *
-     * @return the average of the recent data.
+     * @return the lifetime average.
      */
     public double getAverage() {
-        synchronized (mRecentData) {
-            if (!mAverageCalculated) {
-                mAverage = (mNumPoints > 0) ? mTotal / mNumPoints : 0;
-                int recentSize = DataConstants.STATISTICS_RECENT_DATA_SIZE;
-                if (mRecentData.size() > recentSize + 1) {
-                    double previousShortAverage = 0;
-                    for (int i = mRecentData.size() - 2; i > mRecentData.size() - recentSize - 2; i--) {
-                        previousShortAverage += Math.abs(mRecentData.get(i).getY());
-                    }
-                    previousShortAverage /= recentSize;
-                    double currentShortAverage = 0;
-                    for (int i = mRecentData.size() - 1; i > mRecentData.size() - recentSize - 1; i--) {
-                        currentShortAverage += Math.abs(mRecentData.get(i).getY());
-                    }
-                    currentShortAverage /= recentSize;
-                    if (currentShortAverage > previousShortAverage) {
-                        double variance = 0;
-                        for (int i = mRecentData.size() - 1; i > mRecentData.size() - recentSize - 1; i--) {
-                            double value = Math.abs(mRecentData.get(i).getY());
-                            variance += Math.pow(value - currentShortAverage, 2);
-                        }
-                        double standardDeviation = Math.sqrt(variance / recentSize);
-                        mAverage += standardDeviation / 2;
-                    }
-                    mAverageCalculated = true;
-                }
-            }
+        if (mNumPoints > 0) {
+            return mTotal / mNumPoints;
         }
-        return mAverage;
-    }
 
-    public double getValue() {
-        return mValue;
+        return 0;
     }
 
     /**
-     * Clear the recent data.
+     * Add a point to the histogram.
      */
-    public void clearRecentData() {
-        synchronized (mRecentData) {
-            mRecentData.clear();
-        }
-        mTotal = 0;
-        mNumPoints = 0;
+    public void addPointToHistogram(Point point) {
+        int index = (int)((Math.abs(point.getY()) - DataConstants.HISTOGRAM_MIN_POWER) / DataConstants.HISTOGRAM_BUCKET_RANGE);
+        if (index < 0)
+            index = 0;
+        else if (index >= mHistogramData.length)
+            index = mHistogramData.length - 1;
+
+        mHistogramData[index].y++;
+    }
+
+    /**
+     * Remove a point from the histogram.
+     */
+    public void removePointFromHistogram(Point point) {
+        int index = (int)((Math.abs(point.getY()) - DataConstants.HISTOGRAM_MIN_POWER) / DataConstants.HISTOGRAM_BUCKET_RANGE);
+        if (index < 0)
+            index = 0;
+        else if (index >= mHistogramData.length)
+            index = mHistogramData.length;
+
+        mHistogramData[index].y--;
+    }
+
+    @Override
+    public HistogramPoint[] getHistogramData() {
+        return mHistogramData;
+    }
+
+    public void setTotal(double total) {
+        mTotal = total;
+    }
+
+    public void setNumPoints(double numPoints) {
+        mNumPoints = numPoints;
+    }
+
+    public double getNumPoints() {
+        return mNumPoints;
     }
 }

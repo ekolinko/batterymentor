@@ -12,10 +12,12 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.powerbench.collectionmanager.CollectionManager;
+import com.powerbench.collectionmanager.LifetimeCollectionTask;
 import com.powerbench.constants.Constants;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.collectionmanager.CollectionTask;
+import com.powerbench.datamanager.Statistics;
 import com.powerbench.ui.notification.PowerBenchNotification;
 
 /**
@@ -43,7 +45,7 @@ public class PowerBenchService extends Service {
     /**
      * The power collection task.
      */
-    private CollectionTask mPowerCollectionTask;
+    private LifetimeCollectionTask mPowerCollectionTask;
 
     /**
      * The measurement listener.
@@ -69,7 +71,7 @@ public class PowerBenchService extends Service {
         mNotification = PowerBenchNotification.getInstance().createNotification(this);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(Constants.NOTIFICATION_ID, mNotification);
-        mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask();
+        mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(this);
         mPowerCollectionTask.start();
         mMeasurementListener = new CollectionTask.MeasurementListener() {
             @Override

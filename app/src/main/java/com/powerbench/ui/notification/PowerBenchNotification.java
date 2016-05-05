@@ -95,7 +95,7 @@ public class PowerBenchNotification {
             }
 
             resourceId = mResourceCache.getCurrentResourceForValue(roundedValue);
-            message = String.format(context.getString(R.string.notification_power_template), roundedValue);
+            message = String.format(context.getString(R.string.notification_current_template), roundedValue);
         } else if (Settings.getInstance().getStatusBarUnits(context).equals(SettingsConstants.UNITS_BATTERY_LIFE)) {
             double batteryLife = ModelManager.getInstance().getBatteryModel(context).getBatteryLife();
             int roundedValue = (int) (batteryLife * UIConstants.NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR);
@@ -117,7 +117,7 @@ public class PowerBenchNotification {
             }
 
             resourceId = mResourceCache.getPowerResourceForValue(roundedValue);
-            message = String.format(context.getString(R.string.notification_current_template), roundedValue);
+            message = String.format(context.getString(R.string.notification_power_template), roundedValue);
         }
 
         NotificationCompat.Builder mBuilder =

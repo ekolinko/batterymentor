@@ -8,7 +8,7 @@ import com.powerbench.R;
 import com.powerbench.constants.Constants;
 import com.powerbench.constants.SensorConstants;
 import com.powerbench.datamanager.Point;
-import com.powerbench.datamanager.Statistics;
+import com.powerbench.datamanager.RealtimeStatistics;
 import com.powerbench.debug.Debug;
 import com.powerbench.sensors.Sensor;
 
@@ -55,7 +55,7 @@ public class Process implements Comparable<Process> {
     /**
      * The statistics associated with this process.
      */
-    private final Statistics mStatistics = new Statistics();
+    private final RealtimeStatistics mStatistics = new RealtimeStatistics();
 
     public Process(Context context, int pid, String name) {
         this(context, pid, name, context.getResources().getDrawable(R.drawable.powerbench));

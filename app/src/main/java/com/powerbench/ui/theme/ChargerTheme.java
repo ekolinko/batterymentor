@@ -1,8 +1,5 @@
 package com.powerbench.ui.theme;
 
-import android.content.Context;
-import android.support.v4.content.ContextCompat;
-
 import com.powerbench.R;
 
 /**
@@ -46,5 +43,10 @@ public class ChargerTheme extends Theme {
     @Override
     public int initializeButtonResource() {
         return R.drawable.button_material_red;
+    }
+
+    @Override
+    public int initializeSemitransparentColorResource() {
+        return R.color.powerbench_red_semitransparent;
     }
 }

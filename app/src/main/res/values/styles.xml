@@ -178,16 +178,37 @@
         <item name="android:background">@drawable/button_material_blue</item>
     </style>
 
-    <style name="powerbench_power_value">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerInParent">true</item>
-        <item name="android:textSize">24sp</item>
-    </style>
-
     <style name="powerbench_realtime_container">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="powerbench_power_title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
+
+    <style name="powerbench_power_hint">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="powerbench_power_value">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="powerbench_power_histogram">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">150dp</item>
     </style>
 
     <!-- Process -->

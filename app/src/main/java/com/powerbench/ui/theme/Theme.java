@@ -53,6 +53,11 @@ public abstract class Theme {
      */
     private final int mButtonResource;
 
+    /**
+     * The semitransparent color resource.
+     */
+    private final int mSemitransparentColorResource;
+
     public Theme() {
         mColorResource = initializeColorResource();
         mActionBarColorResource = initializeActionBarColorResource();
@@ -62,6 +67,7 @@ public abstract class Theme {
         mScreenSunResource = initializeScreenSunResource();
         mScreenRaysResource = initializeScreenRaysResource();
         mButtonResource = initializeButtonResource();
+        mSemitransparentColorResource = initializeSemitransparentColorResource();
     }
 
     /**
@@ -136,6 +142,15 @@ public abstract class Theme {
         return R.drawable.button_material_blue;
     }
 
+    /**
+     * Initialize the semitransparent color resource.
+     *
+     * @return the semitransparent color resource.
+     */
+    public int initializeSemitransparentColorResource() {
+        return R.color.powerbench_blue_semitransparent;
+    }
+
     public int getColorResource() {
         return mColorResource;
     }
@@ -166,5 +181,9 @@ public abstract class Theme {
 
     public int getButtonResource() {
         return mButtonResource;
+    }
+
+    public int getSemitransparentColorResource() {
+        return mSemitransparentColorResource;
     }
 }

@@ -3,39 +3,39 @@ package com.powerbench.datamanager;
 import java.io.Serializable;
 
 /**
- * Class representing a point with a timestamp and a value.
+ * Class representing a point with x and y values.
  */
 public class Point implements Serializable, Comparable<Point> {
 
     /**
-     * The timestamp of the point.
+     * The x-value of the point.
      */
-    private double mX;
+    public double x;
 
     /**
      * The value of the point.
      */
-    private double mY;
+    public double y;
 
-    public Point(double timestamp, double value) {
-        mX = timestamp;
-        mY = value;
+    public Point(double x, double y) {
+        this.x = x;
+        this.y = y;
     }
 
     public void setX(double x) {
-        mX = x;
+        this.x = x;
     }
 
     public void setY(double y) {
-        mY = y;
+        this.y = y;
     }
 
     public double getX() {
-        return mX;
+        return x;
     }
 
     public double getY() {
-        return mY;
+        return y;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class Point implements Serializable, Comparable<Point> {
         if (another == null)
             return -1;
 
-        double y = Math.abs(mY);
+        double y = Math.abs(this.y);
         double otherY = Math.abs(another.getY());
         if (y < otherY)
             return -1;

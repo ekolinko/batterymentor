@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/powerbench_power_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <TextView android:id="@+id/powerbench_power_title"
+        style="@style/powerbench_power_title"
+        android:textColor="@color/powerbench_blue"
+        android:layout_alignParentTop="true" />
+    <TextView android:id="@+id/powerbench_power_hint"
+        style="@style/powerbench_power_hint"
+        android:textColor="@color/gray"
+        android:layout_below="@id/powerbench_power_title" />
     <TextView android:id="@+id/powerbench_power_value"
         style="@style/powerbench_power_value"
-        android:layout_centerInParent="true"
-        android:textColor="@color/powerbench_blue"/>
+        android:layout_below="@id/powerbench_power_hint"
+        android:layout_above="@+id/powerbench_power_histogram"
+        android:textColor="@color/powerbench_blue" />
+    <com.powerbench.ui.common.HistogramView android:id="@+id/powerbench_power_histogram"
+        style="@style/powerbench_power_histogram"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

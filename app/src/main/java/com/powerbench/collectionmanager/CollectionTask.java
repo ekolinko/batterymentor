@@ -1,10 +1,13 @@
 package com.powerbench.collectionmanager;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.powerbench.constants.CollectionConstants;
 import com.powerbench.constants.SensorConstants;
 import com.powerbench.datamanager.Point;
-import com.powerbench.datamanager.Statistics;
+import com.powerbench.datamanager.RealtimeStatistics;
+import com.powerbench.sensors.ChargerManager;
 import com.powerbench.sensors.Sensor;
 
 import java.util.HashSet;
@@ -14,6 +17,11 @@ import java.util.Set;
  * Class responsible for performing data collection for a specified sensor.
  */
 public class CollectionTask {
+
+    /**
+     * The context of the application.
+     */
+    private final Context mContext;
 
     /**
      * The sensor associated with this collection task.
@@ -33,7 +41,17 @@ public class CollectionTask {
     /**
      * The statistics associated with this task.
      */
-    private Statistics mStatistics;
+    private RealtimeStatistics mStatistics;
+
+    /**
+     * The battery statistics associated with this task.
+     */
+    private RealtimeStatistics mBatteryStatistics;
+
+    /**
+     * The charger statistics associated with this task.
+     */
+    private RealtimeStatistics mChargerStatistics;
 
     /**
      * The current point associated with this task.
@@ -46,12 +64,17 @@ public class CollectionTask {
     private Set<MeasurementListener> mMeasurementListeners = new HashSet<MeasurementListener>();
 
     /**
+     * The charger listener responsible for listening to
+     */
+    private ChargerManager.ChargerListener mChargerListener;
+
+    /**
      * Create a new collection task with the specified sensor and the default collection interval.
      *
      * @param sensor the sensor that is measured during data collection.
      */
-    public CollectionTask(Sensor sensor) {
-        this(sensor, SensorConstants.DEFAULT_COLLECTION_INTERVAL);
+    public CollectionTask(Context context, Sensor sensor) {
+        this(context, sensor, SensorConstants.DEFAULT_COLLECTION_INTERVAL);
     }
 
     /**
@@ -60,8 +83,8 @@ public class CollectionTask {
      * @param sensor             the sensor that is measured during data collection.
      * @param collectionInterval the data collection interval.
      */
-    public CollectionTask(Sensor sensor, long collectionInterval) {
-        this(sensor, collectionInterval, null);
+    public CollectionTask(Context context, Sensor sensor, long collectionInterval) {
+        this(context, sensor, collectionInterval, null);
     }
 
     /**
@@ -71,8 +94,8 @@ public class CollectionTask {
      * @param sensor              the sensor that is measured during data collection.
      * @param measurementListener a listener to register with this task.
      */
-    public CollectionTask(Sensor sensor, MeasurementListener measurementListener) {
-        this(sensor, SensorConstants.DEFAULT_COLLECTION_INTERVAL, measurementListener);
+    public CollectionTask(Context context, Sensor sensor, MeasurementListener measurementListener) {
+        this(context, sensor, SensorConstants.DEFAULT_COLLECTION_INTERVAL, measurementListener);
     }
 
     /**
@@ -83,11 +106,30 @@ public class CollectionTask {
      * @param collectionInterval  the data collection interval.
      * @param measurementListener a listener to register with this task.
      */
-    public CollectionTask(Sensor sensor, long collectionInterval, MeasurementListener measurementListener) {
+    public CollectionTask(Context context, Sensor sensor, long collectionInterval, MeasurementListener measurementListener) {
+        mContext = context;
         mSensor = sensor;
         mCollectionInterval = collectionInterval;
         registerMeasurementListener(measurementListener);
-        mStatistics = new Statistics();
+        mBatteryStatistics = new RealtimeStatistics();
+        mChargerStatistics = new RealtimeStatistics();
+        mStatistics = mBatteryStatistics;
+        mChargerListener = new ChargerManager.ChargerListener() {
+            @Override
+            public void onChargerConnected() {
+                CollectionTask.this.onChargerConnected();
+            }
+
+            @Override
+            public void onChargerDisconnected() {
+                CollectionTask.this.onChargerDisconnected();
+            }
+
+            @Override
+            public void onBatteryLevelChanged(int level) {
+
+            }
+        };
     }
 
     /**
@@ -97,6 +139,7 @@ public class CollectionTask {
         if (mSensorMeasurementTask == null) {
             mSensorMeasurementTask = new SensorMeasurementTask();
             new Thread(mSensorMeasurementTask).start();
+            ChargerManager.getInstance().registerChargerListener(getContext(), mChargerListener);
         }
     }
 
@@ -107,10 +150,31 @@ public class CollectionTask {
         if (mSensorMeasurementTask != null) {
             mSensorMeasurementTask.stop();
             mSensorMeasurementTask = null;
+            ChargerManager.getInstance().unregisterChargerListener(getContext(), mChargerListener);
         }
     }
 
-    public Statistics getStatistics() {
+    /**
+     * Method that is called when a charger is connected. This is only called when the collection
+     * task is running.
+     */
+    protected void onChargerConnected() {
+        mStatistics = mChargerStatistics;
+    }
+
+    /**
+     * Method that is called when a charger is disconnected. This is only called when the collection
+     * task is running.
+     */
+    protected void onChargerDisconnected() {
+        mStatistics = mBatteryStatistics;
+    }
+
+    public Context getContext() {
+        return mContext;
+    }
+
+    public RealtimeStatistics getStatistics() {
         return mStatistics;
     }
 
@@ -170,10 +234,19 @@ public class CollectionTask {
     /**
      * Measure the sensor immediately and notify all the associated listeners of the measurement.
      */
-    public void measureSensor() {
+    public Point measureSensor() {
         mPoint = mSensor.measurePoint();
         mStatistics.addPoint(mPoint);
         notifyAllListenersOfMeasurement(mPoint);
+        return mPoint;
+    }
+
+    protected RealtimeStatistics getBatteryStatistics() {
+        return mBatteryStatistics;
+    }
+
+    protected RealtimeStatistics getChargerStatistics() {
+        return mChargerStatistics;
     }
 
     /**

@@ -29,8 +29,10 @@
     <!-- PowerBench -->
     <color name="powerbench_blue_dark">#303F9F</color>
     <color name="powerbench_blue">#3F51B5</color>
+    <color name="powerbench_blue_semitransparent">#883F51B5</color>
     <color name="powerbench_red_dark">#D32F2F</color>
     <color name="powerbench_red">#F44336</color>
+    <color name="powerbench_red_semitransparent">#88F44336</color>
 
     <!-- Text -->
     <color name="powerbench_text">@color/black</color>

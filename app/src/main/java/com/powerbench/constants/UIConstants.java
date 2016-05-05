@@ -69,4 +69,14 @@ public class UIConstants {
      * The tutorial refresh request code.
      */
     public static final int TUTORIAL_REFRESH_REQUEST_CODE = 2;
+
+    /**
+     * The number of histogram points used for drawing purposes.
+     */
+    public static final int HISTOGRAM_NUM_POINTS_FOR_DRAW = 80;
+
+    /**
+     * The buffer for the y-axis maximum that ensures that the data is not cut off.
+     */
+    public static final float HISTOGRAM_Y_AXIS_MAX_BUFFER = 1.25f;
 }

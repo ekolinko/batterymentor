@@ -2,6 +2,7 @@ package com.powerbench.collectionmanager;
 
 import android.content.Context;
 
+import com.powerbench.constants.SensorConstants;
 import com.powerbench.sensors.Sensor;
 
 import java.util.HashSet;
@@ -15,7 +16,7 @@ public class CollectionManager {
     /**
      * The primary battery collection task.
      */
-    private CollectionTask mPowerCollectionTask;
+    private LifetimeCollectionTask mPowerCollectionTask;
 
     /**
      * The primary application collection task.
@@ -38,9 +39,9 @@ public class CollectionManager {
     private CollectionManager() {
     }
 
-    public CollectionTask getPowerCollectionTask() {
+    public LifetimeCollectionTask getPowerCollectionTask(Context context) {
         if (mPowerCollectionTask == null) {
-            mPowerCollectionTask = new CollectionTask(Sensor.POWER);
+            mPowerCollectionTask = new LifetimeCollectionTask(context, Sensor.POWER, SensorConstants.LIFETIME_STATISTICS_BATTERY_FILENAME, SensorConstants.LIFETIME_STATISTICS_CHARGER_FILENAME);
         }
         return mPowerCollectionTask;
     }

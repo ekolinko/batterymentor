@@ -63,6 +63,10 @@ public abstract class Benchmark {
     public void stop() {
     }
 
+    public Context getContext() {
+        return mContext;
+    }
+
     public long getDuration() {
         return mDuration;
     }

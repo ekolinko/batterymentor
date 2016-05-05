@@ -22,6 +22,7 @@
     <string name="skip">SKIP</string>
     <string name="next">NEXT</string>
     <string name="finish">FINISH</string>
+    <string name="invalid_value">~</string>
 
     <!-- Gadgets -->
     <string name="brightness_gadget">Brightness Gadget</string>
@@ -51,6 +52,16 @@
     <string name="tab_power">POWER</string>
     <string name="tab_screen">SCREEN</string>
     <string name="tab_apps">APPS</string>
+
+    <!-- Power Tab -->
+    <string name="power_title_realtime_battery_usage">Realtime Battery Usage</string>
+    <string name="power_title_lifetime_battery_usage">Lifetime Battery Usage</string>
+    <string name="power_title_realtime_charger_speed">Realtime Charger Speed</string>
+    <string name="power_title_lifetime_charger_speed">Lifetime Charger Speed</string>
+    <string name="power_hint_realtime_battery_usage">(Tap to switch to lifetime battery usage)</string>
+    <string name="power_hint_realtime_charger_speed">(Tap to switch to lifetime charger speed)</string>
+    <string name="power_hint_lifetime_battery_usage">(Tap to switch to realtime battery usage)</string>
+    <string name="power_hint_lifetime_charger_speed">(Tap to switch to realtime charger speed)</string>
 
     <!-- Process -->
     <string name="process_stop">STOP</string>
