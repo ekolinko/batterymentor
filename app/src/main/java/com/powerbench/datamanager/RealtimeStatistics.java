@@ -67,7 +67,7 @@ public class RealtimeStatistics extends Statistics {
         synchronized (mRecentData) {
             mRecentData.add(point);
 
-            if (mRecentData.size() > DataConstants.STATISTICS_RECENT_DATA_MAX_QUEUE_SIZE) {
+            if (mRecentData.size() > DataConstants.STATISTICS_RECENT_DATA_MAX_SIZE) {
                 removePointFromHistogram(mRecentData.removeFirst());
             }
             mMedianCalculated = false;
@@ -152,6 +152,43 @@ public class RealtimeStatistics extends Statistics {
      */
     private boolean isRealtimeDataReady() {
         return getNumPoints() > CollectionConstants.REALTIME_STATISTICS_VALID_POINT_THRESHOLD;
+    }
+
+
+    /**
+     * Return the size of the recent data.
+     *
+     * @return the size of the recent data.
+     */
+    public int getSize() {
+        int size;
+        synchronized (mRecentData) {
+            size = mRecentData.size();
+        }
+        return size;
+    }
+
+    /**
+     * Return the maximum size of the recent data.
+     *
+     * @return the maximum size of the recent data.
+     */
+    public int getMaximumSize() {
+        return DataConstants.STATISTICS_RECENT_DATA_MAX_SIZE;
+    }
+
+    /**
+     * Return the weight of this statistics instance. The weight is a number between 0 and 1 that
+     * represents how much calculations should rely on this statistics instance and is dependent on
+     * the size of the recent data.
+     *
+     * @return the weight of this statistics instance.
+     */
+    public double getWeight() {
+        if (!isRealtimeDataReady())
+            return 0d;
+
+        return (getSize() / (double)(getMaximumSize()) * DataConstants.REALTIME_STATISTICS_MAX_WEIGHT);
     }
 
     public void setLifetimeStatistics(Statistics lifetimeStatistics) {

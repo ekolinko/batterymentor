@@ -1,12 +1,15 @@
 package com.powerbench.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.powerbench.collectionmanager.CollectionManager;
-import com.powerbench.constants.Constants;
+import com.powerbench.collectionmanager.LifetimeCollectionTask;
 import com.powerbench.constants.DeviceConstants;
 import com.powerbench.constants.ModelConstants;
 import com.powerbench.constants.SensorConstants;
+import com.powerbench.datamanager.RealtimeStatistics;
+import com.powerbench.datamanager.Statistics;
 import com.powerbench.device.Device;
 
 import java.util.HashSet;
@@ -26,16 +29,6 @@ public class BatteryModel {
      * The predicted battery life.
      */
     private Double mBatteryLife;
-
-    /**
-     * The last measured absolute power.
-     */
-    private Double mPower;
-
-    /**
-     * The base power that is not covered by any of the models.
-     */
-    private Double mBasePower;
 
     /**
      * The battery capacity;
@@ -73,6 +66,11 @@ public class BatteryModel {
     private boolean mCharging = false;
 
     /**
+     * The time at which the next model update can come.
+     */
+    private long mNextUpdateTime;
+
+    /**
      * The set of charger listeners.
      */
     private Set<OnModelChangedListener> mModelChangedListeners = new HashSet<OnModelChangedListener>();
@@ -86,68 +84,58 @@ public class BatteryModel {
         return mBatteryLife;
     }
 
-    public void updateModel() {
-        double sensorBasePower = CollectionManager.getInstance().getPowerCollectionTask(mContext).getAverage();
-        double modelBasePower = 0;
-        int numModels = 0;
-        if (mScreenModel != null) {
-            double screenBasePower = mScreenModel.getIntercept();
-            if (mScreenBrightness != null) {
-                sensorBasePower -= mScreenModel.getY(mScreenBrightness);
-            }
-            modelBasePower += screenBasePower;
-            numModels++;
+    /**
+     * Check the timestamp to see if the model needs an update.
+     *
+     * @return true if the model needs updated, false otherwise.
+     */
+    public boolean needsUpdate() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime > mNextUpdateTime) {
+            mNextUpdateTime = currentTime + ModelConstants.BATTERY_MODEL_UPDATE_INTERVAL;
+            return true;
         }
-        if (mCpuModel != null) {
-            double cpuBasePower = mCpuModel.getIntercept();
-            if (mCpu != null) {
-                sensorBasePower -= mCpuModel.getY(mCpu);
-            }
-            modelBasePower += cpuBasePower;
-            numModels++;
-        }
-        if (numModels > 0 && !mCharging) {
-            modelBasePower /= numModels;
-            if (mPower == null) {
-                mBasePower = modelBasePower;
-            } else {
-                if (mBasePower == null) {
-                    double stableThreshold = sensorBasePower * ModelConstants.STABLE_THRESHOLD;
-                    if (Math.abs(sensorBasePower - modelBasePower) > stableThreshold) {
-                        mBasePower = sensorBasePower;
-                    } else {
-                        mBasePower = modelBasePower;
-                    }
-                } else {
-                    double stableThreshold = mBasePower * ModelConstants.STABLE_THRESHOLD;
-                    if (Math.abs(sensorBasePower - mBasePower) > stableThreshold) {
-                        mBasePower = sensorBasePower;
-                    }
-                }
-            }
-        } else if (mBasePower == null) {
-            mBasePower = sensorBasePower;
-        } else {
-            double stableThreshold = mBasePower * ModelConstants.STABLE_THRESHOLD;
-            if (Math.abs(sensorBasePower - mBasePower) > stableThreshold) {
-                mBasePower = sensorBasePower;
-            }
-        }
+        return false;
+    }
 
-        int batteryLevel = (!mCharging) ? mBatteryLevel : SensorConstants.BATTERY_LEVEL_FULL - mBatteryLevel;
-        double power = mBasePower;
-        if (mScreenModel != null) {
-            if (!mCharging && mScreenBrightness != null) {
-                power += mScreenModel.getY(mScreenBrightness);
+    public void updateModel() {
+        LifetimeCollectionTask powerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(mContext);
+        Statistics lifetimeStatistics = powerCollectionTask.getLifetimeStatistics();
+        double lifetimePower = lifetimeStatistics.getAverage();
+        double lifetimeWeight = lifetimeStatistics.getWeight();
+        double lifetimeCounterweight = lifetimeStatistics.getCounterweight();
+        RealtimeStatistics realtimeStatistics = powerCollectionTask.getRealtimeStatistics();
+        double realtimePower = realtimeStatistics.getAverage();
+        double realtimeWeight = realtimeStatistics.getWeight();
+        double realtimeCounterweight = realtimeStatistics.getCounterweight();
+
+        double power = realtimePower*realtimeWeight + lifetimePower*realtimeCounterweight;
+        if (mScreenModel != null && mScreenBrightness != null) {
+            if (mCharging) {
+                double screenBasePower = Math.abs(mScreenModel.getY(mScreenBrightness) - (powerCollectionTask.getBatteryLifetimeStatistics().getAverage() + powerCollectionTask.getChargerLifetimeStatistics().getAverage()));
+                double screenPower = mScreenModel.getY(mScreenBrightness);
+                double realtimeBasePower = realtimePower;
+                power = realtimeBasePower*realtimeWeight + screenBasePower*realtimeCounterweight - screenPower;
+//                Log.d("tstatic","\t screenPower = " + screenPower);
+//                Log.d("tstatic","\t screenBasePower = " + screenBasePower);
+//                Log.d("tstatic","\t screenBaseWeight = " + realtimeCounterweight);
+//                Log.d("tstatic","\t realtimeBasePower = " + realtimeBasePower);
+//                Log.d("tstatic","\t realtimeWeight = " + realtimeWeight);
+            } else {
+                double screenBasePower = mScreenModel.getIntercept();
+                double screenPower = mScreenModel.getY(mScreenBrightness);
+                double realtimeBasePower = realtimePower - screenPower;
+                power = realtimeBasePower*realtimeWeight + screenBasePower*realtimeCounterweight + screenPower;
             }
         }
+        int batteryLevel = (!mCharging) ? mBatteryLevel : SensorConstants.BATTERY_LEVEL_FULL - mBatteryLevel;
         mBatteryLife = (mBatteryCapacity * batteryLevel) / (SensorConstants.BATTERY_LEVEL_FULL * power);
         notifyAllListenersOfModelChanged();
     }
 
     public void setPower(double power) {
-        mPower = power;
-        updateModel();
+        if (needsUpdate())
+            updateModel();
     }
 
     public void setBatteryLevel(int batteryLevel) {
@@ -157,13 +145,11 @@ public class BatteryModel {
 
     public void setScreenModel(Model screenModel) {
         mScreenModel = screenModel;
-        mBasePower = null;
         updateModel();
     }
 
     public void setCpuModel(Model cpuModel) {
         mCpuModel = cpuModel;
-        mBasePower = null;
         updateModel();
     }
 

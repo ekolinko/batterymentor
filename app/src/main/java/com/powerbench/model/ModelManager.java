@@ -7,7 +7,6 @@ import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.collectionmanager.LifetimeCollectionTask;
 import com.powerbench.constants.ModelConstants;
 import com.powerbench.datamanager.Point;
-import com.powerbench.datamanager.RealtimeStatistics;
 import com.powerbench.sensors.ChargerManager;
 
 import java.io.FileInputStream;
@@ -70,7 +69,7 @@ public class ModelManager implements ChargerManager.ChargerListener {
             mBatteryModel = new BatteryModel(context);
             ChargerManager.getInstance().registerChargerListener(context, this);
             LifetimeCollectionTask powerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(context);
-            final double average = powerCollectionTask.getStatistics().getAverage();
+            final double average = powerCollectionTask.getRealtimeStatistics().getAverage();
             powerCollectionTask.registerMeasurementListener(new CollectionTask.MeasurementListener() {
                 @Override
                 public void onMeasurementReceived(Point point) {

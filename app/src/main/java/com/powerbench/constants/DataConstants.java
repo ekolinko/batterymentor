@@ -8,7 +8,7 @@ public class DataConstants {
     /**
      * The size of the statistics queue that contains the most recent data.
      */
-    public static final int STATISTICS_RECENT_DATA_MAX_QUEUE_SIZE = 50;
+    public static final int STATISTICS_RECENT_DATA_MAX_SIZE = 50;
 
     /**
      * The percent of the spikes to drop. (0.10 = drop 10% of spikes, 0.20 = drop 20% of spikes,
@@ -41,4 +41,20 @@ public class DataConstants {
      */
     public static final double HISTOGRAM_BUCKET_RANGE = (HISTOGRAM_MAX_POWER - HISTOGRAM_MIN_POWER) / HISTOGRAM_NUM_BUCKETS;
 
+    /**
+     * The maximum weight of the realtime statistics. The weight is a number between 0 and 1 that
+     * represents how much calculations should rely on the realtime statistics.
+     */
+    public static final double REALTIME_STATISTICS_MAX_WEIGHT = 0.25d;
+
+    /**
+     * The maximum weight of the lifetime statistics.  The weight is a number between 0 and 1 that
+     * represents how much calculations should rely on the lifetime statistics.
+     */
+    public static final double LIFETIME_STATISTICS_MAX_WEIGHT = 1d;
+
+    /**
+     * The threshold of lifetime points at which maximum weight is achieved.
+     */
+    public static final double LIFETIME_NUM_POINTS_MAX_WEIGHT_THRESHOLD = 100;
 }

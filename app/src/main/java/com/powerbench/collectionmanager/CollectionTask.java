@@ -174,7 +174,7 @@ public class CollectionTask {
         return mContext;
     }
 
-    public RealtimeStatistics getStatistics() {
+    public RealtimeStatistics getRealtimeStatistics() {
         return mStatistics;
     }
 

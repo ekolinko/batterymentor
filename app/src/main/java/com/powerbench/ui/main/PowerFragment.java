@@ -140,7 +140,7 @@ public class PowerFragment extends CommonFragment {
                     if (mHintView != null)
                         mHintView.setText(R.string.power_hint_lifetime_charger_speed);
                 } else {
-                    mHistogram = mCollectionTask.getStatistics();
+                    mHistogram = mCollectionTask.getRealtimeStatistics();
                     if (mTitleView != null)
                         mTitleView.setText(R.string.power_title_realtime_charger_speed);
                     if (mHintView != null)
@@ -154,7 +154,7 @@ public class PowerFragment extends CommonFragment {
                     if (mHintView != null)
                         mHintView.setText(R.string.power_hint_lifetime_battery_usage);
                 } else {
-                    mHistogram = mCollectionTask.getStatistics();
+                    mHistogram = mCollectionTask.getRealtimeStatistics();
                     if (mTitleView != null)
                         mTitleView.setText(R.string.power_title_realtime_battery_usage);
                     if (mHintView != null)

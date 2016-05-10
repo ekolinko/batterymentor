@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -202,9 +203,21 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     @Override
     public void onChargerConnected() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, ThemeManager.getInstance().getCurrentTheme(this).getActionBarColorResource()));
+        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                getWindow().setStatusBarColor(ContextCompat.getColor(this, ThemeManager.getInstance().getCurrentTheme(this).getActionBarColorResource()));
+            }
+        } else {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                        getWindow().setStatusBarColor(ContextCompat.getColor(CommonActivity.this, ThemeManager.getInstance().getCurrentTheme(CommonActivity.this).getActionBarColorResource()));
+                    }
+                }
+            });
         }
     }
 
@@ -214,9 +227,21 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     @Override
     public void onChargerDisconnected() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, ThemeManager.getInstance().getCurrentTheme(this).getActionBarColorResource()));
+        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                getWindow().setStatusBarColor(ContextCompat.getColor(this, ThemeManager.getInstance().getCurrentTheme(this).getActionBarColorResource()));
+            }
+        } else {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                        getWindow().setStatusBarColor(ContextCompat.getColor(CommonActivity.this, ThemeManager.getInstance().getCurrentTheme(CommonActivity.this).getActionBarColorResource()));
+                    }
+                }
+            });
         }
     }
 

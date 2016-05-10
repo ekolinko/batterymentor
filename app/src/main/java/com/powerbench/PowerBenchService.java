@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.collectionmanager.LifetimeCollectionTask;
@@ -17,7 +16,6 @@ import com.powerbench.constants.Constants;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.collectionmanager.CollectionTask;
-import com.powerbench.datamanager.Statistics;
 import com.powerbench.ui.notification.PowerBenchNotification;
 
 /**
@@ -89,7 +87,7 @@ public class PowerBenchService extends Service {
      */
     public void updateNotification() {
         if (mShowNotification) {
-            double average = mPowerCollectionTask.getStatistics().getAverage();
+            double average = mPowerCollectionTask.getRealtimeStatistics().getAverage();
             mNotification = PowerBenchNotification.getInstance().updateNotification(PowerBenchService.this, Math.abs(average));
             mNotificationManager.notify(Constants.NOTIFICATION_ID, mNotification);
         }

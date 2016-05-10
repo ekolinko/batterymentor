@@ -201,6 +201,14 @@ public class LifetimeCollectionTask extends CollectionTask {
         mLifetimeStatistics = mLifetimeBatteryStatistics;
     }
 
+    public Statistics getBatteryLifetimeStatistics() {
+        return mLifetimeBatteryStatistics;
+    }
+
+    public Statistics getChargerLifetimeStatistics() {
+        return mLifetimeChargerStatistics;
+    }
+
     /**
      * The thread used to save data to persistent storage.
      */

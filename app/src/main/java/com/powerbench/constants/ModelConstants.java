@@ -23,4 +23,8 @@ public class ModelConstants {
      */
     public static final double STABLE_THRESHOLD = 0.20;
 
+    /**
+     * Interval at which the battery model needs to be updated.
+     */
+    public static final long BATTERY_MODEL_UPDATE_INTERVAL = 60*Constants.SECOND;
 }

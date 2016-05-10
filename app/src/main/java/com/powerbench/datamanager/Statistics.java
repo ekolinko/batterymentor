@@ -1,5 +1,6 @@
 package com.powerbench.datamanager;
 
+import com.powerbench.constants.Constants;
 import com.powerbench.constants.DataConstants;
 
 import java.io.Serializable;
@@ -88,9 +89,35 @@ public class Statistics implements Serializable, Histogram {
         if (index < 0)
             index = 0;
         else if (index >= mHistogramData.length)
-            index = mHistogramData.length;
+            index = mHistogramData.length - 1;
 
         mHistogramData[index].y--;
+    }
+
+    /**
+     * Return the weight of this statistics instance. The weight is a number between 0 and 1 that
+     * represents how much calculations should rely on this statistics instance and is dependent on
+     * the size of the recent data.
+     *
+     * @return the weight of this statistics instance.
+     */
+    public double getWeight() {
+        double numPoints = getNumPoints();
+        if (numPoints > DataConstants.LIFETIME_NUM_POINTS_MAX_WEIGHT_THRESHOLD)
+            return DataConstants.LIFETIME_STATISTICS_MAX_WEIGHT;
+
+        return (numPoints / DataConstants.LIFETIME_NUM_POINTS_MAX_WEIGHT_THRESHOLD) * DataConstants.LIFETIME_STATISTICS_MAX_WEIGHT;
+    }
+
+    /**
+     * Return the counterweight of this statistics instance. The counterweight is a number between
+     * 0 and 1 that represents how much calculations should rely on statistics other than these
+     * realtime statistics.
+     *
+     * @return the counterweight of this statistics instance.
+     */
+    public double getCounterweight() {
+        return 1d - getWeight();
     }
 
     @Override
