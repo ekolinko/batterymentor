@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
@@ -22,6 +24,7 @@ import com.powerbench.R;
 import com.powerbench.constants.DeviceConstants;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.sensors.ChargerManager;
+import com.powerbench.ui.theme.Theme;
 import com.powerbench.ui.theme.ThemeManager;
 
 import java.text.DecimalFormat;
@@ -129,7 +132,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
                     }
                     break;
                 case UIConstants.TUTORIAL_REFRESH_REQUEST_CODE:
-                    com.powerbench.settings.Settings.getInstance().setShowTutorial(CommonActivity.this, false);
+                    com.powerbench.settings.Settings.getInstance().setShowTutorial(CommonActivity.this, false);;
                     break;
             }
         }
@@ -204,18 +207,22 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     @Override
     public void onChargerConnected() {
         if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            Theme theme = ThemeManager.getInstance().getCurrentTheme(this);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                getWindow().setStatusBarColor(ContextCompat.getColor(this, ThemeManager.getInstance().getCurrentTheme(this).getActionBarColorResource()));
+                getWindow().setStatusBarColor(ContextCompat.getColor(this, theme.getActionBarColorResource()));
             }
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, theme.getActionBarColorResource())));
         } else {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    Theme theme = ThemeManager.getInstance().getCurrentTheme(CommonActivity.this);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        getWindow().setStatusBarColor(ContextCompat.getColor(CommonActivity.this, ThemeManager.getInstance().getCurrentTheme(CommonActivity.this).getActionBarColorResource()));
+                        getWindow().setStatusBarColor(ContextCompat.getColor(CommonActivity.this, theme.getActionBarColorResource()));
                     }
+                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(CommonActivity.this, theme.getActionBarColorResource())));
                 }
             });
         }
@@ -228,17 +235,20 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     @Override
     public void onChargerDisconnected() {
         if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            Theme theme = ThemeManager.getInstance().getCurrentTheme(this);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                getWindow().setStatusBarColor(ContextCompat.getColor(this, ThemeManager.getInstance().getCurrentTheme(this).getActionBarColorResource()));
+                getWindow().setStatusBarColor(ContextCompat.getColor(this, theme.getActionBarColorResource()));
             }
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, theme.getActionBarColorResource())));
         } else {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    Theme theme = ThemeManager.getInstance().getCurrentTheme(CommonActivity.this);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        getWindow().setStatusBarColor(ContextCompat.getColor(CommonActivity.this, ThemeManager.getInstance().getCurrentTheme(CommonActivity.this).getActionBarColorResource()));
+                        getWindow().setStatusBarColor(ContextCompat.getColor(CommonActivity.this, theme.getActionBarColorResource()));
                     }
                 }
             });

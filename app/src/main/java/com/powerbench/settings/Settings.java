@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.powerbench.R;
 import com.powerbench.constants.SettingsConstants;
 
 /**
@@ -50,9 +51,9 @@ public class Settings {
      * @param context the application context.
      * @param launchOnDeviceBootup the flag to launch the powerbench service on device boot-up.
      */
-    public void setLaunchOnDeviceBootup(Context context, boolean launchOnDeviceBootup) {
+    public void setStartupWithDevice(Context context, boolean launchOnDeviceBootup) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences.edit().putBoolean(SettingsConstants.LAUNCH_ON_DEVICE_BOOTUP, launchOnDeviceBootup).apply();
+        sharedPreferences.edit().putBoolean(context.getString(R.string.settings_startup_with_device_key), launchOnDeviceBootup).apply();
     }
 
     /**
@@ -61,9 +62,9 @@ public class Settings {
      * @param context the application context
      * @return true if the powerbench should launch on device bootup, false otherwise.
      */
-    public boolean getLaunchOnDeviceBootup(Context context) {
+    public boolean getStartupWithDevice(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getBoolean(SettingsConstants.LAUNCH_ON_DEVICE_BOOTUP, SettingsConstants.LAUNCH_ON_DEVICE_BOOTUP_DEFAULT_VALUE);
+        return sharedPreferences.getBoolean(context.getString(R.string.settings_startup_with_device_key), context.getResources().getBoolean(R.bool.settings_startup_with_device_default));
     }
 
     /**
@@ -74,7 +75,7 @@ public class Settings {
      */
     public void setStatusBarUnits(Context context, String statusBarUnits) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences.edit().putString(SettingsConstants.STATUS_BAR_UNITS, statusBarUnits).apply();
+        sharedPreferences.edit().putString(context.getString(R.string.settings_status_bar_units_key), statusBarUnits).apply();
     }
 
     /**
@@ -85,7 +86,7 @@ public class Settings {
      */
     public String getStatusBarUnits(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getString(SettingsConstants.STATUS_BAR_UNITS, SettingsConstants.STATUS_BAR_UNITS_DEFAULT);
+        return sharedPreferences.getString(context.getString(R.string.settings_status_bar_units_key), context.getString(R.string.settings_status_bar_units_default));
     }
 
     /**
@@ -96,7 +97,7 @@ public class Settings {
      */
     public void setPowerTabUnits(Context context, String statusBarUnits) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences.edit().putString(SettingsConstants.POWER_TAB_UNITS, statusBarUnits).apply();
+        sharedPreferences.edit().putString(context.getString(R.string.settings_power_tab_units_key), statusBarUnits).apply();
     }
 
     /**
@@ -107,6 +108,6 @@ public class Settings {
      */
     public String getPowerTabUnits(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getString(SettingsConstants.POWER_TAB_UNITS, SettingsConstants.POWER_TAB_UNITS_DEFAULT);
+        return sharedPreferences.getString(context.getString(R.string.settings_power_tab_units_key), context.getString(R.string.settings_power_tab_units_default));
     }
 }

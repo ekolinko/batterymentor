@@ -14,7 +14,7 @@ public class StartPowerBenchServiceAtBootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && Settings.getInstance().getLaunchOnDeviceBootup(context)) {
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && Settings.getInstance().getStartupWithDevice(context)) {
             Intent serviceIntent = new Intent(context, PowerBenchService.class);
             context.startService(serviceIntent);
         }

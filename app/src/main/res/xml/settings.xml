@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference android:key="@string/settings_startup_with_device_key"
+        android:title="@string/settings_startup_with_device"
+        android:defaultValue="@bool/settings_startup_with_device_default" />
+    <ListPreference
+        android:key="@string/settings_status_bar_units_key"
+        android:title="@string/settings_status_bar_units"
+        android:dialogTitle="@string/settings_status_bar_units"
+        android:entries="@array/settings_status_bar_units_options"
+        android:entryValues="@array/settings_status_bar_units_options"
+        android:defaultValue="@string/settings_status_bar_units_default" />
+    <ListPreference
+        android:key="@string/settings_power_tab_units_key"
+        android:title="@string/settings_power_tab_units"
+        android:dialogTitle="@string/settings_power_tab_units"
+        android:entries="@array/settings_power_tab_units_options"
+        android:entryValues="@array/settings_status_bar_units_options"
+        android:defaultValue="@string/settings_status_bar_units_default" />
+</PreferenceScreen>

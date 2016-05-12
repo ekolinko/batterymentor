@@ -111,7 +111,7 @@ public class PowerFragment extends CommonFragment {
                 double powerValue = mHistogram.getAverage();
 
                 String value;
-                if (Settings.getInstance().getPowerTabUnits(getContext()) == SettingsConstants.UNITS_MILLIAMP) {
+                if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.milliamps))) {
                     value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue / Sensor.VOLTAGE.measure()), getString(R.string.milliamps));
                 } else {
                     value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.milliwatts));

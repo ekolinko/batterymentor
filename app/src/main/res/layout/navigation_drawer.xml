@@ -10,30 +10,10 @@
         style="@style/navigation_button"
         android:text="@string/navigation_tutorial"
         android:drawableLeft="@drawable/icon_tutorial"/>
-    <android.support.v7.widget.SwitchCompat android:id="@+id/switch_launch_on_device_bootup"
-        style="@style/navigation_switch"
-        android:text="@string/navigation_launch_on_device_bootup"
-        android:drawableLeft="@drawable/icon_tutorial"/>
-    <RelativeLayout android:id="@+id/button_status_bar_units"
-        style="@style/navigation_button_container">
-        <TextView android:id="@+id/button_status_bar_label"
-            style="@style/navigation_button"
-            android:text="@string/navigation_status_bar_units"
-            android:drawableLeft="@drawable/icon_tutorial"/>
-        <TextView android:id="@+id/button_status_bar_value"
-            style="@style/navigation_button_value"
-            android:layout_alignParentRight="true"/>
-    </RelativeLayout>
-    <RelativeLayout android:id="@+id/button_power_tab_units"
-        style="@style/navigation_button_container">
-        <TextView android:id="@+id/button_power_tab_label"
-            style="@style/navigation_button"
-            android:text="@string/navigation_power_tab_units"
-            android:drawableLeft="@drawable/icon_tutorial"/>
-        <TextView android:id="@+id/button_power_tab_value"
-            style="@style/navigation_button_value"
-            android:layout_alignParentRight="true"/>
-    </RelativeLayout>
+    <Button android:id="@+id/button_settings"
+        style="@style/navigation_button"
+        android:text="@string/navigation_settings"
+        android:drawableLeft="@drawable/icon_settings"/>
     <Button android:id="@+id/button_exit"
         style="@style/navigation_button"
         android:text="@string/navigation_exit"

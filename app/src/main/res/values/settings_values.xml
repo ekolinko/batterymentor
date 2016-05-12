@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_startup_with_device_key">startupWithDevice</string>
+    <string name="settings_status_bar_units_key">statusBarUnits</string>
+    <string name="settings_power_tab_units_key">powerTabUnits</string>
+    <bool name="settings_startup_with_device_default">false</bool>
+    <string name="settings_status_bar_units_default">@string/milliwatts</string>
+    <string name="settings_power_tab_units_default">@string/milliwatts</string>
+    <string-array name="settings_status_bar_units_options">
+        <item>@string/milliwatts</item>
+        <item>@string/milliamps</item>
+        <item>@string/hr</item>
+    </string-array>
+    <string-array name="settings_power_tab_units_options">
+        <item>@string/milliwatts</item>
+        <item>@string/milliamps</item>
+    </string-array>
+</resources>

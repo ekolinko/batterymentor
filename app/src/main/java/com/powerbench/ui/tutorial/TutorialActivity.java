@@ -136,7 +136,7 @@ public class TutorialActivity extends CommonActivity {
             TutorialFragment realtimePowerFragment = new TutorialFragment();
             realtimePowerFragment.setArguments(bundleArguments(R.string.tutorial_realtime_power_title, R.drawable.remove_icon_screen_test_blue, R.string.tutorial_realtime_power_text));
             TutorialFragment brightnessFragment = new TutorialFragment();
-            brightnessFragment.setArguments(bundleArguments(R.string.tutorial_brightness_title, R.drawable.remove_icon_screen_test_blue, R.string.tutorial_brightness_text));
+            brightnessFragment.setArguments(bundleArguments(R.string.tutorial_screen_title, R.drawable.remove_icon_screen_test_blue, R.string.tutorial_screen_text));
             TutorialFragment appsFragment = new TutorialFragment();
             appsFragment.setArguments(bundleArguments(R.string.tutorial_apps_title, R.drawable.remove_icon_screen_test_blue, R.string.tutorial_apps_text));
             tutorialFragments.add(welcomeFragment);

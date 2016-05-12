@@ -11,10 +11,9 @@
     <string name="uri_package">package</string>
 
     <!-- Formatting -->
-    <string name="format_power">#0.0</string>
+    <string name="format_power">#0</string>
     <string name="format_battery_life">#0.0</string>
     <string name="format_cpu">#0.0</string>
     <string name="format_duration">#0.0</string>
-
 
 </resources>

@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SwitchCompat;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -29,7 +30,6 @@ import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.Constants;
 import com.powerbench.constants.SettingsConstants;
 import com.powerbench.constants.UIConstants;
-import com.powerbench.datamanager.RealtimeStatistics;
 import com.powerbench.device.Device;
 import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.datamanager.Point;
@@ -40,6 +40,7 @@ import com.powerbench.settings.Settings;
 import com.powerbench.ui.common.CommonActivity;
 import com.powerbench.ui.common.CommonFragment;
 import com.powerbench.ui.common.listeners.ToggleSettingListener;
+import com.powerbench.ui.settings.SettingsActivity;
 import com.powerbench.ui.theme.Theme;
 import com.powerbench.ui.theme.ThemeManager;
 import com.powerbench.ui.tutorial.TutorialActivity;
@@ -251,52 +252,20 @@ public class PowerBenchActivity extends CommonActivity {
                 public void onClick(View v) {
                     Settings.getInstance().setShowTutorial(PowerBenchActivity.this, true);
                     startActivityForResult(new Intent(PowerBenchActivity.this, TutorialActivity.class), UIConstants.TUTORIAL_REFRESH_REQUEST_CODE);
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
             });
         }
 
-        SwitchCompat launchOnDeviceBootupSwitch = (SwitchCompat) findViewById(R.id.switch_launch_on_device_bootup);
-        if (launchOnDeviceBootupSwitch != null) {
-            launchOnDeviceBootupSwitch.setChecked(Settings.getInstance().getLaunchOnDeviceBootup(PowerBenchActivity.this));
-            launchOnDeviceBootupSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        Button settingsButton = (Button) findViewById(R.id.button_settings);
+        if (settingsButton != null) {
+            settingsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Settings.getInstance().setLaunchOnDeviceBootup(PowerBenchActivity.this, isChecked);
+                public void onClick(View v) {
+                    startActivity(new Intent(PowerBenchActivity.this, SettingsActivity.class));
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
             });
-        }
-
-        final RelativeLayout statusBarUnitsButton = (RelativeLayout) findViewById(R.id.button_status_bar_units);
-        if (statusBarUnitsButton != null) {
-            final TextView statusBarUnitsValue = (TextView) findViewById(R.id.button_status_bar_value);
-            if (statusBarUnitsValue != null) {
-                statusBarUnitsValue.setText(Settings.getInstance().getStatusBarUnits(PowerBenchActivity.this));
-                ToggleSettingListener toggleSettingListener = new ToggleSettingListener(statusBarUnitsValue, SettingsConstants.STATUS_BAR_UNITS_OPTIONS, new ToggleSettingListener.SettingSelectedListener() {
-                    @Override
-                    public void onSettingSelected(String setting) {
-                        Settings.getInstance().setStatusBarUnits(PowerBenchActivity.this, setting);
-                        refreshFragments();
-                        getService().updateNotification();
-                    }
-                });
-                statusBarUnitsButton.setOnClickListener(toggleSettingListener);
-            }
-        }
-
-        final RelativeLayout powerTabUnitsButton = (RelativeLayout) findViewById(R.id.button_power_tab_units);
-        if (powerTabUnitsButton != null) {
-            final TextView powerTabUnitsValue = (TextView) findViewById(R.id.button_power_tab_value);
-            if (powerTabUnitsValue != null) {
-                powerTabUnitsValue.setText(Settings.getInstance().getPowerTabUnits(PowerBenchActivity.this));
-                ToggleSettingListener toggleSettingListener = new ToggleSettingListener(powerTabUnitsValue, SettingsConstants.POWER_TAB_UNITS_OPTIONS, new ToggleSettingListener.SettingSelectedListener() {
-                    @Override
-                    public void onSettingSelected(String setting) {
-                        Settings.getInstance().setPowerTabUnits(PowerBenchActivity.this, setting);
-                        refreshFragments();
-                    }
-                });
-                powerTabUnitsButton.setOnClickListener(toggleSettingListener);
-            }
         }
 
         Button exitButton = (Button) findViewById(R.id.button_exit);
@@ -372,8 +341,7 @@ public class PowerBenchActivity extends CommonActivity {
      */
     protected void applyTheme() {
         Theme theme = mThemeManager.getCurrentTheme(this);
-        // Apply the theme to the action bar.
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, theme.getActionBarColorResource())));
+
         // Apply the theme to the battery life container.
         if (mBatteryLifeContainer != null) {
             mBatteryLifeContainer.setBackgroundResource(theme.getColorResource());
@@ -424,6 +392,7 @@ public class PowerBenchActivity extends CommonActivity {
 
     @Override
     protected void onServiceBound() {
+        getService().startNotification();
     }
 
     @Override
@@ -442,6 +411,7 @@ public class PowerBenchActivity extends CommonActivity {
     @Override
     public void onDestroy() {
         mApplicationCollectionTask.stop();
+        getService().cancelNotification();
         super.onDestroy();
     }
 

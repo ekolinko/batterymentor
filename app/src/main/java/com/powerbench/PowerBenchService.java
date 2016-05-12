@@ -99,6 +99,28 @@ public class PowerBenchService extends Service {
     }
 
     /**
+     * Start the notification.
+     */
+    public void startNotification() {
+        mShowNotification = true;
+        updateNotification();
+    }
+
+    /**
+     * Cancel the notification in the notificaiton manager and unregister this from listening to the
+     * power collection task.
+     */
+    public void cancelNotification() {
+        mPowerCollectionTask.unregisterMeasurementListener(mMeasurementListener);
+        mShowNotification = false;
+        if (mNotificationManager != null) {
+            mNotificationManager.cancel(Constants.NOTIFICATION_ID);
+        }
+    }
+
+
+
+    /**
      * The binder that clients use to bind to this service.
      */
     public class PowerBenchBinder extends Binder {
@@ -124,11 +146,7 @@ public class PowerBenchService extends Service {
         public void onReceive(Context context, Intent intent) {
             int notificationId = intent.getExtras().getInt(UIConstants.NOTIFICATION_ID_KEY);
             if (notificationId == Constants.NOTIFICATION_ID && mMeasurementListener != null && mShowNotification) {
-                mPowerCollectionTask.unregisterMeasurementListener(mMeasurementListener);
-                mShowNotification = false;
-                if (mNotificationManager != null) {
-                    mNotificationManager.cancel(Constants.NOTIFICATION_ID);
-                }
+                cancelNotification();
             }
         }
     }
