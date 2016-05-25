@@ -71,11 +71,11 @@ public class LifetimeCollectionTask extends CollectionTask {
         mHandler = new Handler();
         mLifetimeBatteryStatistics = loadLifetimeStatisticsFromStorage(context, batteryFilename);
         if (mLifetimeBatteryStatistics == null)
-            mLifetimeBatteryStatistics = new Statistics();
+            mLifetimeBatteryStatistics = new Statistics(false);
         getBatteryStatistics().setLifetimeStatistics(mLifetimeBatteryStatistics);
         mLifetimeChargerStatistics = loadLifetimeStatisticsFromStorage(context, chargerFilename);
         if (mLifetimeChargerStatistics == null)
-            mLifetimeChargerStatistics = new Statistics();
+            mLifetimeChargerStatistics = new Statistics(true);
         mLifetimeStatistics = mLifetimeBatteryStatistics;
         getChargerStatistics().setLifetimeStatistics(mLifetimeChargerStatistics);
     }

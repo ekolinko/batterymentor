@@ -54,6 +54,11 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     private Handler mHandler;
 
+    /**
+     * Flag indicating whether the charger is connected.
+     */
+    private boolean mChargerConnected;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,6 +211,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     @Override
     public void onChargerConnected() {
+        mChargerConnected = true;
         if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
             Theme theme = ThemeManager.getInstance().getCurrentTheme(this);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -234,6 +240,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     @Override
     public void onChargerDisconnected() {
+        mChargerConnected = false;
         if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
             Theme theme = ThemeManager.getInstance().getCurrentTheme(this);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -271,6 +278,10 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
 
     protected DecimalFormat getPowerFormatter() {
         return mPowerFormatter;
+    }
+
+    protected boolean isChargerConnected() {
+        return mChargerConnected;
     }
 
     /**

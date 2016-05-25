@@ -116,4 +116,9 @@ public class SensorConstants {
      * The interval at which data gets saved in a persistent collection task.
      */
     public static final long PERSISTENT_SAVE_INTERVAL = 30 * Constants.SECOND;
+
+    /**
+     * The conversion factor to convert the battery temperature from tenths of a celsius to a celsius.
+     */
+    public static final float BATTERY_TEMPERATURE_CONVERSION_FACTOR = 10;
 }

@@ -31,6 +31,21 @@ public class UIConstants {
     public static final int NOTIFICATION_ROUNDING_FACTOR_TENS_OF_THOUSANDS = 100;
 
     /**
+     * The minimum power that is shown in the notification.
+     */
+    public static final int NOTIFICATION_MIN_POWER = 100;
+
+    /**
+     * The minimum current that is shown in the notification.
+     */
+    public static final int NOTIFICATION_MIN_CURRENT = 100;
+
+    /**
+     * The minimum battery life that is shown in the notification.
+     */
+    public static final int NOTIFICATION_MIN_BATTERY_LIFE = 1;
+
+    /**
      * The notification scaling factor for battery life.
      */
     public static int NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR = 10;
@@ -79,4 +94,14 @@ public class UIConstants {
      * The buffer for the y-axis maximum that ensures that the data is not cut off.
      */
     public static final float HISTOGRAM_Y_AXIS_MAX_BUFFER = 1.25f;
+
+    /**
+     * The interval at which lifetime data should be updated.
+     */
+    public static final long LIFETIME_UPDATE_INTERVAL = 10*Constants.SECOND;
+
+    /**
+     * The maximum battery life / until fully charger to show in hours.
+     */
+    public static double MAX_BATTERY_LIFE = 20;
 }

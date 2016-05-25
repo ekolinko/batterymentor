@@ -55,7 +55,7 @@ public class Process implements Comparable<Process> {
     /**
      * The statistics associated with this process.
      */
-    private final RealtimeStatistics mStatistics = new RealtimeStatistics();
+    private final RealtimeStatistics mStatistics = new RealtimeStatistics(false);
 
     public Process(Context context, int pid, String name) {
         this(context, pid, name, context.getResources().getDrawable(R.drawable.powerbench));

@@ -71,6 +71,41 @@ public class BatteryModel {
     private long mNextUpdateTime;
 
     /**
+     * The power to be used for estimating battery life.
+     */
+    private double mLifetimePower;
+
+    /**
+     * The realtime power to be used for estimating battery life.
+     */
+    private double mRealtimePower;
+
+    /**
+     * The realtime average to be used for estimating battery life.
+     */
+    private double mRealtimeAverage;
+
+    /**
+     * The realtime weight to be used for estimating battery life.
+     */
+    private double mRealtimeWeight;
+
+    /**
+     * The realtime counterweight to be used for estimating battery life.
+     */
+    private double mRealtimeCounterweight;
+
+    /**
+     * The lifetime battery average used for estimating battery life.
+     */
+    private double mLifetimeBatteryAverage;
+
+    /**
+     * The realtime battery average used for estimating battery life.
+     */
+    private double mLifetimeChargerAverage;
+
+    /**
      * The set of charger listeners.
      */
     private Set<OnModelChangedListener> mModelChangedListeners = new HashSet<OnModelChangedListener>();
@@ -99,23 +134,25 @@ public class BatteryModel {
     }
 
     public void updateModel() {
-        LifetimeCollectionTask powerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(mContext);
-        Statistics lifetimeStatistics = powerCollectionTask.getLifetimeStatistics();
-        double lifetimePower = lifetimeStatistics.getAverage();
-        double lifetimeWeight = lifetimeStatistics.getWeight();
-        double lifetimeCounterweight = lifetimeStatistics.getCounterweight();
-        RealtimeStatistics realtimeStatistics = powerCollectionTask.getRealtimeStatistics();
-        double realtimePower = realtimeStatistics.getAverage();
-        double realtimeWeight = realtimeStatistics.getWeight();
-        double realtimeCounterweight = realtimeStatistics.getCounterweight();
+        if (needsUpdate()) {
+            LifetimeCollectionTask powerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(mContext);
+            Statistics lifetimeStatistics = powerCollectionTask.getLifetimeStatistics();
+            mLifetimePower = lifetimeStatistics.getAverage();
+            RealtimeStatistics realtimeStatistics = powerCollectionTask.getRealtimeStatistics();
+            mRealtimePower = realtimeStatistics.getAverage();
+            mRealtimeWeight = realtimeStatistics.getWeight();
+            mRealtimeCounterweight = realtimeStatistics.getCounterweight();
+            mLifetimeBatteryAverage = powerCollectionTask.getBatteryLifetimeStatistics().getAverage();
+            mLifetimeChargerAverage = powerCollectionTask.getChargerLifetimeStatistics().getAverage();
+        }
 
-        double power = realtimePower*realtimeWeight + lifetimePower*realtimeCounterweight;
+        double power = mRealtimePower*mRealtimeWeight + mLifetimePower*mRealtimeCounterweight;
         if (mScreenModel != null && mScreenBrightness != null) {
             if (mCharging) {
-                double screenBasePower = Math.abs(mScreenModel.getY(mScreenBrightness) - (powerCollectionTask.getBatteryLifetimeStatistics().getAverage() + powerCollectionTask.getChargerLifetimeStatistics().getAverage()));
+                double screenBasePower = -(mScreenModel.getY(mScreenBrightness) - (mLifetimeBatteryAverage + mLifetimeChargerAverage)) + 0.0;
                 double screenPower = mScreenModel.getY(mScreenBrightness);
-                double realtimeBasePower = realtimePower;
-                power = realtimeBasePower*realtimeWeight + screenBasePower*realtimeCounterweight - screenPower;
+                double realtimeBasePower = mRealtimePower;
+                power = realtimeBasePower*mRealtimeWeight + screenBasePower*mRealtimeCounterweight - screenPower;
 //                Log.d("tstatic","\t screenPower = " + screenPower);
 //                Log.d("tstatic","\t screenBasePower = " + screenBasePower);
 //                Log.d("tstatic","\t screenBaseWeight = " + realtimeCounterweight);
@@ -124,18 +161,19 @@ public class BatteryModel {
             } else {
                 double screenBasePower = mScreenModel.getIntercept();
                 double screenPower = mScreenModel.getY(mScreenBrightness);
-                double realtimeBasePower = realtimePower - screenPower;
-                power = realtimeBasePower*realtimeWeight + screenBasePower*realtimeCounterweight + screenPower;
+                double realtimeBasePower = mRealtimePower - screenPower;
+                power = realtimeBasePower*mRealtimeWeight + screenBasePower*mRealtimeCounterweight + screenPower;
             }
         }
         int batteryLevel = (!mCharging) ? mBatteryLevel : SensorConstants.BATTERY_LEVEL_FULL - mBatteryLevel;
         mBatteryLife = (mBatteryCapacity * batteryLevel) / (SensorConstants.BATTERY_LEVEL_FULL * power);
+        if (mBatteryLife.isInfinite())
+            mNextUpdateTime = 0;
         notifyAllListenersOfModelChanged();
     }
 
     public void setPower(double power) {
-        if (needsUpdate())
-            updateModel();
+        updateModel();
     }
 
     public void setBatteryLevel(int batteryLevel) {

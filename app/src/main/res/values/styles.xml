@@ -59,6 +59,12 @@
         <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
     </style>
 
+    <style name="divider_horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/powerbench_blue</item>
+    </style>
+
     <style name="image_button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -201,20 +207,43 @@
 
     <style name="powerbench_power_value">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">24sp</item>
     </style>
 
     <style name="powerbench_power_histogram">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">150dp</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="powerbench_power_item_container">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="powerbench_power_item_header">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/powerbench_blue</item>
+    </style>
+
+    <style name="powerbench_power_item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/powerbench_blue</item>
     </style>
 
     <!-- Process -->
     <style name="process_container">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:padding">10dp</item>
         <item name="android:layout_centerInParent">true</item>
     </style>

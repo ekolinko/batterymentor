@@ -202,7 +202,7 @@ public class PowerBenchActivity extends CommonActivity {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mPowerFragment.updatePowerViews();
+                        mPowerFragment.updatePowerViews(false);
                     }
                 });
             }
@@ -333,6 +333,12 @@ public class PowerBenchActivity extends CommonActivity {
     protected void updateBatteryLife() {
         double batteryLife = mBatteryModel.getBatteryLife();
         String value = String.format(getString(R.string.value_units_template), mBatteryLifeFormatter.format(batteryLife), getString(R.string.hours));
+        if (batteryLife <= 0 && isChargerConnected())
+            value = getString(R.string.not_charging);
+        else if (batteryLife >= UIConstants.MAX_BATTERY_LIFE)
+            value = String.format(getString(R.string.value_units_template), getString(R.string.max_battery_life), getString(R.string.hours));
+        else if (Double.isInfinite(batteryLife))
+            value = String.format(getString(R.string.value_units_template), getString(R.string.invalid_value), getString(R.string.hours));
         mBatteryLife.setText(value);
     }
 

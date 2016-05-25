@@ -25,10 +25,16 @@ public class Statistics implements Serializable, Histogram {
      */
     private HistogramPoint[] mHistogramData;
 
-    public Statistics() {
+    /**
+     * Flag indicating whether these statistics are related to the charger.
+     */
+    public boolean mChargerStatistics;
+
+    public Statistics(boolean chargerStatistics) {
         mTotal = 0;
         mNumPoints = 0;
         mHistogramData = new HistogramPoint[DataConstants.HISTOGRAM_NUM_BUCKETS - 1];
+        mChargerStatistics = chargerStatistics;
         for (int i = 0; i < mHistogramData.length - 1; i++) {
             double minX = DataConstants.HISTOGRAM_MIN_POWER + i * DataConstants.HISTOGRAM_BUCKET_RANGE;
             double maxX = minX + DataConstants.HISTOGRAM_BUCKET_RANGE;
@@ -48,8 +54,8 @@ public class Statistics implements Serializable, Histogram {
         if (point == null)
             return;
 
-        double value = point.getY();
-        mTotal += Math.abs(value);
+        double value = convertValue(point.getY());
+        mTotal += value;
         mNumPoints++;
 
         addPointToHistogram(point);
@@ -72,7 +78,8 @@ public class Statistics implements Serializable, Histogram {
      * Add a point to the histogram.
      */
     public void addPointToHistogram(Point point) {
-        int index = (int)((Math.abs(point.getY()) - DataConstants.HISTOGRAM_MIN_POWER) / DataConstants.HISTOGRAM_BUCKET_RANGE);
+        double value = convertValue(point.getY());
+        int index = (int)((value - DataConstants.HISTOGRAM_MIN_POWER) / DataConstants.HISTOGRAM_BUCKET_RANGE);
         if (index < 0)
             index = 0;
         else if (index >= mHistogramData.length)
@@ -85,13 +92,24 @@ public class Statistics implements Serializable, Histogram {
      * Remove a point from the histogram.
      */
     public void removePointFromHistogram(Point point) {
-        int index = (int)((Math.abs(point.getY()) - DataConstants.HISTOGRAM_MIN_POWER) / DataConstants.HISTOGRAM_BUCKET_RANGE);
+        double value = convertValue(point.getY());
+        int index = (int)((value - DataConstants.HISTOGRAM_MIN_POWER) / DataConstants.HISTOGRAM_BUCKET_RANGE);
         if (index < 0)
             index = 0;
         else if (index >= mHistogramData.length)
             index = mHistogramData.length - 1;
 
         mHistogramData[index].y--;
+    }
+
+    /**
+     * Convert the value depending on the type of statistics.
+     */
+    public double convertValue(double value) {
+        if (areChargerStatistics())
+            return -value;
+
+        return value;
     }
 
     /**
@@ -135,5 +153,9 @@ public class Statistics implements Serializable, Histogram {
 
     public double getNumPoints() {
         return mNumPoints;
+    }
+
+    public boolean areChargerStatistics() {
+        return mChargerStatistics;
     }
 }

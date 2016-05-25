@@ -11,8 +11,9 @@ import android.widget.TextView;
 import com.powerbench.R;
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.collectionmanager.LifetimeCollectionTask;
-import com.powerbench.constants.SettingsConstants;
+import com.powerbench.constants.UIConstants;
 import com.powerbench.datamanager.Histogram;
+import com.powerbench.sensors.ChargerManager;
 import com.powerbench.sensors.Sensor;
 import com.powerbench.settings.Settings;
 import com.powerbench.ui.common.CommonFragment;
@@ -40,7 +41,7 @@ public class PowerFragment extends CommonFragment {
      * The flag that indicates that the lifetime histogram should be shown. Otherwise, the
      * instantaneous histogram will be shown.
      */
-    private boolean mShowLifetimeHistogram = false;
+    private boolean mShowLifetimeData = false;
 
     /**
      * The histogram that contains the data that is shown on this screen.
@@ -68,25 +69,96 @@ public class PowerFragment extends CommonFragment {
     private HistogramView mHistogramView;
 
     /**
+     * The battery level header view associated with this fragment.
+     */
+    private TextView mBatteryLevelHeaderView;
+
+    /**
+     * The charging status header view associated with this fragment.
+     */
+    private TextView mChargingStatusHeaderView;
+
+    /**
+     * The battery temperature header view associated with this fragment.
+     */
+    private TextView mBatteryTemperatureHeaderView;
+
+    /**
+     * The realtime min/max header view associated with this fragment.
+     */
+    private TextView mRealtimeMinMaxHeaderView;
+
+    /**
+     * The charging rate header view associated with this fragment.
+     */
+    private TextView mChargingRateHeaderView;
+
+    /**
+     * The battery level view associated with this fragment.
+     */
+    private TextView mBatteryLevelView;
+
+    /**
+     * The charging status view associated with this fragment.
+     */
+    private TextView mChargingStatusView;
+
+    /**
+     * The battery temperature view associated with this fragment.
+     */
+    private TextView mBatteryTemperatureView;
+
+    /**
+     * The realtime min/max view associated with this fragment.
+     */
+    private TextView mRealtimeMinMaxView;
+
+    /**
+     * The charging rate view associated with this fragment.
+     */
+    private TextView mChargingRateView;
+
+    /**
      * The current theme.
      */
     private Theme mTheme;
 
+    /**
+     * The time at which the next update should come.
+     */
+    private long mNextUpdateTime;
+
+    /**
+     * The power details container divider.
+     */
+    private View mDivider;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_realtime_battery, container, false);
+        View view = inflater.inflate(R.layout.fragment_power, container, false);
         mCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(getContext());
         mTitleView = (TextView) view.findViewById(R.id.powerbench_power_title);
         mHintView = (TextView) view.findViewById(R.id.powerbench_power_hint);
         mPowerView = (TextView) view.findViewById(R.id.powerbench_power_value);
         mHistogramView = (HistogramView) view.findViewById(R.id.powerbench_power_histogram);
+        mBatteryLevelHeaderView = (TextView) view.findViewById(R.id.powerbench_power_battery_level_header);
+        mChargingStatusHeaderView = (TextView) view.findViewById(R.id.powerbench_power_charging_status_header);
+        mBatteryTemperatureHeaderView = (TextView) view.findViewById(R.id.powerbench_power_battery_temperature_header);
+        mRealtimeMinMaxHeaderView = (TextView) view.findViewById(R.id.powerbench_power_battery_min_max_header);
+        mChargingRateHeaderView = (TextView) view.findViewById(R.id.powerbench_power_charging_rate_header);
+        mBatteryLevelView = (TextView) view.findViewById(R.id.powerbench_power_battery_level);
+        mChargingStatusView = (TextView) view.findViewById(R.id.powerbench_power_charging_status);
+        mBatteryTemperatureView = (TextView) view.findViewById(R.id.powerbench_power_battery_temperature);
+        mRealtimeMinMaxView = (TextView) view.findViewById(R.id.powerbench_power_battery_min_max);
+        mChargingRateView = (TextView) view.findViewById(R.id.powerbench_power_charging_rate);
+        mDivider = view.findViewById(R.id.divider_power_details_container);
         RelativeLayout powerContainer = (RelativeLayout) view.findViewById(R.id.powerbench_power_container);
         if (powerContainer != null) {
             powerContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mShowLifetimeHistogram = !mShowLifetimeHistogram;
+                    mShowLifetimeData = !mShowLifetimeData;
                     refresh();
                 }
             });
@@ -102,26 +174,69 @@ public class PowerFragment extends CommonFragment {
     /**
      * Update the power value using the specified value
      */
-    public void updatePowerViews() {
-        if (mPowerView != null && mHistogram != null) {
-            if (mPowerFormatter == null)
-                mPowerFormatter = new DecimalFormat(getString(R.string.format_power));
+    public void updatePowerViews(boolean forceRefresh) {
+        if (needsUpdate() || forceRefresh) {
+            if (mPowerView != null && mHistogram != null) {
+                if (mPowerFormatter == null)
+                    mPowerFormatter = new DecimalFormat(getString(R.string.format_power));
 
-            if (mHistogram != null) {
-                double powerValue = mHistogram.getAverage();
+                if (mHistogram != null) {
+                    double powerValue = mHistogram.getAverage();
 
-                String value;
-                if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.milliamps))) {
-                    value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue / Sensor.VOLTAGE.measure()), getString(R.string.milliamps));
+                    String value;
+                    if (powerValue <= 0 && isChargerConnected()) {
+                        value = getString(R.string.not_charging);
+                    } else {
+                        if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.milliamps))) {
+                            value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue / Sensor.VOLTAGE.measure()), getString(R.string.milliamps));
+                        } else {
+                            value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.milliwatts));
+                        }
+                    }
+
+
+                    mPowerView.setText(value);
+                    mHistogramView.setHistogram(mHistogram);
+                    mHistogramView.postInvalidate();
                 } else {
-                    value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.milliwatts));
+                    mPowerView.setText(getString(R.string.invalid_value));
                 }
+            }
 
-                mPowerView.setText(value);
-                mHistogramView.setHistogram(mHistogram);
-                mHistogramView.postInvalidate();
-            } else {
-                mPowerView.setText(getString(R.string.invalid_value));
+            if (mCollectionTask != null) {
+                if (mRealtimeMinMaxView != null) {
+                    double minValue = mCollectionTask.getRealtimeStatistics().getMin();
+                    double maxValue = mCollectionTask.getRealtimeStatistics().getMax();
+                    if (isChargerConnected()) {
+                        double temp = -maxValue + 0.0;
+                        maxValue = -minValue + 0.0;
+                        minValue = temp;
+                    }
+                    String min = mPowerFormatter.format(minValue);
+                    String max = mPowerFormatter.format(maxValue);
+                    mRealtimeMinMaxView.setText(String.format(getString(R.string.value_min_max_template), min, max));
+                }
+            }
+
+            ChargerManager chargerManager = ChargerManager.getInstance();
+            if (mBatteryLevelView != null) {
+                mBatteryLevelView.setText(String.format(getString(R.string.value_percent_template), chargerManager.getBatteryLevel()));
+            }
+            if (mChargingStatusView != null) {
+                mChargingStatusView.setText(chargerManager.getChargingStatus());
+            }
+            if (mBatteryTemperatureView != null) {
+                mBatteryTemperatureView.setText(String.format(getString(R.string.value_celsius_template), chargerManager.getBatteryTemperature()));
+            }
+            if (mChargingRateHeaderView != null) {
+                if (isChargerConnected()) {
+                    mChargingRateHeaderView.setText(R.string.power_charging_rate);
+                } else {
+                    mChargingRateHeaderView.setText(R.string.power_discharging_rate);
+                }
+            }
+            if (mChargingRateView != null) {
+                mChargingRateView.setText("N/A");
             }
         }
     }
@@ -129,11 +244,10 @@ public class PowerFragment extends CommonFragment {
     /**
      * Refresh all the views of this fragment.
      */
-    @Override
     public void refresh() {
         if (mCollectionTask != null) {
             if (isChargerConnected()) {
-                if (mShowLifetimeHistogram) {
+                if (mShowLifetimeData) {
                     mHistogram = mCollectionTask.getLifetimeStatistics();
                     if (mTitleView != null)
                         mTitleView.setText(R.string.power_title_lifetime_charger_speed);
@@ -147,7 +261,7 @@ public class PowerFragment extends CommonFragment {
                         mHintView.setText(R.string.power_hint_realtime_charger_speed);
                 }
             } else {
-                if (mShowLifetimeHistogram) {
+                if (mShowLifetimeData) {
                     mHistogram = mCollectionTask.getLifetimeStatistics();
                     if (mTitleView != null)
                         mTitleView.setText(R.string.power_title_lifetime_battery_usage);
@@ -162,7 +276,7 @@ public class PowerFragment extends CommonFragment {
                 }
             }
         }
-        updatePowerViews();
+        updatePowerViews(true);
     }
 
     /**
@@ -183,5 +297,55 @@ public class PowerFragment extends CommonFragment {
             mHistogramView.applyTheme(theme);
             mHistogramView.postInvalidate();
         }
+        if (mBatteryLevelHeaderView != null) {
+            mBatteryLevelHeaderView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mBatteryLevelView != null) {
+            mBatteryLevelView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mChargingStatusHeaderView != null) {
+            mChargingStatusHeaderView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mChargingStatusView != null) {
+            mChargingStatusView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mBatteryTemperatureHeaderView != null) {
+            mBatteryTemperatureHeaderView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mBatteryTemperatureView != null) {
+            mBatteryTemperatureView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mRealtimeMinMaxHeaderView != null) {
+            mRealtimeMinMaxHeaderView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mRealtimeMinMaxView != null) {
+            mRealtimeMinMaxView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mChargingRateHeaderView != null) {
+            mChargingRateHeaderView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mChargingRateView != null) {
+            mChargingRateView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mDivider != null) {
+            mDivider.setBackgroundColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+    }
+
+    /**
+     * Check the timestamp to see if the model needs an update.
+     *
+     * @return true if the model needs updated, false otherwise.
+     */
+    public boolean needsUpdate() {
+        if (!mShowLifetimeData)
+            return true;
+
+        long currentTime = System.currentTimeMillis();
+        if (currentTime > mNextUpdateTime) {
+            mNextUpdateTime = currentTime + UIConstants.LIFETIME_UPDATE_INTERVAL;
+            return true;
+        }
+        return false;
     }
 }

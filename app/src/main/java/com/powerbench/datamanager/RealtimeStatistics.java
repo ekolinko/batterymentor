@@ -29,6 +29,16 @@ public class RealtimeStatistics extends Statistics {
     private double mAverage;
 
     /**
+     * The minimum value of the data.
+     */
+    private double mMin = 0;
+
+    /**
+     * The maximum value of the data.
+     */
+    private double mMax = 0;
+
+    /**
      * Flag indicating that the median has already been calculated and no data has come in to
      * change it.
      */
@@ -50,8 +60,8 @@ public class RealtimeStatistics extends Statistics {
      */
     public Statistics mLifetimeStatistics;
 
-    public RealtimeStatistics() {
-        super();
+    public RealtimeStatistics(boolean chargerStatistics) {
+        super(chargerStatistics);
     }
 
     /**
@@ -72,7 +82,11 @@ public class RealtimeStatistics extends Statistics {
             }
             mMedianCalculated = false;
             mAverageCalculated = false;
-            mValue = point.getY();
+            mValue = convertValue(point.getY());
+            if (mValue > mMax)
+                mMax = mValue;
+            if (mValue < mMin)
+                mMin = mValue;
             super.addPoint(point);
         }
     }
@@ -90,11 +104,7 @@ public class RealtimeStatistics extends Statistics {
                 int size = sortedRecentData.size();
                 if (size > 0) {
                     int nonSpikeMidpoint = (int) (size * (1 - DataConstants.STATISTICS_PERCENT_OF_SPIKES_TO_DROP) / 2);
-                    mMedian = sortedRecentData.get(nonSpikeMidpoint).getY();
-                    StringBuilder sb = new StringBuilder();
-                    for (Point point : sortedRecentData) {
-                        sb.append(Math.abs(point.getY()) + " ");
-                    }
+                    mMedian = convertValue(sortedRecentData.get(nonSpikeMidpoint).getY());
                 } else {
                     mMedian = 0;
                 }
@@ -118,20 +128,29 @@ public class RealtimeStatistics extends Statistics {
                 mAverage = super.getAverage();
                 int recentSize = DataConstants.STATISTICS_RECENT_DATA_SIZE;
                 if (mRecentData.size() > recentSize + 1) {
+//                    int length = mRecentData.size();
+//                    double sum = 0;
+//                    int firstIndex = (int)(length * DataConstants.STATISTICS_PERCENT_OF_SPIKES_TO_DROP);
+//                    int lastIndex = length - 1 - firstIndex;
+//                    for (int i = firstIndex; i < lastIndex; i++) {
+//                        sum += mRecentData.get(i).getY();
+//                    }
+//                    long total = lastIndex - firstIndex;
+//                    mAverage = (total > 0) ? (sum / total) : 0;
                     double previousShortAverage = 0;
                     for (int i = mRecentData.size() - 2; i > mRecentData.size() - recentSize - 2; i--) {
-                        previousShortAverage += Math.abs(mRecentData.get(i).getY());
+                        previousShortAverage += convertValue(mRecentData.get(i).getY());
                     }
                     previousShortAverage /= recentSize;
                     double currentShortAverage = 0;
                     for (int i = mRecentData.size() - 1; i > mRecentData.size() - recentSize - 1; i--) {
-                        currentShortAverage += Math.abs(mRecentData.get(i).getY());
+                        currentShortAverage += convertValue(mRecentData.get(i).getY());
                     }
                     currentShortAverage /= recentSize;
                     if (currentShortAverage > previousShortAverage) {
                         double variance = 0;
                         for (int i = mRecentData.size() - 1; i > mRecentData.size() - recentSize - 1; i--) {
-                            double value = Math.abs(mRecentData.get(i).getY());
+                            double value = convertValue(mRecentData.get(i).getY());
                             variance += Math.pow(value - currentShortAverage, 2);
                         }
                         double standardDeviation = Math.sqrt(variance / recentSize);
@@ -201,5 +220,13 @@ public class RealtimeStatistics extends Statistics {
 
     public double getValue() {
         return mValue;
+    }
+
+    public double getMin() {
+        return mMin;
+    }
+
+    public double getMax() {
+        return mMax;
     }
 }

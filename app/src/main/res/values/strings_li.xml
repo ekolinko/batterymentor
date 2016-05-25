@@ -9,6 +9,7 @@
     <string name="value_units_template" formatted="false">%s %s</string>
     <string name="value_units_condensed_template" formatted="false">%s%s</string>
     <string name="uri_package">package</string>
+    <string name="value_percent_template" formatted="false">%s%%</string>
 
     <!-- Formatting -->
     <string name="format_power">#0</string>

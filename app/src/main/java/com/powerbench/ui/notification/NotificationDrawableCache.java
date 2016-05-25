@@ -3,6 +3,7 @@ package com.powerbench.ui.notification;
 import android.util.SparseArray;
 
 import com.powerbench.R;
+import com.powerbench.constants.UIConstants;
 
 /**
  * The class used that contains the cache of notification drawables.
@@ -712,6 +713,8 @@ public class NotificationDrawableCache {
      * @return the associated power resource.
      */
     public int getPowerResourceForValue(int value) {
+        if (value < UIConstants.NOTIFICATION_MIN_POWER)
+            value = UIConstants.NOTIFICATION_MIN_POWER;
         Integer resourceId;
         if ((resourceId = mPowerCache.get(value)) == null) {
             resourceId = R.drawable.notification_power_19000;
@@ -726,6 +729,8 @@ public class NotificationDrawableCache {
      * @return the associated current resource.
      */
     public int getCurrentResourceForValue(int value) {
+        if (value < UIConstants.NOTIFICATION_MIN_CURRENT)
+            value = UIConstants.NOTIFICATION_MIN_CURRENT;
         Integer resourceId;
         if ((resourceId = mCurrentCache.get(value)) == null) {
             resourceId = R.drawable.notification_current_9900;
@@ -740,6 +745,8 @@ public class NotificationDrawableCache {
      * @return the associated battery life resource.
      */
     public int getBatteryLifeResourceForValue(int value) {
+        if (value < UIConstants.NOTIFICATION_MIN_BATTERY_LIFE)
+            value = UIConstants.NOTIFICATION_MIN_BATTERY_LIFE;
         Integer resourceId;
         if ((resourceId = mBatteryLifeCache.get(value)) == null) {
             resourceId = R.drawable.notification_battery_life_299;

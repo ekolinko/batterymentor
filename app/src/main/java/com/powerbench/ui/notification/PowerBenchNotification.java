@@ -80,7 +80,7 @@ public class PowerBenchNotification {
         int resourceId;
         if (Settings.getInstance().getStatusBarUnits(context).equals(context.getString(R.string.milliamps))) {
             value = value / Sensor.VOLTAGE.measure();
-            int roundedValue = (int) value;
+            int roundedValue = (int) Math.round(value);
 
             // Rounding code
             if (value < UIConstants.NOTIFICATION_ROUNDING_THRESHOLD_HUNDREDS) {
@@ -98,11 +98,11 @@ public class PowerBenchNotification {
             message = String.format(context.getString(R.string.notification_current_template), roundedValue);
         } else if (Settings.getInstance().getStatusBarUnits(context).equals(context.getString(R.string.hr))) {
             double batteryLife = ModelManager.getInstance().getBatteryModel(context).getBatteryLife();
-            int roundedValue = (int) (batteryLife * UIConstants.NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR);
+            int roundedValue = (int) Math.round((batteryLife * UIConstants.NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR));
             resourceId = mResourceCache.getBatteryLifeResourceForValue(roundedValue);
             message = String.format(context.getString(R.string.notification_battery_life_template), mBatteryLifeFormatter.format(batteryLife));
         } else {
-            int roundedValue = (int) value;
+            int roundedValue = (int) Math.round(value);
 
             // Rounding code
             if (value < UIConstants.NOTIFICATION_ROUNDING_THRESHOLD_HUNDREDS) {

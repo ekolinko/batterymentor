@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.powerbench"
     android:versionCode="1"
-    android:versionName="0.0.0.16">
+    android:versionName="0.0.0.17">
     <!-- Used for changing brightness in brightness benchmark -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />

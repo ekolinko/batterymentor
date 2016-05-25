@@ -43,8 +43,8 @@ public class Point implements Serializable, Comparable<Point> {
         if (another == null)
             return -1;
 
-        double y = Math.abs(this.y);
-        double otherY = Math.abs(another.getY());
+        double y = this.y;
+        double otherY = another.getY();
         if (y < otherY)
             return -1;
         if (y > otherY)

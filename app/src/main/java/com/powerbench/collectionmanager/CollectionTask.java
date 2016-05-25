@@ -1,9 +1,7 @@
 package com.powerbench.collectionmanager;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.powerbench.constants.CollectionConstants;
 import com.powerbench.constants.SensorConstants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.datamanager.RealtimeStatistics;
@@ -111,8 +109,8 @@ public class CollectionTask {
         mSensor = sensor;
         mCollectionInterval = collectionInterval;
         registerMeasurementListener(measurementListener);
-        mBatteryStatistics = new RealtimeStatistics();
-        mChargerStatistics = new RealtimeStatistics();
+        mBatteryStatistics = new RealtimeStatistics(false);
+        mChargerStatistics = new RealtimeStatistics(true);
         mStatistics = mBatteryStatistics;
         mChargerListener = new ChargerManager.ChargerListener() {
             @Override

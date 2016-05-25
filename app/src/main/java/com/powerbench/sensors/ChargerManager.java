@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 
+import com.powerbench.R;
+import com.powerbench.constants.Constants;
+import com.powerbench.constants.SensorConstants;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +17,11 @@ import java.util.Set;
  * Singleton class used for notifying listeners when a charger is connected or disconnected.
  */
 public class ChargerManager {
+
+    /**
+     * The context associated with this charger manager.
+     */
+    private Context mContext;
 
     /**
      * The set of charger listeners.
@@ -28,6 +37,21 @@ public class ChargerManager {
      * Flag indicating whether the charger receiver has been registered with android.
      */
     private boolean mChargerReceiverRegistered = false;
+
+    /**
+     * The current battery level.
+     */
+    private int mBatteryLevel = Constants.INVALID_VALUE;
+
+    /**
+     * The current charging status as a string.
+     */
+    private String mChargingStatus;
+
+    /**
+     * The current battery temperature in celsius.
+     */
+    private float mBatteryTemperature;
 
     private static class SingletonHolder {
         private static final ChargerManager INSTANCE = new ChargerManager();
@@ -54,6 +78,7 @@ public class ChargerManager {
         }
 
         if (!mChargerReceiverRegistered) {
+            mContext = context;
             IntentFilter batteryChangedFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
             mChargerReceiver = new ChargerReceiver();
             Intent batteryStatusIntent = context.registerReceiver(mChargerReceiver, batteryChangedFilter);
@@ -88,15 +113,18 @@ public class ChargerManager {
      */
     public void handleBatteryStatusIntent(Context context, Intent batteryStatusIntent) {
         int status = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-        int level = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+        mBatteryLevel = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
         boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
                 status == BatteryManager.BATTERY_STATUS_FULL;
         if (isCharging) {
             notifyAllListenersOfChargerConnected();
+            mChargingStatus = mContext.getString(R.string.charging);
         } else {
             notifyAllListenersOfChargerDisconnected();
+            mChargingStatus = mContext.getString(R.string.discharging);
         }
-        notifyAllListenersOfBatteryLevelChanged(level);
+        mBatteryTemperature = ((float)batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / SensorConstants.BATTERY_TEMPERATURE_CONVERSION_FACTOR;
+        notifyAllListenersOfBatteryLevelChanged(mBatteryLevel);
     }
 
     /**
@@ -130,6 +158,18 @@ public class ChargerManager {
                 ChargerListener.onBatteryLevelChanged(level);
             }
         }
+    }
+
+    public int getBatteryLevel() {
+        return mBatteryLevel;
+    }
+
+    public String getChargingStatus() {
+        return mChargingStatus;
+    }
+
+    public float getBatteryTemperature() {
+        return mBatteryTemperature;
     }
 
     /**
