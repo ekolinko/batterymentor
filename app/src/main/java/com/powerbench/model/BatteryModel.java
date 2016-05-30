@@ -1,7 +1,6 @@
 package com.powerbench.model;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.collectionmanager.LifetimeCollectionTask;
@@ -64,6 +63,11 @@ public class BatteryModel {
      * Flag indicating whether the device is charging.
      */
     private boolean mCharging = false;
+
+    /**
+     * Flag indicating whether an update is required.
+     */
+    private boolean mForceUpdate = false;
 
     /**
      * The time at which the next model update can come.
@@ -134,7 +138,7 @@ public class BatteryModel {
     }
 
     public void updateModel() {
-        if (needsUpdate()) {
+        if (needsUpdate() || mForceUpdate) {
             LifetimeCollectionTask powerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(mContext);
             Statistics lifetimeStatistics = powerCollectionTask.getLifetimeStatistics();
             mLifetimePower = lifetimeStatistics.getAverage();
@@ -144,6 +148,7 @@ public class BatteryModel {
             mRealtimeCounterweight = realtimeStatistics.getCounterweight();
             mLifetimeBatteryAverage = powerCollectionTask.getBatteryLifetimeStatistics().getAverage();
             mLifetimeChargerAverage = powerCollectionTask.getChargerLifetimeStatistics().getAverage();
+            mForceUpdate = false;
         }
 
         double power = mRealtimePower*mRealtimeWeight + mLifetimePower*mRealtimeCounterweight;
@@ -173,7 +178,9 @@ public class BatteryModel {
     }
 
     public void setPower(double power) {
-        updateModel();
+        if (needsUpdate()) {
+            updateModel();
+        }
     }
 
     public void setBatteryLevel(int batteryLevel) {
@@ -206,6 +213,7 @@ public class BatteryModel {
 
     public void setCharging(boolean isCharging) {
         mCharging = isCharging;
+        mForceUpdate = true;
         updateModel();
     }
 

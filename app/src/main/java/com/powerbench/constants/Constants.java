@@ -36,6 +36,11 @@ public class Constants {
     public static final long SECOND = 1000;
 
     /**
+     * The number of milliseconds in a minute.
+     */
+    public static final long MINUTE = 60*SECOND;
+
+    /**
      * An invalid value.
      */
     public static final int INVALID_VALUE = -1;
@@ -54,4 +59,9 @@ public class Constants {
      * The number of milliseconds in a nanosecond.
      */
     public static final long NANOSECONDS_IN_MILLISECOND = 1000000;
+
+    /**
+     * The interval at which to refresh the ads.
+     */
+    public static final long AD_REFRESH_INTERVAL = 5*MINUTE;
 }

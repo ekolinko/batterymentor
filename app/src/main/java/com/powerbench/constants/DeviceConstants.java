@@ -29,4 +29,20 @@ public class DeviceConstants {
      * The default battery capacity.
      */
     public static final double BATTERY_CAPACITY_DEFAULT = 2400;
+
+    /**
+     * The set of device models used to configure this app.
+     */
+    public static class Model {
+        public static final String NEXUS_6 = "Nexus 6";
+    }
+
+    /**
+     * The set of power constants used for converting raw power numbers from the sensor to milliwatts.
+     */
+    public static class PowerFactor {
+        public static final double DEFAULT = 1;
+        public static final double NEXUS_6 = -1;
+    }
+
 }

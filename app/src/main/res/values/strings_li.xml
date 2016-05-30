@@ -1,5 +1,8 @@
 <resources>
 
+    <!-- Ads -->
+    <string name="advertising_id">ca-app-pub-3940256099942544/6300978111</string>
+
     <!-- Arguments -->
     <string name="argument_tutorial_title_res_id">argument_tutorial_title_res_id</string>
     <string name="argument_tutorial_image_res_id">argument_tutorial_image_res_id</string>

@@ -3,7 +3,6 @@ package com.powerbench.ui.main;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
@@ -14,21 +13,20 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.SwitchCompat;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.powerbench.R;
 import com.powerbench.collectionmanager.ApplicationCollectionTask;
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.constants.Constants;
-import com.powerbench.constants.SettingsConstants;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.device.Device;
 import com.powerbench.collectionmanager.CollectionTask;
@@ -36,10 +34,10 @@ import com.powerbench.datamanager.Point;
 import com.powerbench.device.Permissions;
 import com.powerbench.model.BatteryModel;
 import com.powerbench.model.ModelManager;
+import com.powerbench.sensors.ChargerManager;
 import com.powerbench.settings.Settings;
 import com.powerbench.ui.common.CommonActivity;
 import com.powerbench.ui.common.CommonFragment;
-import com.powerbench.ui.common.listeners.ToggleSettingListener;
 import com.powerbench.ui.settings.SettingsActivity;
 import com.powerbench.ui.theme.Theme;
 import com.powerbench.ui.theme.ThemeManager;
@@ -156,6 +154,7 @@ public class PowerBenchActivity extends CommonActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MobileAds.initialize(getApplicationContext(), getString(R.string.advertising_id));
         boolean showTutorialActivity = Settings.getInstance().getShowTutorial(this) || !Permissions.getInstance().isSettingsPermissionGranted(this);
         if (showTutorialActivity) {
             startActivityForResult(new Intent(this, TutorialActivity.class), UIConstants.TUTORIAL_REQUEST_CODE);
@@ -405,6 +404,7 @@ public class PowerBenchActivity extends CommonActivity {
     protected void onResume() {
         super.onResume();
         mPowerCollectionTask.registerMeasurementListener(mMeasurementListener);
+        ChargerManager.getInstance().registerChargerListener(this, ModelManager.getInstance());
         refreshFragments();
     }
 
@@ -412,6 +412,7 @@ public class PowerBenchActivity extends CommonActivity {
     protected void onPause() {
         super.onPause();
         mPowerCollectionTask.unregisterMeasurementListener(mMeasurementListener);
+        ChargerManager.getInstance().unregisterChargerListener(this, ModelManager.getInstance());
     }
 
     @Override

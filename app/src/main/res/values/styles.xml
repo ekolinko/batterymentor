@@ -240,6 +240,13 @@
         <item name="android:textColor">@color/powerbench_blue</item>
     </style>
 
+    <style name="powerbench_ad">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">15dp</item>
+    </style>
+
     <!-- Process -->
     <style name="process_container">
         <item name="android:layout_width">match_parent</item>

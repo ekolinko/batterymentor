@@ -31,12 +31,12 @@ public class RealtimeStatistics extends Statistics {
     /**
      * The minimum value of the data.
      */
-    private double mMin = 0;
+    private double mMin = Double.POSITIVE_INFINITY;
 
     /**
      * The maximum value of the data.
      */
-    private double mMax = 0;
+    private double mMax = Double.NEGATIVE_INFINITY;
 
     /**
      * Flag indicating that the median has already been calculated and no data has come in to

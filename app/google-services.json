@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "649937028234",
+    "firebase_url": "https://project-1347952067322292332.firebaseio.com",
+    "project_id": "project-1347952067322292332",
+    "storage_bucket": "project-1347952067322292332.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:649937028234:android:eefc769c5b609a84",
+        "android_client_info": {
+          "package_name": "com.powerbench"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "649937028234-k24jja2s88cbut5d6mr1gsnnrpu1jt7v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZGaQ-KQxEkVPg3BoylQHfidTBHyM9ZtU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

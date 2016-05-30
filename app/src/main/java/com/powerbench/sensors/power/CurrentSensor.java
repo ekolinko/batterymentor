@@ -1,6 +1,7 @@
 package com.powerbench.sensors.power;
 
 import com.powerbench.constants.SensorConstants;
+import com.powerbench.device.Device;
 import com.powerbench.sensors.Sensor;
 
 import java.io.File;
@@ -10,6 +11,18 @@ import java.io.File;
  */
 public class CurrentSensor extends Sensor {
 
+    /**
+     * The conversion factor for this device.
+     */
+    private double mConversionFactor;
+
+    /**
+     * Initialize the sensor.
+     */
+    public void initialize() {
+        mConversionFactor = Device.getInstance().getCurrentConversionFactor();
+    }
+
     @Override
     public String initFilename() {
         return (new File(SensorConstants.SENSOR_CURRENT_NOW).exists()) ?
@@ -17,6 +30,6 @@ public class CurrentSensor extends Sensor {
     }
 
     public double measure() {
-        return measureValue(SensorConstants.MILLIAMPS_IN_MICROAMP);
+        return measureValue(mConversionFactor);
     }
 }

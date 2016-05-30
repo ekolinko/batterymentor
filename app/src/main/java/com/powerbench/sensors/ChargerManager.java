@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.util.Log;
 
 import com.powerbench.R;
 import com.powerbench.constants.Constants;
@@ -98,6 +99,8 @@ public class ChargerManager {
         synchronized (mChargerListeners) {
             mChargerListeners.remove(chargerListener);
         }
+
+        Log.d("tstatic","Size = " + mChargerListeners.size());
 
         if (mChargerReceiverRegistered && mChargerListeners.isEmpty()) {
             context.unregisterReceiver(mChargerReceiver);

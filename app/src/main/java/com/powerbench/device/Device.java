@@ -1,6 +1,8 @@
 package com.powerbench.device;
 
 import android.content.Context;
+import android.os.Build;
+import android.util.Log;
 
 import com.powerbench.constants.Constants;
 import com.powerbench.constants.DeviceConstants;
@@ -78,5 +80,18 @@ public class Device {
             }
         }
         return mNumCores;
+    }
+
+    /**
+     * Get the factor that should be used to convert the power reading from the sensor to milliwatts.
+     */
+    public double getCurrentConversionFactor() {
+        double conversionFactor = DeviceConstants.PowerFactor.DEFAULT;
+
+        if (Build.MODEL.equals(DeviceConstants.Model.NEXUS_6)) {
+            conversionFactor = DeviceConstants.PowerFactor.NEXUS_6;
+        }
+
+        return conversionFactor * SensorConstants.MILLIAMPS_IN_MICROAMP;
     }
 }

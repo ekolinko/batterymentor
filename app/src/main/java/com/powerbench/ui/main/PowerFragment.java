@@ -212,8 +212,9 @@ public class PowerFragment extends CommonFragment {
                         maxValue = -minValue + 0.0;
                         minValue = temp;
                     }
-                    String min = mPowerFormatter.format(minValue);
-                    String max = mPowerFormatter.format(maxValue);
+
+                    String min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue);
+                    String max = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue);
                     mRealtimeMinMaxView.setText(String.format(getString(R.string.value_min_max_template), min, max));
                 }
             }

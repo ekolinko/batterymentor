@@ -37,6 +37,19 @@ public abstract class Sensor {
      */
     private double mValue;
 
+    /**
+     * Create an initialize the sensor.
+     * @return
+     */
+    public Sensor() {
+        initialize();
+    }
+
+    /**
+     * Initialize the sensor.
+     */
+    public void initialize() {
+    }
 
     /**
      * Return the filename associated with this sensor. Set the filename if it is null.

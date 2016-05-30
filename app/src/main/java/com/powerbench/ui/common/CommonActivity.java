@@ -19,8 +19,11 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.powerbench.PowerBenchService;
 import com.powerbench.R;
+import com.powerbench.constants.Constants;
 import com.powerbench.constants.DeviceConstants;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.sensors.ChargerManager;
@@ -59,9 +62,20 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     private boolean mChargerConnected;
 
+    /**
+     * The ad view.
+     */
+    private AdView mAdView;
+
+    /**
+     * The thread responsible for refreshing ads.
+     */
+    private AdRefreshThread mAdRefreshThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mHandler = new Handler();
     }
 
     @Override
@@ -77,8 +91,8 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      * {@link android.app.Activity#setContentView(int)}}.
      */
     protected void initialize() {
-        mHandler = new Handler();
         mPowerFormatter = new DecimalFormat(getString(R.string.format_power));
+        mAdView = (AdView) findViewById(R.id.powerbench_ad);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
@@ -108,12 +122,19 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     protected void onPause() {
         super.onPause();
         ChargerManager.getInstance().unregisterChargerListener(this, this);
+        if (mAdRefreshThread != null) {
+            mHandler.removeCallbacks(mAdRefreshThread);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         ChargerManager.getInstance().registerChargerListener(this, this);
+        if (mAdRefreshThread == null) {
+            mAdRefreshThread = new AdRefreshThread();
+            mHandler.post(mAdRefreshThread);
+        }
     }
 
     @Override
@@ -154,6 +175,16 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
                     onPermissionDenied(requestCode);
                 }
                 break;
+        }
+    }
+
+    /**
+     * Refresh the ad.
+     */
+    private void refreshAd() {
+        if (mAdView != null) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
         }
     }
 
@@ -303,4 +334,16 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
             mServiceBound = false;
         }
     };
+
+    /**
+     * The thread responsible for refreshing the ad on the screen.
+     */
+    private class AdRefreshThread implements Runnable {
+
+        @Override
+        public void run() {
+            refreshAd();
+            mHandler.postDelayed(this, Constants.AD_REFRESH_INTERVAL);
+        }
+    }
 }

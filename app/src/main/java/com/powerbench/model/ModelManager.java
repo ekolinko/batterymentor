@@ -67,7 +67,6 @@ public class ModelManager implements ChargerManager.ChargerListener {
     public BatteryModel getBatteryModel(Context context) {
         if (mBatteryModel == null) {
             mBatteryModel = new BatteryModel(context);
-            ChargerManager.getInstance().registerChargerListener(context, this);
             LifetimeCollectionTask powerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(context);
             final double average = powerCollectionTask.getRealtimeStatistics().getAverage();
             powerCollectionTask.registerMeasurementListener(new CollectionTask.MeasurementListener() {
