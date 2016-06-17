@@ -11,13 +11,22 @@
         style="@style/powerbench_power_hint"
         android:textColor="@color/gray"
         android:layout_below="@id/powerbench_power_title" />
-    <TextView android:id="@+id/powerbench_power_value"
-        style="@style/powerbench_power_value"
-        android:layout_below="@id/powerbench_power_hint"
-        android:textColor="@color/powerbench_blue" />
+    <RelativeLayout android:id="@+id/powerbench_power_value_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@id/powerbench_power_hint">
+        <TextView android:id="@+id/powerbench_power_value"
+            style="@style/powerbench_power_value"
+            android:textColor="@color/powerbench_blue" />
+        <ImageView android:id="@+id/powerbench_power_led"
+            style="@style/powerbench_power_led"
+            android:layout_toRightOf="@id/powerbench_power_value"
+            android:src="@drawable/led_green" />
+    </RelativeLayout>
     <com.powerbench.ui.common.HistogramView android:id="@+id/powerbench_power_histogram"
         style="@style/powerbench_power_histogram"
-        android:layout_below="@id/powerbench_power_value"
+        android:layout_below="@id/powerbench_power_value_container"
         android:layout_above="@+id/divider_power_details_container" />
     <TextView android:id="@id/divider_power_details_container"
         style="@style/divider_horizontal"
@@ -48,7 +57,8 @@
             <TextView android:id="@+id/powerbench_power_battery_temperature"
                 style="@style/powerbench_power_item"/>
         </LinearLayout>
-        <LinearLayout style="@style/powerbench_power_item_container">
+        <LinearLayout android:id="@+id/powerbench_power_battery_min_max_container"
+            style="@style/powerbench_power_item_container">
             <TextView android:id="@+id/powerbench_power_battery_min_max_header"
                 style="@style/powerbench_power_item_header"
                 android:text="@string/power_battery_min_max"/>

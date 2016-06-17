@@ -24,6 +24,8 @@
     <string name="next">NEXT</string>
     <string name="finish">FINISH</string>
     <string name="invalid_value">~</string>
+    <string name="cancel">CANCEL</string>
+    <string name="ok">OK</string>
 
     <!-- Gadgets -->
     <string name="brightness_gadget">Brightness Gadget</string>
@@ -70,6 +72,8 @@
     <string name="value_celsius_template" formatted="false">%s\u2103</string>
     <string name="value_min_max_template" formatted="false">%s/%s mW</string>
     <string name="max_battery_life">20+</string>
+    <string name="dialog_reset_min_max_title">Reset Min/Max</string>
+    <string name="dialog_reset_min_max_message">Reset the realtime min/max values?</string>
 
     <!-- Process -->
     <string name="process_stop">STOP</string>

@@ -46,6 +46,16 @@ public class UIConstants {
     public static final int NOTIFICATION_MIN_BATTERY_LIFE = 1;
 
     /**
+     * The threshold at which the LED is shown as red.
+     */
+    public static final double LED_RED_THRESHOLD = 2;
+
+    /**
+     * The threshold at which the LED is shown as yellow.
+     */
+    public static final double LED_YELLOW_THRESHOLD = 1.5;
+
+    /**
      * The notification scaling factor for battery life.
      */
     public static int NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR = 10;

@@ -210,6 +210,20 @@ public class RealtimeStatistics extends Statistics {
         return (getSize() / (double)(getMaximumSize()) * DataConstants.REALTIME_STATISTICS_MAX_WEIGHT);
     }
 
+    /**
+     * Reset the minimum value.
+     */
+    public void resetMin() {
+        mMin = Double.POSITIVE_INFINITY;
+    }
+
+    /**
+     * Reset the maximum value.
+     */
+    public void resetMax() {
+        mMax = Double.NEGATIVE_INFINITY;
+    }
+
     public void setLifetimeStatistics(Statistics lifetimeStatistics) {
         mLifetimeStatistics = lifetimeStatistics;
     }

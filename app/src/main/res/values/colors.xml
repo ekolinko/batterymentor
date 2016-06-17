@@ -19,6 +19,11 @@
     <color name="powerbench_blue_pressed">#AA3F51B5</color>
     <color name="powerbench_red_pressed">#AAF44336</color>
 
+    <!-- LED colors -->
+    <color name="led_green">#8BC34A</color>
+    <color name="led_yellow">#FFEB3B</color>
+    <color name="led_red">#F44336</color>
+
     <!-- Navigation -->
     <color name="navigation_menu_background">#111</color>
 

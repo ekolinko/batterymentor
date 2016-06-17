@@ -1,7 +1,10 @@
 <resources>
 
     <!-- Ads -->
+    <!-- Testing Advertising Id -->
     <string name="advertising_id">ca-app-pub-3940256099942544/6300978111</string>
+    <!-- Production Advertising Id -->
+    <!-- <string name="advertising_id">ca-app-pub-5852892966635250/4333102121</string> -->
 
     <!-- Arguments -->
     <string name="argument_tutorial_title_res_id">argument_tutorial_title_res_id</string>

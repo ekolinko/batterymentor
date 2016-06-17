@@ -1,10 +1,14 @@
 package com.powerbench.ui.main;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -13,6 +17,7 @@ import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.collectionmanager.LifetimeCollectionTask;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.datamanager.Histogram;
+import com.powerbench.datamanager.RealtimeStatistics;
 import com.powerbench.sensors.ChargerManager;
 import com.powerbench.sensors.Sensor;
 import com.powerbench.settings.Settings;
@@ -64,9 +69,19 @@ public class PowerFragment extends CommonFragment {
     private TextView mPowerView;
 
     /**
+     * The power LED associated with this fragment.
+     */
+    private ImageView mPowerLed;
+
+    /**
      * The histogram view associated with this fragment.
      */
     private HistogramView mHistogramView;
+
+    /**
+     * The realtime min/max container view associated with this fragment.
+     */
+    private LinearLayout mRealtimeMinMaxContainerView;
 
     /**
      * The battery level header view associated with this fragment.
@@ -141,7 +156,9 @@ public class PowerFragment extends CommonFragment {
         mTitleView = (TextView) view.findViewById(R.id.powerbench_power_title);
         mHintView = (TextView) view.findViewById(R.id.powerbench_power_hint);
         mPowerView = (TextView) view.findViewById(R.id.powerbench_power_value);
+        mPowerLed = (ImageView) view.findViewById(R.id.powerbench_power_led);
         mHistogramView = (HistogramView) view.findViewById(R.id.powerbench_power_histogram);
+        mRealtimeMinMaxContainerView = (LinearLayout) view.findViewById(R.id.powerbench_power_battery_min_max_container);
         mBatteryLevelHeaderView = (TextView) view.findViewById(R.id.powerbench_power_battery_level_header);
         mChargingStatusHeaderView = (TextView) view.findViewById(R.id.powerbench_power_charging_status_header);
         mBatteryTemperatureHeaderView = (TextView) view.findViewById(R.id.powerbench_power_battery_temperature_header);
@@ -194,6 +211,17 @@ public class PowerFragment extends CommonFragment {
                         }
                     }
 
+                    if (mPowerLed != null && mPowerLed.getVisibility() == View.VISIBLE) {
+                        double lifetimeAverage = mCollectionTask.getLifetimeStatistics().getAverage();
+                        double fraction = powerValue / lifetimeAverage;
+                        if (fraction >= UIConstants.LED_RED_THRESHOLD) {
+                            mPowerLed.setImageResource(R.drawable.led_red);
+                        } else if (fraction >= UIConstants.LED_YELLOW_THRESHOLD) {
+                            mPowerLed.setImageResource(R.drawable.led_yellow);
+                        } else {
+                            mPowerLed.setImageResource(R.drawable.led_green);
+                        }
+                    }
 
                     mPowerView.setText(value);
                     mHistogramView.setHistogram(mHistogram);
@@ -261,6 +289,8 @@ public class PowerFragment extends CommonFragment {
                     if (mHintView != null)
                         mHintView.setText(R.string.power_hint_realtime_charger_speed);
                 }
+                if (mPowerLed != null)
+                    mPowerLed.setVisibility(View.GONE);
             } else {
                 if (mShowLifetimeData) {
                     mHistogram = mCollectionTask.getLifetimeStatistics();
@@ -268,13 +298,38 @@ public class PowerFragment extends CommonFragment {
                         mTitleView.setText(R.string.power_title_lifetime_battery_usage);
                     if (mHintView != null)
                         mHintView.setText(R.string.power_hint_lifetime_battery_usage);
+                    if (mPowerLed != null)
+                        mPowerLed.setVisibility(View.GONE);
                 } else {
                     mHistogram = mCollectionTask.getRealtimeStatistics();
                     if (mTitleView != null)
                         mTitleView.setText(R.string.power_title_realtime_battery_usage);
                     if (mHintView != null)
                         mHintView.setText(R.string.power_hint_realtime_battery_usage);
+                    if (mPowerLed != null)
+                        mPowerLed.setVisibility(View.VISIBLE);
                 }
+            }
+            if (mRealtimeMinMaxContainerView != null) {
+                mRealtimeMinMaxContainerView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(R.string.dialog_reset_min_max_title).
+                                setMessage(R.string.dialog_reset_min_max_message)
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        RealtimeStatistics realtimeStatistics = mCollectionTask.getRealtimeStatistics();
+                                        realtimeStatistics.resetMin();
+                                        realtimeStatistics.resetMax();
+                                        updatePowerViews(true);
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, null);
+                        builder.show();
+                        return true;
+                    }
+                });
             }
         }
         updatePowerViews(true);
