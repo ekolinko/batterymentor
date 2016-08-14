@@ -1,10 +1,13 @@
 package com.powerbench.ui.main;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
@@ -12,25 +15,24 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.powerbench.R;
 import com.powerbench.collectionmanager.ApplicationCollectionTask;
 import com.powerbench.collectionmanager.CollectionManager;
+import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.constants.Constants;
 import com.powerbench.constants.UIConstants;
-import com.powerbench.device.Device;
-import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.datamanager.Point;
+import com.powerbench.device.Device;
 import com.powerbench.device.Permissions;
 import com.powerbench.model.BatteryModel;
 import com.powerbench.model.ModelManager;
@@ -40,8 +42,8 @@ import com.powerbench.ui.common.CommonActivity;
 import com.powerbench.ui.common.CommonFragment;
 import com.powerbench.ui.settings.SettingsActivity;
 import com.powerbench.ui.theme.Theme;
-import com.powerbench.ui.theme.ThemeManager;
 import com.powerbench.ui.tutorial.TutorialActivity;
+import com.powerbench.utils.Utils;
 
 import java.text.DecimalFormat;
 
@@ -50,11 +52,6 @@ import java.text.DecimalFormat;
  * rate in realtime.
  */
 public class PowerBenchActivity extends CommonActivity {
-
-    /**
-     * The theme manager.
-     */
-    private ThemeManager mThemeManager = ThemeManager.getInstance();
 
     /**
      * The primary battery collection task.
@@ -122,6 +119,11 @@ public class PowerBenchActivity extends CommonActivity {
     private TextView mBatteryLifeLabel;
 
     /**
+     * The battery status menu item.
+     */
+    private MenuItem mBatteryStatusMenuItem;
+
+    /**
      * The measurement listener.
      */
     private CollectionTask.MeasurementListener mMeasurementListener;
@@ -130,11 +132,6 @@ public class PowerBenchActivity extends CommonActivity {
      * The primary application collection task.
      */
     private ApplicationCollectionTask mApplicationCollectionTask;
-
-    /**
-     * The battery life formatter.
-     */
-    private DecimalFormat mBatteryLifeFormatter;
 
     /**
      * The handler used to measure the UI.
@@ -171,8 +168,13 @@ public class PowerBenchActivity extends CommonActivity {
         mHandler = new Handler();
         mPowerFragment = new PowerFragment();
         mScreenFragment = new ScreenFragment();
-        mAppsFragment = new AppsFragment();
-        mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment, mAppsFragment };
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            mAppsFragment = new AppsFragment();
+            mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment, mAppsFragment };
+        } else {
+            mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment };
+        }
+
         mPagerAdapter = new PowerbenchPagerAdapter(getSupportFragmentManager(), mTabFragments);
         mViewPager = (ViewPager) findViewById(R.id.powerbench_pager);
         mViewPager.setAdapter(mPagerAdapter);
@@ -180,7 +182,7 @@ public class PowerBenchActivity extends CommonActivity {
         mBatteryLife = (TextView) findViewById(R.id.battery_life);
         mBatteryLifeLabel = (TextView) findViewById(R.id.battery_life_label);
         setupTabs();
-        applyTheme();
+        applyTheme(getThemeManager().getCurrentTheme(this));
         ModelManager.getInstance().initialize(this);
         mBatteryModel = ModelManager.getInstance().getBatteryModel(this);
         mBatteryModel.registerOnModelChangedListener(new BatteryModel.OnModelChangedListener() {
@@ -194,7 +196,6 @@ public class PowerBenchActivity extends CommonActivity {
                 });
             }
         });
-        mBatteryLifeFormatter = new DecimalFormat(getString(R.string.format_battery_life));
         mMeasurementListener = new CollectionTask.MeasurementListener() {
             @Override
             public void onMeasurementReceived(final Point point) {
@@ -285,7 +286,12 @@ public class PowerBenchActivity extends CommonActivity {
         Button powerTab = (Button) findViewById(R.id.powerbench_tab_power);
         Button displayTab = (Button) findViewById(R.id.powerbench_tab_display);
         Button appsTab = (Button) findViewById(R.id.powerbench_tab_apps);
-        mPagerTabs = new Button[] { powerTab, displayTab, appsTab };
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            mPagerTabs = new Button[] { powerTab, displayTab, appsTab };
+        } else {
+            appsTab.setVisibility(View.GONE);
+            mPagerTabs = new Button[] { powerTab, displayTab };
+        }
         for (int position = 0; position < mPagerTabs.length; position++) {
             Button button = mPagerTabs[position];
             final int item = position;
@@ -331,21 +337,29 @@ public class PowerBenchActivity extends CommonActivity {
      */
     protected void updateBatteryLife() {
         double batteryLife = mBatteryModel.getBatteryLife();
-        String value = String.format(getString(R.string.value_units_template), mBatteryLifeFormatter.format(batteryLife), getString(R.string.hours));
-        if (batteryLife <= 0 && isChargerConnected())
+        String value = Utils.convertBatteryLifeToSimpleString(this, batteryLife);
+        if (getBatteryLevel() == Constants.INT_PERCENT && isChargerConnected()) {
+            value = getString(R.string.fully_charged);
+            mBatteryLifeLabel.setVisibility(View.GONE);
+        } else if (batteryLife <= 0 && isChargerConnected()) {
             value = getString(R.string.not_charging);
-        else if (batteryLife >= UIConstants.MAX_BATTERY_LIFE)
+            mBatteryLifeLabel.setVisibility(View.GONE);
+        } else if (batteryLife >= UIConstants.MAX_BATTERY_LIFE) {
             value = String.format(getString(R.string.value_units_template), getString(R.string.max_battery_life), getString(R.string.hours));
-        else if (Double.isInfinite(batteryLife))
+            mBatteryLifeLabel.setVisibility(View.VISIBLE);
+        } else if (Double.isInfinite(batteryLife)) {
             value = String.format(getString(R.string.value_units_template), getString(R.string.invalid_value), getString(R.string.hours));
+            mBatteryLifeLabel.setVisibility(View.GONE);
+        }
         mBatteryLife.setText(value);
     }
 
     /**
      * Apply the theme to this activity.
      */
-    protected void applyTheme() {
-        Theme theme = mThemeManager.getCurrentTheme(this);
+    @Override
+    protected void applyTheme(Theme theme) {
+        super.applyTheme(theme);
 
         // Apply the theme to the battery life container.
         if (mBatteryLifeContainer != null) {
@@ -391,6 +405,12 @@ public class PowerBenchActivity extends CommonActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
+        } else if (item.getItemId() == R.id.menu_battery_status) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, getAppTheme().getDialogStyleResource()).setTitle(getString(R.string.more_details)).
+                    setMessage(R.string.test_screen_more_details)
+                    .setPositiveButton(R.string.close, null);
+            builder.show();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -398,6 +418,16 @@ public class PowerBenchActivity extends CommonActivity {
     @Override
     protected void onServiceBound() {
         getService().startNotification();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        mBatteryStatusMenuItem = menu.findItem(R.id.menu_battery_status);
+        if (mBatteryStatusMenuItem != null) {
+            setTitle(String.format(getString(R.string.value_percent_template), Integer.toString(getBatteryLevel())));
+        }
+        return true;
     }
 
     @Override
@@ -423,28 +453,42 @@ public class PowerBenchActivity extends CommonActivity {
     }
 
     @Override
-    public void onChargerConnected() {
-        super.onChargerConnected();
-        mThemeManager.setCurrentTheme(this, Theme.CHARGER_THEME);
-        applyTheme();
+    public void onChargerConnectedUIThread() {
+        super.onChargerConnectedUIThread();
         for (CommonFragment tabFragment : mTabFragments) {
             tabFragment.onChargerConnected();
         }
-        if (mBatteryLifeLabel != null)
+        if (mBatteryLifeLabel != null) {
             mBatteryLifeLabel.setText(getString(R.string.battery_life_until_full));
-
+            if (getBatteryLevel() == Constants.INT_PERCENT)
+                mBatteryLifeLabel.setVisibility(View.GONE);
+        }
+        if (mBatteryStatusMenuItem != null) {
+            mBatteryStatusMenuItem.setIcon(R.drawable.battery_charging);
+        }
     }
 
     @Override
-    public void onChargerDisconnected() {
-        super.onChargerDisconnected();
-        mThemeManager.setCurrentTheme(this, Theme.BATTERY_THEME);
-        applyTheme();
+    public void onChargerDisconnectedUIThread() {
+        super.onChargerDisconnectedUIThread();
         for (CommonFragment tabFragment : mTabFragments) {
             tabFragment.onChargerDisconnected();
         }
-        if (mBatteryLifeLabel != null)
+        if (mBatteryLifeLabel != null) {
             mBatteryLifeLabel.setText(getString(R.string.battery_life_remaining));
+            mBatteryLifeLabel.setVisibility(View.VISIBLE);
+        }
+        if (mBatteryStatusMenuItem != null) {
+            mBatteryStatusMenuItem.setIcon(R.drawable.battery_discharging);
+        }
+    }
+
+    @Override
+    public void onBatteryLevelChanged(int level) {
+        super.onBatteryLevelChanged(level);
+        if (mBatteryStatusMenuItem != null) {
+            mBatteryStatusMenuItem.setTitle(String.format(getString(R.string.value_percent_template), Integer.toString(level)));
+        }
     }
 
     /**

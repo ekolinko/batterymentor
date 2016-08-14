@@ -5,6 +5,7 @@
     <string name="benchmark_in_progress">Test in Progress.\n</string>
     <string name="benchmark_completing">Completing the Test.\n</string>
     <string name="benchmark_complete">Test is Complete.\n</string>
+    <string name="benchmark_getting_ready">Getting\nReady</string>
     <string name="stop_test">STOP TEST</string>
 
     <!-- ScreenTestActivity -->
@@ -19,6 +20,7 @@
     <string name="hr">hr</string>
     <string name="cpu_load">%</string>
     <string name="seconds">seconds</string>
+    <string name="minutes">minutes</string>
     <string name="hours">hours</string>
     <string name="skip">SKIP</string>
     <string name="next">NEXT</string>
@@ -26,11 +28,20 @@
     <string name="invalid_value">~</string>
     <string name="cancel">CANCEL</string>
     <string name="ok">OK</string>
+    <string name="close">CLOSE</string>
+    <string name="power_template" formatted="false">%s mW</string>
+    <string name="more_details">More Details</string>
 
     <!-- Gadgets -->
     <string name="brightness_gadget">Brightness Gadget</string>
     <string name="cpu_gadget">CPU Gadget</string>
     <string name="battery_gadget_slider_hint">Move the slider to see the impact of screen brightness on battery life</string>
+
+    <!-- Model -->
+    <string name="model_dialog_title">Power Models</string>
+    <string name="model_screen_template" formatted="false">P = %sB + %s</string>
+    <string name="model_cpu_template" formatted="false">P = %sL + %s</string>
+    <string name="model_cpu_frequency_template" formatted="false">P = %sF^2 + %sF + %s</string>
 
     <!-- Navigation -->
     <string name="navigation_tutorial">Tutorial</string>
@@ -46,6 +57,7 @@
     <!-- PowerBenchActivity -->
     <string name="battery_test">Battery Test</string>
     <string name="cpu_test">Apps Test</string>
+    <string name="battery_stats">Battery Stats</string>
     <string name="charger_benchmark">Charger Benchmark</string>
     <string name="battery_life_remaining">Battery life remaining</string>
     <string name="battery_life_until_full">Until fully charged</string>
@@ -55,14 +67,14 @@
     <string name="tab_apps">APPS</string>
 
     <!-- Power Tab -->
-    <string name="power_title_realtime_battery_usage">Realtime Battery Usage</string>
-    <string name="power_title_lifetime_battery_usage">Lifetime Battery Usage</string>
-    <string name="power_title_realtime_charger_speed">Realtime Charger Speed</string>
-    <string name="power_title_lifetime_charger_speed">Lifetime Charger Speed</string>
-    <string name="power_hint_realtime_battery_usage">(Tap to switch to lifetime battery usage)</string>
-    <string name="power_hint_realtime_charger_speed">(Tap to switch to lifetime charger speed)</string>
-    <string name="power_hint_lifetime_battery_usage">(Tap to switch to realtime battery usage)</string>
-    <string name="power_hint_lifetime_charger_speed">(Tap to switch to realtime charger speed)</string>
+    <string name="power_title_realtime_battery_usage">Using Battery</string>
+    <string name="power_title_lifetime_battery_usage">Using Battery</string>
+    <string name="power_title_realtime_charger_speed">Charger Connected</string>
+    <string name="power_title_lifetime_charger_speed">Charger Connected</string>
+    <string name="power_hint_realtime_battery_usage">(Tap to switch to lifetime power)</string>
+    <string name="power_hint_realtime_charger_speed">(Tap to switch to lifetime power)</string>
+    <string name="power_hint_lifetime_battery_usage">(Tap to switch to realtime power)</string>
+    <string name="power_hint_lifetime_charger_speed">(Tap to switch to realtime power)</string>
     <string name="power_battery_level">BATTERY LEVEL</string>
     <string name="power_charging_status">CHARGING STATUS</string>
     <string name="power_battery_temperature">BATTERY TEMPERATURE</string>
@@ -74,6 +86,10 @@
     <string name="max_battery_life">20+</string>
     <string name="dialog_reset_min_max_title">Reset Min/Max</string>
     <string name="dialog_reset_min_max_message">Reset the realtime min/max values?</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="realtime">Realtime</string>
+    <string name="lifetime">Lifetime</string>
 
     <!-- Process -->
     <string name="process_stop">STOP</string>
@@ -86,6 +102,7 @@
     <string name="charging">Charging</string>
     <string name="discharging">Discharging</string>
     <string name="not_charging">Not Charging</string>
+    <string name="fully_charged">Fully Charged</string>
 
     <!-- Settings -->
     <string name="settings_startup_with_device">Startup with Device</string>
@@ -93,14 +110,16 @@
     <string name="settings_power_tab_units">Power Tab Units</string>
 
     <!-- Test -->
-    <string name="test_screen_run">RUN SCREEN TEST</string>
-    <string name="test_screen_description">See how screen brightness affects your battery life! Run the screen test to unlock this feature.</string>
-    <string name="test_apps_run">RUN APPS TEST</string>
-    <string name="test_apps_description">See how apps affect your battery life! Run the apps test to unlock this feature.</string>
+    <string name="test_screen_run">Run Screen Test</string>
+    <string name="test_screen_rerun">Rerun Screen Test</string>
+    <string name="test_screen_more_details">The screen test will run through several brightness levels on your device and measure how much power is consumed at each level. The data is used to build a model that estimates the power consumed by the display at any brightness level. The model is then used along with the battery capacity to estimate how screen brightness affects your battery life.\n\nThe test takes about two minutes to complete and only needs to be run once.</string>
+    <string name="test_screen_description">Run the screen test to see how screen brightness affects your battery life.</string>
+    <string name="test_apps_run">Run Apps Test</string>
+    <string name="test_apps_description">Run the apps test to see how apps affect your battery life.</string>
 
     <!-- Tutorial -->
     <string name="tutorial_welcome_title">Welcome</string>
-    <string name="tutorial_welcome_text">“The following tutorial screens only appear the first time you run this app and describe each of the sections of this app.</string>
+    <string name="tutorial_welcome_text">The following tutorial screens only appear the first time you run this app and describe each of the sections of this app.</string>
     <string name="tutorial_realtime_power_title">Power</string>
     <string name="tutorial_realtime_power_text">This screen shows the amount of power your mobile device is currently using. Using this data the remaining battery life is calculated. As you use different apps, pay attention to the power they consume. By avoiding apps that consume large amounts of power, you can increase your battery life.</string>
     <string name="tutorial_screen_title">Screen</string>
@@ -108,7 +127,7 @@
     <string name="tutorial_apps_title">Apps</string>
     <string name="tutorial_apps_text">This screen attempts to show which apps are using the most power currently. If you aren’t using some of these apps at the moment, you may want to touch the STOP button to close them. If the app comes back, it can’t be closed. Touch the RUN APPS TEST button will estimate the power each app uses.</string>
     <string name="tutorial_settings_title">System Settings</string>
-    <string name="tutorial_settings_text">This app needs permissions to access system settings for the brightness feature to work properly. On the next page, please allow PowerBench to edit system settings and press <b>Back</b> when you are done.</string>
+    <string name="tutorial_settings_text">This app needs permissions to access system settings for the brightness feature to work properly. “On the next screen, please allow PowerBench to modify system settings and press <b>Back</b> when you are done.</string>
     <string name="tutorial_opening_device_settings_title">Device Settings</string>
     <string name="tutorial_opening_device_settings_text">Opening the device settings.</string>
     <string name="tutorial_starting_powerbench_title">Welcome to PowerBench!</string>

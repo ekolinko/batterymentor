@@ -8,6 +8,16 @@ import com.powerbench.R;
 public class BatteryTheme extends Theme {
 
     @Override
+    public int initializeStyleResource() {
+        return R.style.battery_style;
+    }
+
+    @Override
+    public int initializeDialogStyleResource() {
+        return R.style.battery_style_alert_dialog;
+    }
+
+    @Override
     public int initializeColorResource() {
         return R.color.powerbench_blue;
     }
@@ -48,5 +58,10 @@ public class BatteryTheme extends Theme {
     @Override
     public int initializeSemitransparentColorResource() {
         return R.color.powerbench_blue_semitransparent;
+    }
+
+    @Override
+    public int initializeProgressResource() {
+        return R.drawable.progress_battery;
     }
 }

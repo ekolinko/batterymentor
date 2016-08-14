@@ -26,6 +26,11 @@ public class SunView extends ImageView {
     private Drawable mSunDrawable;
 
     /**
+     * The sun drawable padding.
+     */
+    private int mSunPadding;
+
+    /**
      * The paint used for drawing the fill background.
      */
     private Paint mPaint;
@@ -70,6 +75,7 @@ public class SunView extends ImageView {
      */
     private void initialize() {
         mSunDrawable = ContextCompat.getDrawable(getContext(), R.drawable.screen_sun_blue);
+        mSunPadding = (int) getResources().getDimension(R.dimen.sun_view_padding);
         mRaysRect = new RectF();
         mPaint = new Paint();
         mPaint.setColor(ContextCompat.getColor(getContext(), R.color.background));
@@ -84,7 +90,7 @@ public class SunView extends ImageView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mRaysRect.set(0, 0, w, h);
-        mSunDrawable.setBounds(getLeft() - getWidth() / 2, getTop(), getRight() - getWidth() / 2, getBottom());
+        mSunDrawable.setBounds(mSunPadding, mSunPadding, w - mSunPadding, h - mSunPadding);
     }
 
     /**
@@ -110,7 +116,7 @@ public class SunView extends ImageView {
 
     public void applyTheme(Theme theme) {
         mSunDrawable = ContextCompat.getDrawable(getContext(), theme.getScreenSunResource());
-        mSunDrawable.setBounds(getLeft() - getWidth() / 2, getTop(), getRight() - getWidth() / 2, getBottom());
+        mSunDrawable.setBounds(mSunPadding, mSunPadding, getWidth() - mSunPadding, getHeight() - mSunPadding);
         setImageDrawable(ContextCompat.getDrawable(getContext(), theme.getScreenRaysResource()));
     }
 }

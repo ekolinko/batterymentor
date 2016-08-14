@@ -10,16 +10,21 @@
         android:layout_height="match_parent">
         <RelativeLayout android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <LinearLayout android:id="@+id/battery_life_container"
+            <RelativeLayout android:id="@+id/battery_life_container"
                 style="@style/powerbench_battery_life_container"
                 android:layout_alignParentTop="true">
-                <TextView android:id="@+id/battery_life"
-                    style="@style/powerbench_battery_life_remaining"
-                    android:text="@string/battery_life_unknown"/>
-                <TextView android:id="@+id/battery_life_label"
-                    style="@style/powerbench_battery_life_remaining_label"
-                    android:text="@string/battery_life_remaining"/>
-            </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical">
+                    <TextView android:id="@+id/battery_life"
+                        style="@style/powerbench_battery_life_remaining"
+                        android:text="@string/battery_life_unknown"/>
+                    <TextView android:id="@+id/battery_life_label"
+                        style="@style/powerbench_battery_life_remaining_label"
+                        android:text="@string/battery_life_remaining"/>
+                </LinearLayout>
+            </RelativeLayout>
             <LinearLayout android:id="@+id/powerbench_pager_tab_container"
                 style="@style/powerbench_pager_tab_container"
                 android:layout_below="@id/battery_life_container">

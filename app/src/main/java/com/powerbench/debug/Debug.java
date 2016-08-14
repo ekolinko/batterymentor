@@ -15,7 +15,7 @@ public class Debug {
     /**
      * Flag indicating that all debug logs are enabled.
      */
-    public static final boolean ALL_LOGS_ENABLED = true;
+    public static final boolean ALL_LOGS_ENABLED = false;
 
     /**
      * Flag indicating that collection manager logs are enabled.

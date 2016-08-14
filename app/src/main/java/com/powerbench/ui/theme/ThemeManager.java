@@ -2,6 +2,8 @@ package com.powerbench.ui.theme;
 
 import android.content.Context;
 
+import com.powerbench.R;
+
 /**
  * Class used for to manager the current theme and all other themes available to this application.
  */

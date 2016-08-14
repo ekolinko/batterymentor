@@ -44,4 +44,17 @@ public abstract class Model {
      */
     public abstract double getIntercept();
 
+    /**
+     * Return the first coefficient for this model.
+     *
+     * @return the first coefficient for this model.
+     */
+    public abstract double getFirstCoefficient();
+
+    /**
+     * Return the second coefficient for this model.
+     *
+     * @return the second coefficient for this model.
+     */
+    public abstract double getSecondCoefficient();
 }

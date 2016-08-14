@@ -1,6 +1,8 @@
 package com.powerbench.benchmarks;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.provider.Settings;
 
 import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.constants.BenchmarkConstants;
@@ -9,6 +11,7 @@ import com.powerbench.datamanager.Point;
 import com.powerbench.device.Device;
 import com.powerbench.model.LinearModel;
 import com.powerbench.model.Model;
+import com.powerbench.model.QuadraticModel;
 import com.powerbench.sensors.Sensor;
 
 import java.util.ArrayList;
@@ -22,6 +25,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * on each of the cores and collects power data for each one.
  */
 public class CpuBenchmark extends Benchmark {
+
+    /**
+     * The content resolver used for changing the screen brightness.
+     */
+    private ContentResolver mContentResolver;
 
     /**
      * The time to collect the data at each brightness step.
@@ -44,9 +52,19 @@ public class CpuBenchmark extends Benchmark {
     private boolean mRunning = false;
 
     /**
-     * The model used to predict the power used the brightness as the parameter.
+     * Flag indicating that the benchmark is running.
      */
-    private Model mCpuToPowerModel;
+    private boolean mBenchmarkRunning = false;
+
+    /**
+     * The model used to predict the power using the cpu load as the parameter.
+     */
+    private Model mCpuLoadToPowerModel;
+
+    /**
+     * The model used to predict the power using the cpu frequency as the parameter.
+     */
+    private Model mCpuFrequencyToPowerModel;
 
     /**
      * The benchmark data at various cpu frequency levels used to construct the cpu model.
@@ -57,6 +75,11 @@ public class CpuBenchmark extends Benchmark {
      * The benchmark data at various cpu load levels used to construct the cpu model.
      */
     private ArrayList<Point> mPowerData = new ArrayList<Point>();
+
+    /**
+     * The benchmark data at various cpu frequency levels used to construct the frequency power model.
+     */
+    private ArrayList<Point> mFrequencyPowerData = new ArrayList<Point>();
 
     /**
      * The lock for the benchmark data.
@@ -75,6 +98,7 @@ public class CpuBenchmark extends Benchmark {
         super(context, (durationStep + BenchmarkConstants.CPU_CHANGE_SETTLE_DURATION) * (1 + ((BenchmarkConstants.MAX_CPU - BenchmarkConstants.MIN_CPU) / cpuStep)));
         mDurationStep = durationStep;
         mCpuStep = cpuStep;
+        mContentResolver = context.getContentResolver();
     }
 
     public void start() {
@@ -110,7 +134,11 @@ public class CpuBenchmark extends Benchmark {
     }
 
     public Model getModel() {
-        return mCpuToPowerModel;
+        return mCpuLoadToPowerModel;
+    }
+
+    public Model getFrequencyModel() {
+        return mCpuFrequencyToPowerModel;
     }
 
     /**
@@ -123,8 +151,35 @@ public class CpuBenchmark extends Benchmark {
          */
         private boolean mStopped = false;
 
+        /**
+         * The initial brightness.
+         */
+        private int mInitialBrightness;
+
+        /**
+         * The collection task responsible for measuring power.
+         */
+        CollectionTask mPowerCollectionTask;
+
+        /**
+         * The collection task responsible for measuring load.
+         */
+        CollectionTask mLoadCollectionTask;
+
+        /**
+         * The collection task responsible for measuring frequency.
+         */
+        CollectionTask mFrequencyCollectionTask;
+
         @Override
         public void run() {
+            try {
+                mInitialBrightness = Settings.System.getInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS);
+            } catch (Settings.SettingNotFoundException e) {
+            }
+            mBenchmarkRunning = true;
+            Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+            Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, BenchmarkConstants.MIN_BRIGHTNESS);
             int load = BenchmarkConstants.MIN_CPU;
             CoreThread[] coreThreads = new CoreThread[Device.getInstance().getNumCores()];
             for (int i = 0; i < coreThreads.length; i++) {
@@ -135,34 +190,36 @@ public class CpuBenchmark extends Benchmark {
                 for (CoreThread coreThread : coreThreads) {
                     coreThread.setLoad(load);
                 }
-                try {
-                    Thread.sleep(BenchmarkConstants.CPU_CHANGE_SETTLE_DURATION);
-                } catch (InterruptedException e) {
+                notifyListenersOfBenchmarkLevel(load);
+                sleep(BenchmarkConstants.CPU_CHANGE_SETTLE_DURATION);
+                if (!mStopped) {
+                    mPowerCollectionTask = new CollectionTask(getContext(), Sensor.POWER);
+                    mLoadCollectionTask = new CollectionTask(getContext(), Sensor.LOAD_SENSOR);
+                    mFrequencyCollectionTask = new CollectionTask(getContext(), Sensor.FREQUENCY_SENSOR);
+                    mPowerCollectionTask.start();
+                    mLoadCollectionTask.start();
+                    mFrequencyCollectionTask.start();
+                    sleep(mDurationStep);
+                    if (!mStopped) {
+                        mFrequencyCollectionTask.stop();
+                        mLoadCollectionTask.stop();
+                        mPowerCollectionTask.stop();
+                        lockData();
+                        double cpuAverage = mLoadCollectionTask.getAverage();
+                        double frequencyAverage = mFrequencyCollectionTask.getAverage();
+                        mCpuFrequencyData.add(new Point(cpuAverage, mFrequencyCollectionTask.getAverage()));
+                        mPowerData.add(new Point(cpuAverage, mPowerCollectionTask.getAverage()));
+                        mFrequencyPowerData.add(new Point(frequencyAverage, mPowerCollectionTask.getAverage()));
+                        unlockData();
+                        load += mCpuStep;
+                    }
                 }
-                CollectionTask powerCollectionTask = new CollectionTask(getContext(), Sensor.POWER);
-                CollectionTask loadCollectionTask = new CollectionTask(getContext(), Sensor.LOAD_SENSOR);
-                CollectionTask frequencyCollectionTask = new CollectionTask(getContext(), Sensor.FREQUENCY_SENSOR);
-                powerCollectionTask.start();
-                loadCollectionTask.start();
-                frequencyCollectionTask.start();
-                try {
-                    Thread.sleep(mDurationStep);
-                } catch (InterruptedException e) {
-                }
-                frequencyCollectionTask.stop();
-                loadCollectionTask.stop();
-                powerCollectionTask.stop();
-                lockData();
-                double cpuAverage = loadCollectionTask.getAverage();
-                mCpuFrequencyData.add(new Point(cpuAverage, frequencyCollectionTask.getAverage()));
-                mPowerData.add(new Point(cpuAverage, powerCollectionTask.getAverage()));
-                unlockData();
-                notifyListenersOfBenchmarkProgress(load);
-                load += mCpuStep;
             }
+            Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, mInitialBrightness);
             if (!mStopped) {
                 lockData();
-                mCpuToPowerModel = new LinearModel(mPowerData);
+                mCpuLoadToPowerModel = new LinearModel(mPowerData);
+                mCpuFrequencyToPowerModel = new QuadraticModel(mFrequencyPowerData);
                 unlockData();
                 notifyListenersOfBenchmarkComplete();
                 CpuBenchmark.this.stop();
@@ -174,7 +231,16 @@ public class CpuBenchmark extends Benchmark {
         }
 
         public void stop() {
+            if (mBenchmarkRunning) {
+                Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, mInitialBrightness);
+            }
             mStopped = true;
+            if (mPowerCollectionTask != null)
+                mPowerCollectionTask.stop();
+            if (mLoadCollectionTask != null)
+                mLoadCollectionTask.stop();
+            if (mFrequencyCollectionTask != null)
+                mFrequencyCollectionTask.stop();
         }
     }
 

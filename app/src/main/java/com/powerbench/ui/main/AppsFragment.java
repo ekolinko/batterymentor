@@ -3,16 +3,20 @@ package com.powerbench.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.powerbench.R;
 import com.powerbench.collectionmanager.ApplicationCollectionTask;
 import com.powerbench.collectionmanager.CollectionManager;
+import com.powerbench.constants.Constants;
 import com.powerbench.model.BatteryModel;
+import com.powerbench.model.Model;
 import com.powerbench.model.ModelManager;
 import com.powerbench.sensors.app.Process;
 import com.powerbench.ui.app.ProcessAdapter;
@@ -20,6 +24,7 @@ import com.powerbench.ui.benchmark.CpuTestActivity;
 import com.powerbench.ui.common.CommonFragment;
 import com.powerbench.ui.theme.Theme;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 

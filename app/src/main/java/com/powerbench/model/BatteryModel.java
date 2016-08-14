@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.collectionmanager.LifetimeCollectionTask;
-import com.powerbench.constants.DeviceConstants;
+import com.powerbench.constants.Constants;
 import com.powerbench.constants.ModelConstants;
 import com.powerbench.constants.SensorConstants;
 import com.powerbench.datamanager.RealtimeStatistics;
@@ -30,11 +30,6 @@ public class BatteryModel {
     private Double mBatteryLife;
 
     /**
-     * The battery capacity;
-     */
-    private double mBatteryCapacity = DeviceConstants.BATTERY_CAPACITY_DEFAULT;
-
-    /**
      * The current battery level.
      */
     private int mBatteryLevel = SensorConstants.BATTERY_LEVEL_FULL;
@@ -48,6 +43,11 @@ public class BatteryModel {
      * The cpu model.
      */
     private Model mCpuModel;
+
+    /**
+     * The cpu frequency model.
+     */
+    private Model mCpuFrequencyModel;
 
     /**
      * The screen brightness.
@@ -116,7 +116,6 @@ public class BatteryModel {
 
     public BatteryModel(Context context) {
         mContext = context;
-        mBatteryCapacity = Device.getInstance().getBatteryCapacity(context);
     }
 
     public double getBatteryLife() {
@@ -160,18 +159,19 @@ public class BatteryModel {
                 power = realtimeBasePower*mRealtimeWeight + screenBasePower*mRealtimeCounterweight - screenPower;
 //                Log.d("tstatic","\t screenPower = " + screenPower);
 //                Log.d("tstatic","\t screenBasePower = " + screenBasePower);
-//                Log.d("tstatic","\t screenBaseWeight = " + realtimeCounterweight);
 //                Log.d("tstatic","\t realtimeBasePower = " + realtimeBasePower);
-//                Log.d("tstatic","\t realtimeWeight = " + realtimeWeight);
             } else {
                 double screenBasePower = mScreenModel.getIntercept();
                 double screenPower = mScreenModel.getY(mScreenBrightness);
                 double realtimeBasePower = mRealtimePower - screenPower;
+//                Log.d("tstatic","\t screenPower = " + screenPower);
+//                Log.d("tstatic","\t screenBasePower = " + screenBasePower);
+//                Log.d("tstatic","\t realtimeBasePower = " + realtimeBasePower);
                 power = realtimeBasePower*mRealtimeWeight + screenBasePower*mRealtimeCounterweight + screenPower;
             }
         }
         int batteryLevel = (!mCharging) ? mBatteryLevel : SensorConstants.BATTERY_LEVEL_FULL - mBatteryLevel;
-        mBatteryLife = (mBatteryCapacity * batteryLevel) / (SensorConstants.BATTERY_LEVEL_FULL * power);
+        mBatteryLife = (Device.getInstance().getBatteryCapacity(mContext)* Constants.MINUTES_IN_HOUR * batteryLevel) / (SensorConstants.BATTERY_LEVEL_FULL * power);
         if (mBatteryLife.isInfinite())
             mNextUpdateTime = 0;
         notifyAllListenersOfModelChanged();
@@ -198,12 +198,21 @@ public class BatteryModel {
         updateModel();
     }
 
+    public void setCpuFrequencyModel(Model cpuFrequencyModel) {
+        mCpuFrequencyModel = cpuFrequencyModel;
+        updateModel();
+    }
+
     public Model getScreenModel() {
         return mScreenModel;
     }
 
     public Model getCpuModel() {
         return mCpuModel;
+    }
+
+    public Model getCpuFrequencyModel() {
+        return mCpuFrequencyModel;
     }
 
     public void setScreenBrightness(int screenBrightness) {

@@ -51,6 +51,11 @@ public class Constants {
     public static final double PERCENT = 100;
 
     /**
+     * One hundred percent as an integer.
+     */
+    public static final int INT_PERCENT = 100;
+
+    /**
      * The maximum angle of a circle.
      */
     public static final double CIRCLE_MAX_ANGLE = 360;
@@ -61,7 +66,22 @@ public class Constants {
     public static final long NANOSECONDS_IN_MILLISECOND = 1000000;
 
     /**
+     * The number of minutes in an hour.
+     */
+    public static double MINUTES_IN_HOUR = 60;
+
+    /**
      * The interval at which to refresh the ads.
      */
     public static final long AD_REFRESH_INTERVAL = 5*MINUTE;
+
+    /**
+     * The maximum progress of a progress view.
+     */
+    public static final int PROGRESS_MAX = 100;
+
+    /**
+     * The newline character.
+     */
+    public static final String NEWLINE = "\n";
 }

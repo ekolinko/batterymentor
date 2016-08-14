@@ -36,6 +36,11 @@ public class SensorConstants {
     public static final double VOLTS_IN_MICROWATT = 1000000;
 
     /**
+     * The number of volts in a milliwatt.
+     */
+    public static final double VOLTS_IN_MILLIWATT = 1000;
+
+    /**
      * The minimum length of time between measurements of the same sensor. If two measurement
      * requests are made within this interval, the sensor should return a cached value instead of
      * reading from the file.

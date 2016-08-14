@@ -16,6 +16,11 @@ public class ModelConstants {
     public static final String CPU_MODEL_FILENAME = "powerbench_cpu_model";
 
     /**
+     * The filename of the cpu frequency model.
+     */
+    public static final String CPU_FREQUENCY_MODEL_FILENAME = "powerbench_cpu_frequency_model";
+
+    /**
      * The threshold at which the difference between a newly measuring base power and the current
      * base power will not cause the current base power to change. If the newly measured base power
      * exceeds this threshold, the estimated base power will change the battery power estimation

@@ -134,6 +134,31 @@ public class PowerFragment extends CommonFragment {
     private TextView mChargingRateView;
 
     /**
+     * The value label view associated with this fragment.
+     */
+    private TextView mValueLabel;
+
+    /**
+     * The minimum value view associated with this fragment.
+     */
+    private TextView mMinValue;
+
+    /**
+     * The minimum label view associated with this fragment.
+     */
+    private TextView mMinLabel;
+
+    /**
+     * The maximum value view associated with this fragment.
+     */
+    private TextView mMaxValue;
+
+    /**
+     * The maximum label view associated with this fragment.
+     */
+    private TextView mMaxLabel;
+
+    /**
      * The current theme.
      */
     private Theme mTheme;
@@ -169,6 +194,11 @@ public class PowerFragment extends CommonFragment {
         mBatteryTemperatureView = (TextView) view.findViewById(R.id.powerbench_power_battery_temperature);
         mRealtimeMinMaxView = (TextView) view.findViewById(R.id.powerbench_power_battery_min_max);
         mChargingRateView = (TextView) view.findViewById(R.id.powerbench_power_charging_rate);
+        mValueLabel = (TextView) view.findViewById(R.id.powerbench_power_value_label);
+        mMinValue = (TextView) view.findViewById(R.id.powerbench_power_min);
+        mMinLabel = (TextView) view.findViewById(R.id.powerbench_power_min_label);
+        mMaxValue = (TextView) view.findViewById(R.id.powerbench_power_max);
+        mMaxLabel = (TextView) view.findViewById(R.id.powerbench_power_max_label);
         mDivider = view.findViewById(R.id.divider_power_details_container);
         RelativeLayout powerContainer = (RelativeLayout) view.findViewById(R.id.powerbench_power_container);
         if (powerContainer != null) {
@@ -245,6 +275,20 @@ public class PowerFragment extends CommonFragment {
                     String max = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue);
                     mRealtimeMinMaxView.setText(String.format(getString(R.string.value_min_max_template), min, max));
                 }
+                if (mMinValue != null && mMaxValue != null) {
+                    double minValue = mCollectionTask.getRealtimeStatistics().getMin();
+                    double maxValue = mCollectionTask.getRealtimeStatistics().getMax();
+                    if (isChargerConnected()) {
+                        double temp = -maxValue + 0.0;
+                        maxValue = -minValue + 0.0;
+                        minValue = temp;
+                    }
+
+                    String min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue);
+                    String max = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue);
+                    mMinValue.setText(String.format(getString(R.string.power_template), min));
+                    mMaxValue.setText(String.format(getString(R.string.power_template), max));
+                }
             }
 
             ChargerManager chargerManager = ChargerManager.getInstance();
@@ -282,12 +326,16 @@ public class PowerFragment extends CommonFragment {
                         mTitleView.setText(R.string.power_title_lifetime_charger_speed);
                     if (mHintView != null)
                         mHintView.setText(R.string.power_hint_lifetime_charger_speed);
+                    if (mValueLabel != null)
+                        mValueLabel.setText(R.string.lifetime);
                 } else {
                     mHistogram = mCollectionTask.getRealtimeStatistics();
                     if (mTitleView != null)
                         mTitleView.setText(R.string.power_title_realtime_charger_speed);
                     if (mHintView != null)
                         mHintView.setText(R.string.power_hint_realtime_charger_speed);
+                    if (mValueLabel != null)
+                        mValueLabel.setText(R.string.realtime);
                 }
                 if (mPowerLed != null)
                     mPowerLed.setVisibility(View.GONE);
@@ -300,6 +348,8 @@ public class PowerFragment extends CommonFragment {
                         mHintView.setText(R.string.power_hint_lifetime_battery_usage);
                     if (mPowerLed != null)
                         mPowerLed.setVisibility(View.GONE);
+                    if (mValueLabel != null)
+                        mValueLabel.setText(R.string.lifetime);
                 } else {
                     mHistogram = mCollectionTask.getRealtimeStatistics();
                     if (mTitleView != null)
@@ -308,6 +358,8 @@ public class PowerFragment extends CommonFragment {
                         mHintView.setText(R.string.power_hint_realtime_battery_usage);
                     if (mPowerLed != null)
                         mPowerLed.setVisibility(View.VISIBLE);
+                    if (mValueLabel != null)
+                        mValueLabel.setText(R.string.realtime);
                 }
             }
             if (mRealtimeMinMaxContainerView != null) {
@@ -386,6 +438,21 @@ public class PowerFragment extends CommonFragment {
         if (mDivider != null) {
             mDivider.setBackgroundColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
         }
+//        if (mValueLabel != null) {
+//            mValueLabel.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+//        }
+        if (mMinValue != null) {
+            mMinValue.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+//        if (mMinLabel != null) {
+//            mMinLabel.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+//        }
+        if (mMaxValue != null) {
+            mMaxValue.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+//        if (mMaxLabel != null) {
+//            mMaxLabel.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+//        }
     }
 
     /**

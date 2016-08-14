@@ -115,6 +115,16 @@ public abstract class Sensor {
     }
 
     /**
+     * Read a value measurement from this sensor using an alternate measurement system and scale it
+     * by the specified conversions factor.
+     *
+     * @return a scaled value measurement from this sensor.
+     */
+    public double measureValueAlternate() {
+        return 0;
+    }
+
+    /**
      * Read a value measurement from this sensor and scale it by the specified conversion factor.
      *
      * @param filename the name of the file to measure from.
@@ -128,6 +138,7 @@ public abstract class Sensor {
             file = new RandomAccessFile(filename, SensorConstants.MODE_READ);
             value = Double.parseDouble(file.readLine()) / conversionFactor;
         } catch (Exception e) {
+            value = measureValueAlternate();
             if (Debug.isCollectionManagerLoggingEnabled())
                 Debug.printDebug(e);
         } finally {

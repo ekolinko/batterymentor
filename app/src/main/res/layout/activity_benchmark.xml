@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/drawer_layout">
+    <FrameLayout android:id="@+id/content_frame"
+        style="@style/activity">
+        <RelativeLayout android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout android:id="@+id/benchmark_realtime_container"
+                style="@style/benchmark_realtime_container"
+                android:layout_alignParentTop="true">
+                <TextView android:id="@+id/benchmark_duration"
+                    style="@style/benchmark_duration"
+                    android:textColor="@color/powerbench_blue"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/benchmark_realtime_container"
+                android:layout_above="@+id/button_stop">
+                <ProgressBar android:id="@+id/benchmark_progress_bar"
+                    style="@style/benchmark_progress_bar" />
+                <TextView android:id="@+id/benchmark_progress_text_view"
+                    style="@style/benchmark_progress_bar_text_view" />
+            </RelativeLayout>
+            <Button android:id="@+id/button_stop"
+                style="@style/benchmark_button"
+                android:layout_above="@+id/powerbench_ad"
+                android:text="@string/stop_test"
+                android:background="@color/powerbench_blue" />
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/powerbench_ad"
+                style="@style/powerbench_ad"
+                android:layout_alignParentBottom="true"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/advertising_id">
+            </com.google.android.gms.ads.AdView>
+        </RelativeLayout>
+    </FrameLayout>
+    <include layout="@layout/navigation_drawer" />
+</android.support.v4.widget.DrawerLayout>

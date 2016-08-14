@@ -14,8 +14,6 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
@@ -43,6 +41,11 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     private PowerBenchService mService;
 
     /**
+     * The current theme.
+     */
+    private Theme mTheme = Theme.BATTERY_THEME;
+
+    /**
      * Flag indicating whether the powerbench service has been bound.
      */
     private boolean mServiceBound = false;
@@ -51,6 +54,11 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      * The formatter used to format power values.
      */
     private DecimalFormat mPowerFormatter;
+
+    /**
+     * The battery level.
+     */
+    private int mBatteryLevel = 0;
 
     /**
      * The handler used to measure the UI.
@@ -72,10 +80,16 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     private AdRefreshThread mAdRefreshThread;
 
+    /**
+     * The theme manager.
+     */
+    private ThemeManager mThemeManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler();
+        mThemeManager = ThemeManager.getInstance();
     }
 
     @Override
@@ -92,7 +106,6 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     protected void initialize() {
         mPowerFormatter = new DecimalFormat(getString(R.string.format_power));
-        mAdView = (AdView) findViewById(R.id.powerbench_ad);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
@@ -158,7 +171,8 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
                     }
                     break;
                 case UIConstants.TUTORIAL_REFRESH_REQUEST_CODE:
-                    com.powerbench.settings.Settings.getInstance().setShowTutorial(CommonActivity.this, false);;
+                    com.powerbench.settings.Settings.getInstance().setShowTutorial(CommonActivity.this, false);
+                    refreshAd();
                     break;
             }
         }
@@ -182,6 +196,9 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      * Refresh the ad.
      */
     private void refreshAd() {
+        if (mAdView == null)
+            mAdView = (AdView) findViewById(R.id.powerbench_ad);
+
         if (mAdView != null) {
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
@@ -240,26 +257,15 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      * Method that indicates to all activities that inherit from this class that a charger has been
      * connected.
      */
-    @Override
     public void onChargerConnected() {
         mChargerConnected = true;
         if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
-            Theme theme = ThemeManager.getInstance().getCurrentTheme(this);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                getWindow().setStatusBarColor(ContextCompat.getColor(this, theme.getActionBarColorResource()));
-            }
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, theme.getActionBarColorResource())));
+            onChargerConnectedUIThread();
         } else {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Theme theme = ThemeManager.getInstance().getCurrentTheme(CommonActivity.this);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        getWindow().setStatusBarColor(ContextCompat.getColor(CommonActivity.this, theme.getActionBarColorResource()));
-                    }
-                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(CommonActivity.this, theme.getActionBarColorResource())));
+                    onChargerConnectedUIThread();
                 }
             });
         }
@@ -269,28 +275,50 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      * Method that indicates to all activities that inherit from this class that a charger has been
      * disconnected.
      */
-    @Override
     public void onChargerDisconnected() {
         mChargerConnected = false;
         if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
-            Theme theme = ThemeManager.getInstance().getCurrentTheme(this);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                getWindow().setStatusBarColor(ContextCompat.getColor(this, theme.getActionBarColorResource()));
-            }
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, theme.getActionBarColorResource())));
+            onChargerDisconnectedUIThread();
         } else {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Theme theme = ThemeManager.getInstance().getCurrentTheme(CommonActivity.this);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        getWindow().setStatusBarColor(ContextCompat.getColor(CommonActivity.this, theme.getActionBarColorResource()));
-                    }
+                    onChargerDisconnectedUIThread();
                 }
             });
         }
+    }
+
+    /**
+     * Method that indicates to all activities that inherit from this class that a charger has been
+     * connected and is guaranteed to run on the main UI thread.
+     */
+    public void onChargerConnectedUIThread() {
+        Theme theme = Theme.CHARGER_THEME;
+        mThemeManager.setCurrentTheme(this, theme);
+        applyTheme(theme);
+    }
+
+    /**
+     * Method that indicates to all activities that inherit from this class that a charger has been
+     * disconnected and is guaranteed to run on the main UI thread.
+     */
+    public void onChargerDisconnectedUIThread() {
+        Theme theme = Theme.BATTERY_THEME;
+        mThemeManager.setCurrentTheme(this, theme);
+        applyTheme(theme);
+    }
+
+    /**
+     * Apply the theme to this activity.
+     */
+    protected void applyTheme(Theme theme) {
+        mTheme = theme;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, theme.getActionBarColorResource()));
+        }
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, theme.getActionBarColorResource())));
     }
 
     /**
@@ -301,10 +329,19 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     @Override
     public void onBatteryLevelChanged(int level) {
+        mBatteryLevel = level;
+    }
+
+    protected int getBatteryLevel() {
+        return mBatteryLevel;
     }
 
     protected Handler getHandler() {
         return mHandler;
+    }
+
+    protected ThemeManager getThemeManager() {
+        return mThemeManager;
     }
 
     protected DecimalFormat getPowerFormatter() {
@@ -313,6 +350,10 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
 
     protected boolean isChargerConnected() {
         return mChargerConnected;
+    }
+
+    protected Theme getAppTheme() {
+        return mTheme;
     }
 
     /**

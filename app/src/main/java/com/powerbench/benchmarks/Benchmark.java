@@ -2,11 +2,17 @@ package com.powerbench.benchmarks;
 
 import android.content.Context;
 import android.os.CountDownTimer;
+import android.util.Log;
 
 import com.powerbench.constants.BenchmarkConstants;
 import com.powerbench.constants.Constants;
+import com.powerbench.model.Model;
 
 import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Abstract class that represents a benchmark that can be run on the user's device. A benchmark
@@ -32,35 +38,116 @@ public abstract class Benchmark {
     /**
      * The countdown timer associated with this benchmark.
      */
-    private CountDownTimer mCountdownTimer;
+    private BenchmarkTimer mBenchmarkTimer;
+
+    /**
+     * The lock associated with this benchmark.
+     */
+    private Lock mLock = new ReentrantLock();
+
+    /**
+     * The condition indicating that the charger has been connected.
+     */
+    private Condition mChargerConnectedCondition = mLock.newCondition();
+
+    /**
+     * The condition indicating that the charger has been disconnected.
+     */
+    private Condition mChargerDisconnectedCondition = mLock.newCondition();
+
+    /**
+     * Flag indicating whether a charger is connected.
+     */
+    private boolean mChargerConnected = false;
 
     public Benchmark(Context context, long duration) {
         mContext = context;
         mDuration = duration;
-        mCountdownTimer = new CountDownTimer(mDuration + BenchmarkConstants.BASE_DURATION, BenchmarkConstants.COUNTDOWN_TIMER_UPDATE_INTERVAL) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                notifyListenersOfBenchmarkTick(millisUntilFinished);
-            }
-
-            @Override
-            public void onFinish() {
-                notifyListenersOfBenchmarkTimerComplete();
-            }
-        };
+        mBenchmarkTimer = new BenchmarkTimer(mDuration + BenchmarkConstants.BASE_DURATION);
     }
 
     /**
      * Start running the benchmark.
      */
     public void start() {
-        mCountdownTimer.start();
+        mBenchmarkTimer.start();
     }
 
     /**
      * Stop running the benchmark.
      */
     public void stop() {
+    }
+
+    /**
+     * Resume the benchmark.
+     */
+    public void resume() {
+        mBenchmarkTimer.resume();
+    }
+
+    /**
+     * Pause the benchmark.
+     */
+    public void pause() {
+        mBenchmarkTimer.pause();
+    }
+
+    /**
+     * Called when a charger is connected.
+     */
+    public void onChargerConnected() {
+        mLock.lock();
+        mChargerConnected = true;
+        mChargerConnectedCondition.signal();
+        mBenchmarkTimer.pause();
+        mLock.unlock();;
+    }
+
+    /**
+     * Called when a charger is disconnected.
+     */
+    public void onChargerDisconnected() {
+        mLock.lock();
+        mChargerConnected = false;
+        mChargerDisconnectedCondition.signal();
+        mBenchmarkTimer.resume();
+        mLock.unlock();
+    }
+
+    /**
+     * Sleep for the specified amount of time in milliseconds, but interrupt early if a charger is
+     * detected.
+     */
+    public void sleep(long milliseconds) {
+        mLock.lock();
+        long remaining = milliseconds;
+        while (remaining > 0) {
+            Log.d("tstatic","remaining = " + remaining);
+            if (mChargerConnected) {
+                try {
+                    mChargerDisconnectedCondition.await();
+                } catch (InterruptedException e) {
+                    resume();
+                }
+            }
+
+            long startTime = System.currentTimeMillis();
+            try {
+                if (mChargerConnectedCondition.await(remaining, TimeUnit.MILLISECONDS)) {
+                    long endTime = System.currentTimeMillis();
+                    remaining = remaining - (endTime - startTime);
+                    if (remaining > 0) {
+                        pause();
+                    }
+                } else {
+                    remaining = 0;
+                }
+            } catch (InterruptedException e) {
+
+            }
+        }
+        mLock.unlock();
     }
 
     public Context getContext() {
@@ -116,12 +203,23 @@ public abstract class Benchmark {
     }
 
     /**
-     * Notify all registered progress listeners of progress.
+     * Notify all registered progress listeners of progress changes.
      */
     public void notifyListenersOfBenchmarkProgress(int progress) {
         synchronized (mProgressListeners) {
             for (ProgressListener completionListener : mProgressListeners) {
                 completionListener.onProgress(progress);
+            }
+        }
+    }
+
+    /**
+     * Notify all registered progress listeners of level changes.
+     */
+    public void notifyListenersOfBenchmarkLevel(int level) {
+        synchronized (mProgressListeners) {
+            for (ProgressListener completionListener : mProgressListeners) {
+                completionListener.onLevel(level);
             }
         }
     }
@@ -137,6 +235,74 @@ public abstract class Benchmark {
         }
     }
 
+    /**
+     * Return the model associated with this benchmark.
+     *
+     * @return the model associated with this benchmark.
+     */
+    public abstract Model getModel();
+
+    /**
+     * The benchmark timer.
+     */
+    class BenchmarkTimer {
+
+        /**
+         * Flag indicating this timer is paused.
+         */
+        private boolean mPaused = true;
+
+        /**
+         * The duration of the timer.
+         */
+        private long mDuration;
+
+        /**
+         * The number of milliseconds remaining for a paused timer.
+         */
+        private long mMillisUntilFinished;
+
+        /**
+         * The countdown timer.
+         */
+        private CountDownTimer mCountDownTimer;
+
+        public BenchmarkTimer(long millisInFuture) {
+            mDuration = millisInFuture;
+            mMillisUntilFinished = millisInFuture;
+        }
+
+        public void start() {
+            resume();
+        }
+
+        public void pause() {
+            if (!mPaused) {
+                mCountDownTimer.cancel();
+                mPaused = true;
+            }
+        }
+
+        public void resume() {
+            if (mPaused) {
+                mCountDownTimer = new CountDownTimer(mMillisUntilFinished, BenchmarkConstants.COUNTDOWN_TIMER_UPDATE_INTERVAL) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        mMillisUntilFinished = millisUntilFinished;
+                        notifyListenersOfBenchmarkTick(millisUntilFinished);
+                        notifyListenersOfBenchmarkProgress((int)(((mDuration - millisUntilFinished) * (long) Constants.PERCENT) / mDuration));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        notifyListenersOfBenchmarkTimerComplete();
+                    }
+                };
+                mCountDownTimer.start();
+                mPaused = false;
+            }
+        }
+    };
     /**
      * The interface used for listening for benchmark progress.
      */
@@ -158,6 +324,13 @@ public abstract class Benchmark {
          * @param progress the progress of the benchmark.
          */
         void onProgress(int progress);
+
+        /**
+         * Called when the benchmark level changes.
+         *
+         * @param level the level of the benchmark.
+         */
+        void onLevel(int level);
 
         /**
          * Called when the benchmark has completed.

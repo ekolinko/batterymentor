@@ -1,7 +1,5 @@
 package com.powerbench.model;
 
-import android.util.Log;
-
 import com.powerbench.datamanager.Point;
 
 import java.io.Serializable;
@@ -75,4 +73,16 @@ public class LinearModel extends Model implements Serializable {
         return mIntercept;
     }
 
+    /**
+     * Return the primary coefficient for this model.
+     *
+     * @return the primary coefficient for this model.
+     */
+    public double getFirstCoefficient() {
+        return mSlope;
+    }
+
+    public double getSecondCoefficient() {
+        return 0;
+    }
 }

@@ -3,9 +3,11 @@ package com.powerbench.benchmarks;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.provider.Settings;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.constants.BenchmarkConstants;
+import com.powerbench.constants.Constants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.model.LinearModel;
 import com.powerbench.sensors.Sensor;
@@ -127,6 +129,11 @@ public class BrightnessBenchmark extends Benchmark {
          */
         private boolean mStopped = false;
 
+        /**
+         * The collection task associated with this benchmark.
+         */
+        private CollectionTask mCollectionTask;
+
         @Override
         public void run() {
             int brightness = BenchmarkConstants.MIN_BRIGHTNESS;
@@ -139,23 +146,22 @@ public class BrightnessBenchmark extends Benchmark {
             double preciseBrightness = brightness;
             while (!mStopped && brightness <= BenchmarkConstants.MAX_BRIGHTNESS) {
                 Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, brightness);
-                try {
-                    Thread.sleep(BenchmarkConstants.BRIGHTNESS_CHANGE_SETTLE_DURATION);
-                } catch (InterruptedException e) {
+                int level = (int)Math.round((brightness * Constants.PERCENT) / (double)(BenchmarkConstants.MAX_BRIGHTNESS - BenchmarkConstants.MIN_BRIGHTNESS));
+                notifyListenersOfBenchmarkLevel(level);
+                sleep(BenchmarkConstants.BRIGHTNESS_CHANGE_SETTLE_DURATION);
+                if (!mStopped) {
+                    mCollectionTask = new CollectionTask(getContext(), Sensor.POWER);
+                    mCollectionTask.start();
+                    sleep(mDurationStep);
+                    if (!mStopped) {
+                        mCollectionTask.stop();
+                        lockData();
+                        mBrightnessData.add(new Point(brightness, mCollectionTask.getAverage()));
+                        unlockData();
+                        preciseBrightness += mBrightnessStep;
+                        brightness = (int) Math.round(preciseBrightness);
+                    }
                 }
-                CollectionTask collectionTask = new CollectionTask(getContext(), Sensor.POWER);
-                collectionTask.start();
-                try {
-                    Thread.sleep(mDurationStep);
-                } catch (InterruptedException e) {
-                }
-                collectionTask.stop();
-                lockData();
-                mBrightnessData.add(new Point(brightness, collectionTask.getAverage()));
-                unlockData();
-                notifyListenersOfBenchmarkProgress(brightness);
-                preciseBrightness += mBrightnessStep;
-                brightness = (int) Math.round(preciseBrightness);
             }
             Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, mInitialBrightness);
             if (!mStopped) {
@@ -171,6 +177,9 @@ public class BrightnessBenchmark extends Benchmark {
         public void stop() {
             if (mBenchmarkRunning) {
                 Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, mInitialBrightness);
+            }
+            if (mCollectionTask != null) {
+                mCollectionTask.stop();
             }
             mStopped = true;
         }

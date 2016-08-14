@@ -14,6 +14,16 @@ public abstract class Theme {
     public final static Theme CHARGER_THEME = new ChargerTheme();
 
     /**
+     * The main style resource.
+     */
+    private final int mStyleResource;
+
+    /**
+     * The dialog style resource.
+     */
+    private final int mDialogStyleResource;
+
+    /**
      * The main color resource.
      */
     private final int mColorResource;
@@ -58,7 +68,14 @@ public abstract class Theme {
      */
     private final int mSemitransparentColorResource;
 
+    /**
+     * The progress resource.
+     */
+    private final int mProgressResource;
+
     public Theme() {
+        mStyleResource = initializeStyleResource();
+        mDialogStyleResource = initializeDialogStyleResource();
         mColorResource = initializeColorResource();
         mActionBarColorResource = initializeActionBarColorResource();
         mTabDrawableResource = initializeTabDrawableResource();
@@ -68,6 +85,25 @@ public abstract class Theme {
         mScreenRaysResource = initializeScreenRaysResource();
         mButtonResource = initializeButtonResource();
         mSemitransparentColorResource = initializeSemitransparentColorResource();
+        mProgressResource = initializeProgressResource();
+    }
+
+    /**
+     * Initialize the primary style of this theme.
+     *
+     * @return the primary style of this theme.
+     */
+    public int initializeStyleResource() {
+        return R.style.battery_style;
+    }
+
+    /**
+     * Initialize the dialog style of this theme.
+     *
+     * @return the dialog style of this theme.
+     */
+    public int initializeDialogStyleResource() {
+        return R.style.battery_style_alert_dialog;
     }
 
     /**
@@ -151,6 +187,23 @@ public abstract class Theme {
         return R.color.powerbench_blue_semitransparent;
     }
 
+    /**
+     * Initialize the progress resource.
+     *
+     * @return the progress resource.
+     */
+    public int initializeProgressResource() {
+        return R.drawable.progress_battery;
+    }
+
+    public int getStyleResource() {
+        return mStyleResource;
+    }
+
+    public int getDialogStyleResource() {
+        return mDialogStyleResource;
+    }
+
     public int getColorResource() {
         return mColorResource;
     }
@@ -185,5 +238,9 @@ public abstract class Theme {
 
     public int getSemitransparentColorResource() {
         return mSemitransparentColorResource;
+    }
+
+    public int getProgressResource() {
+        return mProgressResource;
     }
 }

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
-import android.util.Log;
+import android.os.Build;
 
 import com.powerbench.R;
 import com.powerbench.constants.Constants;
@@ -40,9 +40,19 @@ public class ChargerManager {
     private boolean mChargerReceiverRegistered = false;
 
     /**
+     * The battery service.
+     */
+    private BatteryManager mBatteryManager;
+
+    /**
      * The current battery level.
      */
     private int mBatteryLevel = Constants.INVALID_VALUE;
+
+    /**
+     * The current battery voltage.
+     */
+    private int mBatteryVoltage = Constants.INVALID_VALUE;
 
     /**
      * The current charging status as a string.
@@ -80,9 +90,10 @@ public class ChargerManager {
 
         if (!mChargerReceiverRegistered) {
             mContext = context;
+            mBatteryManager = (BatteryManager) mContext.getSystemService(Context.BATTERY_SERVICE);
             IntentFilter batteryChangedFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
             mChargerReceiver = new ChargerReceiver();
-            Intent batteryStatusIntent = context.registerReceiver(mChargerReceiver, batteryChangedFilter);
+            Intent batteryStatusIntent = mContext.registerReceiver(mChargerReceiver, batteryChangedFilter);
             handleBatteryStatusIntent(context, batteryStatusIntent);
         }
     }
@@ -100,8 +111,6 @@ public class ChargerManager {
             mChargerListeners.remove(chargerListener);
         }
 
-        Log.d("tstatic","Size = " + mChargerListeners.size());
-
         if (mChargerReceiverRegistered && mChargerListeners.isEmpty()) {
             context.unregisterReceiver(mChargerReceiver);
             mChargerReceiverRegistered = false;
@@ -117,6 +126,7 @@ public class ChargerManager {
     public void handleBatteryStatusIntent(Context context, Intent batteryStatusIntent) {
         int status = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
         mBatteryLevel = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+        mBatteryVoltage = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1);
         boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
                 status == BatteryManager.BATTERY_STATUS_FULL;
         if (isCharging) {
@@ -165,6 +175,17 @@ public class ChargerManager {
 
     public int getBatteryLevel() {
         return mBatteryLevel;
+    }
+
+    public int getBatteryCurrentNow() {
+        if (mBatteryManager != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            return mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+        }
+        return Constants.INVALID_VALUE;
+    }
+
+    public int getBatteryVoltage() {
+        return mBatteryVoltage;
     }
 
     public String getChargingStatus() {

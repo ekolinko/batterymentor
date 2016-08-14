@@ -35,6 +35,11 @@ public class HistogramView extends View {
     private Paint mBackgroundPaint;
 
     /**
+     * The paint used for drawing the border.
+     */
+    private Paint mBorderPaint;
+
+    /**
      * The stroke color.
      */
     private int mStrokeColor;
@@ -43,6 +48,11 @@ public class HistogramView extends View {
      * The fill color
      */
     private int mFillColor;
+
+    /**
+     * The padding of the histogram.
+     */
+    private float mPadding;
 
     /**
      * The histogram associated with this view.
@@ -74,6 +84,11 @@ public class HistogramView extends View {
         mBackgroundPaint = new Paint();
         mBackgroundPaint.setColor(ContextCompat.getColor(getContext(), R.color.background));
         mBackgroundPaint.setStyle(Paint.Style.FILL);
+        mBorderPaint = new Paint();
+        mBorderPaint.setColor(ContextCompat.getColor(getContext(), R.color.gray));
+        mBorderPaint.setStrokeWidth(getResources().getDimension(R.dimen.histogram_view_border_width));
+        mBorderPaint.setStyle(Paint.Style.STROKE);
+        mPadding = getResources().getDimension(R.dimen.histogram_view_padding);
         applyTheme(ThemeManager.getInstance().getCurrentTheme(getContext()));
     }
 
@@ -87,6 +102,7 @@ public class HistogramView extends View {
         if (mHistogram != null) {
             drawHistogram(canvas, mHistogram.getHistogramData());
         }
+        canvas.drawRect(mPadding, 0, getWidth() - mPadding, getHeight(), mBorderPaint);
     }
 
     /**
@@ -119,7 +135,7 @@ public class HistogramView extends View {
         float rangeX = maxX - minX;
         float rangeY = maxY - minY;
 
-        int width = getWidth();
+        int width = getWidth() - (int)(mPadding*2);
         int height = getHeight();
 
         double[] xs = new double[numPoints];
@@ -133,15 +149,15 @@ public class HistogramView extends View {
         float diff = width / (float) UIConstants.HISTOGRAM_NUM_POINTS_FOR_DRAW;
         PolynomialSplineFunction spline = new SplineInterpolator().interpolate(xs, ys);
         Path path = new Path();
-        path.moveTo(0, (float) (height - spline.value(0)));
+        path.moveTo(mPadding, (float) (height - spline.value(0)));
         float x = 0;
         while (x <= width) {
-            path.lineTo(x, (float) (height - spline.value(x)));
+            path.lineTo(x + mPadding, (float) (height - spline.value(x)));
             x += diff;
         }
-        path.lineTo(width, height);
-        path.lineTo(0, height);
-        path.lineTo(0, maxY);
+        path.lineTo(width + mPadding, height);
+        path.lineTo(mPadding, height);
+        path.lineTo(mPadding, maxY);
         mPaint.setColor(mFillColor);
         mPaint.setStyle(Paint.Style.FILL);
         canvas.drawPath(path, mPaint);

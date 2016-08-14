@@ -56,6 +56,11 @@ public class UIConstants {
     public static final double LED_YELLOW_THRESHOLD = 1.5;
 
     /**
+     * The label of the progress animation operation.
+     */
+    public static final String BENCHMARK_PROGRESS_ANIMATION_FIELD = "progress";
+
+    /**
      * The notification scaling factor for battery life.
      */
     public static int NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR = 10;
@@ -111,7 +116,7 @@ public class UIConstants {
     public static final long LIFETIME_UPDATE_INTERVAL = 10*Constants.SECOND;
 
     /**
-     * The maximum battery life / until fully charger to show in hours.
+     * The maximum battery life / until fully charger to show in minutes
      */
-    public static double MAX_BATTERY_LIFE = 20;
+    public static double MAX_BATTERY_LIFE = 20*Constants.MINUTES_IN_HOUR;
 }

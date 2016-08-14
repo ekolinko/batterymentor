@@ -1,6 +1,7 @@
 package com.powerbench.sensors.power;
 
 import com.powerbench.constants.SensorConstants;
+import com.powerbench.sensors.ChargerManager;
 import com.powerbench.sensors.Sensor;
 
 import java.io.File;
@@ -22,5 +23,9 @@ public class VoltageSensor extends Sensor {
 
     public double measure() {
         return measureValue(SensorConstants.VOLTS_IN_MICROWATT);
+    }
+
+    public double measureValueAlternate() {
+        return ChargerManager.getInstance().getBatteryVoltage() / SensorConstants.VOLTS_IN_MILLIWATT;
     }
 }

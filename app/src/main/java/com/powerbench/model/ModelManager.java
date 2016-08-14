@@ -1,6 +1,7 @@
 package com.powerbench.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.collectionmanager.CollectionTask;
@@ -35,6 +36,11 @@ public class ModelManager implements ChargerManager.ChargerListener {
      */
     private Model mCpuModel;
 
+    /**
+     * The cpu frequency model.
+     */
+    private Model mCpuFrequencyModel;
+
     private static class SingletonHolder {
         private static final ModelManager INSTANCE = new ModelManager();
     }
@@ -52,15 +58,31 @@ public class ModelManager implements ChargerManager.ChargerListener {
      * @param context the context of the application.
      */
     public void initialize(Context context) {
-        LinearModel screenModel = loadModelFromStorage(context, ModelConstants.SCREEN_MODEL_FILENAME);
-        if (screenModel != null) {
-            mScreenModel = screenModel;
-            getBatteryModel(context).setScreenModel(screenModel);
+        Model model = loadModelFromStorage(context, ModelConstants.SCREEN_MODEL_FILENAME);
+        if (model instanceof LinearModel) {
+            LinearModel screenModel = (LinearModel) model;
+            if (screenModel != null) {
+                mScreenModel = screenModel;
+                getBatteryModel(context).setScreenModel(screenModel);
+            }
         }
-        LinearModel cpuModel = loadModelFromStorage(context, ModelConstants.CPU_MODEL_FILENAME);
-        if (cpuModel != null) {
-            mCpuModel = cpuModel;
-            getBatteryModel(context).setCpuModel(cpuModel);
+        model = loadModelFromStorage(context, ModelConstants.CPU_MODEL_FILENAME);
+        Log.d("tstatic","CM = " + model);
+        if (model instanceof LinearModel) {
+            LinearModel cpuModel = (LinearModel) model;
+            if (cpuModel != null) {
+                mCpuModel = cpuModel;
+                getBatteryModel(context).setCpuModel(cpuModel);
+            }
+        }
+        model = loadModelFromStorage(context, ModelConstants.CPU_FREQUENCY_MODEL_FILENAME);
+        Log.d("tstatic","FM = " + model);
+        if (model instanceof QuadraticModel) {
+            QuadraticModel frequencyModel = (QuadraticModel) model;
+            if (frequencyModel != null) {
+                mCpuFrequencyModel = frequencyModel;
+                getBatteryModel(context).setCpuFrequencyModel(frequencyModel);
+            }
         }
     }
 
@@ -99,8 +121,20 @@ public class ModelManager implements ChargerManager.ChargerListener {
      */
     public void setCpuModel(Context context, Model cpuModel) {
         mCpuModel = cpuModel;
-        getBatteryModel(context).setScreenModel(cpuModel);
+        getBatteryModel(context).setCpuModel(cpuModel);
         saveModelToStorage(context, ModelConstants.CPU_MODEL_FILENAME, cpuModel);
+    }
+
+    /**
+     * Set the cpu model. Assign this cpu model to the battery model and write it to storage.
+     *
+     * @param context the context of the application.
+     * @param frequencyModel the cpu frequency model to set.
+     */
+    public void setCpuFrequencyModel(Context context, Model frequencyModel) {
+        mCpuFrequencyModel = frequencyModel;
+        getBatteryModel(context).setCpuFrequencyModel(mCpuFrequencyModel);
+        saveModelToStorage(context, ModelConstants.CPU_FREQUENCY_MODEL_FILENAME, mCpuFrequencyModel);
     }
 
     /**
@@ -115,6 +149,9 @@ public class ModelManager implements ChargerManager.ChargerListener {
             if (model instanceof LinearModel) {
                 LinearModel linearModel = (LinearModel) model;
                 objectOutputStream.writeObject(linearModel);
+            } else if (model instanceof QuadraticModel) {
+                QuadraticModel quadraticModel = (QuadraticModel) model;
+                objectOutputStream.writeObject(quadraticModel);
             }
         } catch (IOException e) {
         } finally {
@@ -136,16 +173,16 @@ public class ModelManager implements ChargerManager.ChargerListener {
     /**
      * Load a linear model from the specified file in storage.
      */
-    public LinearModel loadModelFromStorage(Context context, String filename) {
+    public Model loadModelFromStorage(Context context, String filename) {
         FileInputStream fileInputStream = null;
         ObjectInputStream objectInputStream = null;
-        LinearModel linearModel = null;
+        Model model = null;
         try {
             fileInputStream = context.openFileInput(filename);
             objectInputStream = new ObjectInputStream(fileInputStream);
             Object object = objectInputStream.readObject();
-            if (object instanceof LinearModel) {
-                linearModel = (LinearModel) object;
+            if (object instanceof Model) {
+                model = (Model) object;
             }
         } catch (IOException e) {
         } catch (ClassNotFoundException e) {
@@ -163,7 +200,7 @@ public class ModelManager implements ChargerManager.ChargerListener {
                 }
             }
         }
-        return linearModel;
+        return model;
     }
 
     @Override

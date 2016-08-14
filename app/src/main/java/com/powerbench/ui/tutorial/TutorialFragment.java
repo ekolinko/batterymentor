@@ -1,6 +1,7 @@
 package com.powerbench.ui.tutorial;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,13 +37,27 @@ public class TutorialFragment extends CommonFragment {
      */
     private Theme mTheme;
 
+    /**
+     * The title view.
+     */
+    private TextView mTitleView;
+
+    /**
+     * The image view
+     */
+    private ImageView mImageView;
+
+    /**
+     * The text view.
+     */
+    private TextView mTextView;
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tutorial, container, false);
-        if (mTheme != null) {
-            applyTheme(mTheme);
-        }
 
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -51,22 +66,45 @@ public class TutorialFragment extends CommonFragment {
             mTutorialTextResourceId = arguments.getInt(getString(R.string.argument_tutorial_text_res_id));
         }
 
-        TextView titleView = (TextView) view.findViewById(R.id.powerbench_tutorial_title);
-        if (titleView != null) {
-            titleView.setText(mTutorialTitleResourceId);
+        mTitleView = (TextView) view.findViewById(R.id.powerbench_tutorial_title);
+        if (mTitleView != null) {
+            mTitleView.setText(mTutorialTitleResourceId);
         }
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.powerbench_tutorial_image);
-        if (imageView != null) {
-            imageView.setImageResource(mTutorialImageResourceId);
+        mImageView = (ImageView) view.findViewById(R.id.powerbench_tutorial_image);
+        if (mImageView != null) {
+            mImageView.setImageResource(mTutorialImageResourceId);
         }
 
-        TextView textView = (TextView) view.findViewById(R.id.powerbench_tutorial_text);
-        if (textView != null) {
-            textView.setText(mTutorialTextResourceId);
+        mTextView = (TextView) view.findViewById(R.id.powerbench_tutorial_text);
+        if (mTextView != null) {
+            mTextView.setText(mTutorialTextResourceId);
+        }
+
+        if (mTheme != null) {
+            applyTheme(mTheme);
         }
 
         setRetainInstance(true);
         return view;
+    }
+
+    /**
+     * Apply the specified theme to this fragment.
+     *
+     * @param theme the theme to apply to this fragment.
+     */
+    @Override
+    public void applyTheme(Theme theme) {
+        mTheme = theme;
+        if (mTitleView != null) {
+            mTitleView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mImageView != null) {
+            mImageView.setImageResource(theme.getScreenTestIconResource());
+        }
+        if (mTextView != null) {
+            mTextView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
     }
 }

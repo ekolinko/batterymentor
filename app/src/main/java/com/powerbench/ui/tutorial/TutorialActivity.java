@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.powerbench.device.Permissions;
 import com.powerbench.settings.Settings;
 import com.powerbench.ui.common.CommonActivity;
 import com.powerbench.ui.common.CommonFragment;
+import com.powerbench.ui.theme.Theme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,17 +49,28 @@ public class TutorialActivity extends CommonActivity {
      */
     private boolean mPermissionPagesShown;
 
+    /**
+     * The skip button.
+     */
+    private Button mSkipButton;
+
+    /**
+     * The next button.
+     */
+    private Button mNextButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
+        initialize();
         mTutorialFragments = initializeTutorialFragments();
         mPagerAdapter = new TutorialPagerAdapter(getSupportFragmentManager(), mTutorialFragments);
         mViewPager = (ViewPager) findViewById(R.id.powerbench_pager);
         mViewPager.setAdapter(mPagerAdapter);
         final int numPages = mTutorialFragments.length;
-        final Button skipButton = (Button) findViewById(R.id.powerbench_tutorial_button_skip);
-        skipButton.setOnClickListener(new View.OnClickListener() {
+        mSkipButton = (Button) findViewById(R.id.powerbench_tutorial_button_skip);
+        mSkipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mPermissionPagesShown) {
@@ -68,10 +81,10 @@ public class TutorialActivity extends CommonActivity {
             }
         });
         if (numPages <= 1) {
-            skipButton.setVisibility(View.INVISIBLE);
+            mSkipButton.setVisibility(View.INVISIBLE);
         }
-        final Button nextButton = (Button) findViewById(R.id.powerbench_tutorial_button_next);
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        mNextButton = (Button) findViewById(R.id.powerbench_tutorial_button_next);
+        mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int currentItem = mViewPager.getCurrentItem();
@@ -96,14 +109,14 @@ public class TutorialActivity extends CommonActivity {
                     numNoSkipPages = 1;
                 }
                 if (position >= numPages - numNoSkipPages) {
-                    skipButton.setVisibility(View.INVISIBLE);
+                    mSkipButton.setVisibility(View.INVISIBLE);
                 } else {
-                    skipButton.setVisibility(View.VISIBLE);
+                    mSkipButton.setVisibility(View.VISIBLE);
                 }
                 if (!mPermissionPagesShown && position == numPages - 1) {
-                    nextButton.setText(getString(R.string.finish));
+                    mNextButton.setText(getString(R.string.finish));
                 } else {
-                    nextButton.setText(getString(R.string.next));
+                    mNextButton.setText(getString(R.string.next));
                 }
             }
 
@@ -178,6 +191,20 @@ public class TutorialActivity extends CommonActivity {
         intent.putExtra(UIConstants.CLOSE_APP, true);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    protected void applyTheme(Theme theme) {
+        super.applyTheme(theme);
+        if (mNextButton != null) {
+            mNextButton.setTextColor(ContextCompat.getColor(this, theme.getColorResource()));
+        }
+        if (mSkipButton != null) {
+            mSkipButton.setTextColor(ContextCompat.getColor(this, theme.getColorResource()));
+        }
+        for (TutorialFragment tutorialFragment : mTutorialFragments) {
+            tutorialFragment.applyTheme(theme);
+        }
     }
 
     /**
