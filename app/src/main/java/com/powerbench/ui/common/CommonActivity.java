@@ -88,6 +88,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        com.powerbench.settings.Settings.getInstance().setContext(this);
         mHandler = new Handler();
         mThemeManager = ThemeManager.getInstance();
     }

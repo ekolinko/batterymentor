@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.powerbench.collectionmanager.ApplicationCollectionTask;
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.collectionmanager.CollectionTask;
 import com.powerbench.constants.Constants;
+import com.powerbench.constants.SensorConstants;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.datamanager.Point;
 import com.powerbench.device.Device;
@@ -45,8 +47,6 @@ import com.powerbench.ui.theme.Theme;
 import com.powerbench.ui.tutorial.TutorialActivity;
 import com.powerbench.utils.Utils;
 
-import java.text.DecimalFormat;
-
 /**
  * The main powerbench activity that allows a user to view battery power consumption and charging
  * rate in realtime.
@@ -57,6 +57,11 @@ public class PowerBenchActivity extends CommonActivity {
      * The primary battery collection task.
      */
     private CollectionTask mPowerCollectionTask;
+
+    /**
+     * The secondary battery collection task.
+     */
+    private CollectionTask mEstimatedPowerCollectionTask;
 
     /**
      * The drawer layout.
@@ -124,6 +129,31 @@ public class PowerBenchActivity extends CommonActivity {
     private MenuItem mBatteryStatusMenuItem;
 
     /**
+     * Flag indicating whether the batters stats are shown.
+     */
+    private boolean mBatteryStatsShown;
+
+    /**
+     * The battery status view.
+     */
+    private TextView mBatteryStatus;
+
+    /**
+     * The battery level.
+     */
+    private TextView mBatteryLevel;
+
+    /**
+     * The battery temperature;
+     */
+    private TextView mBatteryTemperature;
+
+    /**
+     * The battery voltage.
+     */
+    private TextView mBatteryVoltage;
+
+    /**
      * The measurement listener.
      */
     private CollectionTask.MeasurementListener mMeasurementListener;
@@ -181,6 +211,7 @@ public class PowerBenchActivity extends CommonActivity {
         mBatteryLifeContainer = findViewById(R.id.battery_life_container);
         mBatteryLife = (TextView) findViewById(R.id.battery_life);
         mBatteryLifeLabel = (TextView) findViewById(R.id.battery_life_label);
+        mBatteryStatsShown = false;
         setupTabs();
         applyTheme(getThemeManager().getCurrentTheme(this));
         ModelManager.getInstance().initialize(this);
@@ -203,14 +234,17 @@ public class PowerBenchActivity extends CommonActivity {
                     @Override
                     public void run() {
                         mPowerFragment.updatePowerViews(false);
+                        updateBatteryStats();
                     }
                 });
             }
         };
 
         mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(this);
+        mEstimatedPowerCollectionTask = CollectionManager.getInstance().getEstimatedPowerCollectionTask(this);
         mApplicationCollectionTask = CollectionManager.getInstance().getApplicationCollectionTask(this);
         mPowerCollectionTask.start();
+        mEstimatedPowerCollectionTask.start();
         mApplicationCollectionTask.start();
         Device.getInstance().getBatteryCapacity(this);
     }
@@ -406,13 +440,76 @@ public class PowerBenchActivity extends CommonActivity {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         } else if (item.getItemId() == R.id.menu_battery_status) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, getAppTheme().getDialogStyleResource()).setTitle(getString(R.string.more_details)).
-                    setMessage(R.string.test_screen_more_details)
-                    .setPositiveButton(R.string.close, null);
+            LayoutInflater inflater = getLayoutInflater();
+            ChargerManager chargerManager = ChargerManager.getInstance();
+            View batteryStatsView = inflater.inflate(R.layout.dialog_battery_stats, null);
+            TextView batteryStatusLabel = (TextView) batteryStatsView.findViewById(R.id.label_status);
+            if (batteryStatusLabel != null)
+                batteryStatusLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+            mBatteryStatus = (TextView) batteryStatsView.findViewById(R.id.value_status);
+            if (mBatteryStatus != null) {
+                mBatteryStatus.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+            }
+            TextView batteryLevelLabel = (TextView) batteryStatsView.findViewById(R.id.label_level);
+            if (batteryLevelLabel != null)
+                batteryLevelLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+            mBatteryLevel = (TextView) batteryStatsView.findViewById(R.id.value_level);
+            if (mBatteryLevel != null) {
+                mBatteryLevel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+            }
+            TextView batteryTemperatureLabel = (TextView) batteryStatsView.findViewById(R.id.label_temperature);
+            if (batteryTemperatureLabel != null)
+                batteryTemperatureLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+            mBatteryTemperature = (TextView) batteryStatsView.findViewById(R.id.value_temperature);
+            if (mBatteryTemperature != null) {
+                mBatteryTemperature.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+            }
+            TextView batteryVoltageLabel = (TextView) batteryStatsView.findViewById(R.id.label_voltage);
+            if (batteryVoltageLabel != null)
+                batteryVoltageLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+            mBatteryVoltage = (TextView) batteryStatsView.findViewById(R.id.value_voltage);
+            if (mBatteryVoltage != null) {
+                mBatteryVoltage.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, getAppTheme().getDialogStyleResource()).setTitle(getString(R.string.battery_details))
+                    .setView(batteryStatsView)
+                    .setNegativeButton(R.string.close, null)
+                    .setPositiveButton(R.string.battery_manager, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
+                        }
+                    }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            mBatteryStatsShown = false;
+                        }
+                    });
+            mBatteryStatsShown = true;
+            updateBatteryStats();
             builder.show();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void updateBatteryStats() {
+        if (mBatteryStatsShown) {
+            ChargerManager chargerManager = ChargerManager.getInstance();
+            if (mBatteryStatus != null) {
+                mBatteryStatus.setText(chargerManager.getChargingStatus());
+            }
+            if (mBatteryLevel != null) {
+                mBatteryLevel.setText(String.format(getString(R.string.value_percent_template), Integer.toString(getBatteryLevel())));
+            }
+            if (mBatteryTemperature != null) {
+                mBatteryTemperature.setText(String.format(getString(R.string.value_celsius_template), chargerManager.getBatteryTemperature()));
+            }
+            if (mBatteryVoltage != null) {
+                float voltage = chargerManager.getBatteryVoltage() / (float) SensorConstants.MILLIVOLTS_IN_VOLT;
+                mBatteryVoltage.setText(String.format(getString(R.string.value_voltage_template), Float.toString(voltage)));
+            }
+        }
     }
 
     @Override
@@ -434,6 +531,7 @@ public class PowerBenchActivity extends CommonActivity {
     protected void onResume() {
         super.onResume();
         mPowerCollectionTask.registerMeasurementListener(mMeasurementListener);
+        mEstimatedPowerCollectionTask.registerMeasurementListener(mMeasurementListener);
         ChargerManager.getInstance().registerChargerListener(this, ModelManager.getInstance());
         refreshFragments();
     }
@@ -442,6 +540,7 @@ public class PowerBenchActivity extends CommonActivity {
     protected void onPause() {
         super.onPause();
         mPowerCollectionTask.unregisterMeasurementListener(mMeasurementListener);
+        mEstimatedPowerCollectionTask.unregisterMeasurementListener(mMeasurementListener);
         ChargerManager.getInstance().unregisterChargerListener(this, ModelManager.getInstance());
     }
 
@@ -466,6 +565,7 @@ public class PowerBenchActivity extends CommonActivity {
         if (mBatteryStatusMenuItem != null) {
             mBatteryStatusMenuItem.setIcon(R.drawable.battery_charging);
         }
+        updateBatteryStats();
     }
 
     @Override
@@ -481,6 +581,7 @@ public class PowerBenchActivity extends CommonActivity {
         if (mBatteryStatusMenuItem != null) {
             mBatteryStatusMenuItem.setIcon(R.drawable.battery_discharging);
         }
+        updateBatteryStats();
     }
 
     @Override
@@ -489,6 +590,7 @@ public class PowerBenchActivity extends CommonActivity {
         if (mBatteryStatusMenuItem != null) {
             mBatteryStatusMenuItem.setTitle(String.format(getString(R.string.value_percent_template), Integer.toString(level)));
         }
+        updateBatteryStats();
     }
 
     /**

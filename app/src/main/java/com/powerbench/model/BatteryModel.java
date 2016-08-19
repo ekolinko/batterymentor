@@ -157,16 +157,10 @@ public class BatteryModel {
                 double screenPower = mScreenModel.getY(mScreenBrightness);
                 double realtimeBasePower = mRealtimePower;
                 power = realtimeBasePower*mRealtimeWeight + screenBasePower*mRealtimeCounterweight - screenPower;
-//                Log.d("tstatic","\t screenPower = " + screenPower);
-//                Log.d("tstatic","\t screenBasePower = " + screenBasePower);
-//                Log.d("tstatic","\t realtimeBasePower = " + realtimeBasePower);
             } else {
                 double screenBasePower = mScreenModel.getIntercept();
                 double screenPower = mScreenModel.getY(mScreenBrightness);
                 double realtimeBasePower = mRealtimePower - screenPower;
-//                Log.d("tstatic","\t screenPower = " + screenPower);
-//                Log.d("tstatic","\t screenBasePower = " + screenBasePower);
-//                Log.d("tstatic","\t realtimeBasePower = " + realtimeBasePower);
                 power = realtimeBasePower*mRealtimeWeight + screenBasePower*mRealtimeCounterweight + screenPower;
             }
         }

@@ -92,7 +92,7 @@ public class ScreenFragment extends CommonFragment {
         mMoreDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), mTheme.getDialogStyleResource()).setTitle(getString(R.string.more_details)).
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), mTheme.getDialogStyleResource()).setTitle(getString(R.string.screen_test)).
                 setMessage(R.string.test_screen_more_details)
                 .setPositiveButton(mBatteryModel == null ? R.string.test_screen_run : R.string.test_screen_rerun, new OnClickListener() {
                     @Override
@@ -105,7 +105,7 @@ public class ScreenFragment extends CommonFragment {
             }
         });
         mScreenTestButton = (Button) view.findViewById(R.id.button_screen_test);
-        if (mBatteryModel != null) {
+        if (mBatteryModel != null && mBatteryModel.getScreenModel() != null) {
             mScreenTestButton.setText(R.string.test_screen_rerun);
         }
         mScreenTestButton.setOnClickListener(new View.OnClickListener() {
@@ -220,6 +220,43 @@ public class ScreenFragment extends CommonFragment {
 
         if (mBatteryModel == null) {
             mBatteryModel = ModelManager.getInstance().getBatteryModel(getActivity());
+            if (mBatteryModel != null && (mBatteryModel.getScreenModel() != null || mBatteryModel.getCpuModel() != null || mBatteryModel.getCpuFrequencyModel() != null)) {
+                mSunView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        String message = Constants.EMPTY_STRING;
+                        Model screenModel = mBatteryModel.getScreenModel();
+                        if (screenModel != null) {
+                            DecimalFormat coefficientFormat = new DecimalFormat(getString(R.string.format_model_coefficient));
+                            String slope = coefficientFormat.format(screenModel.getFirstCoefficient());
+                            String intercept = coefficientFormat.format(screenModel.getIntercept());
+                            message += String.format(getString(R.string.model_screen_template), slope, intercept) + Constants.NEWLINE;
+                        }
+                        Model cpuModel = mBatteryModel.getCpuModel();
+                        if (cpuModel != null) {
+                            DecimalFormat coefficientFormat = new DecimalFormat(getString(R.string.format_model_coefficient));
+                            String slope = coefficientFormat.format(cpuModel.getFirstCoefficient());
+                            String intercept = coefficientFormat.format(cpuModel.getIntercept());
+                            message += String.format(getString(R.string.model_cpu_template), slope, intercept) + Constants.NEWLINE;
+                        }
+                        Model frequencyModel = mBatteryModel.getCpuFrequencyModel();
+                        if (frequencyModel != null) {
+                            DecimalFormat coefficientFormat = new DecimalFormat(getString(R.string.format_model_coefficient));
+                            String a = coefficientFormat.format(frequencyModel.getFirstCoefficient());
+                            String b = coefficientFormat.format(frequencyModel.getSecondCoefficient());
+                            String c = coefficientFormat.format(frequencyModel.getIntercept());
+                            message += String.format(getString(R.string.model_cpu_frequency_template), a, b, c);
+                        }
+                        if (!message.equals(Constants.EMPTY_STRING)) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), mTheme.getDialogStyleResource()).setTitle(getString(R.string.model_dialog_title)).
+                                    setMessage(message)
+                                    .setPositiveButton(R.string.ok, null);
+                            builder.show();
+                        }
+                        return true;
+                    }
+                });
+            }
         }
 
         if (mBatteryModel.getScreenModel() == null) {

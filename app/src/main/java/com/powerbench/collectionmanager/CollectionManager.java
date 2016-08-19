@@ -19,6 +19,11 @@ public class CollectionManager {
     private LifetimeCollectionTask mPowerCollectionTask;
 
     /**
+     * The secondary battery collection task.
+     */
+    private CollectionTask mEstimatedPowerCollectionTask;
+
+    /**
      * The primary application collection task.
      */
     private ApplicationCollectionTask mApplicationCollectionTask;
@@ -44,6 +49,13 @@ public class CollectionManager {
             mPowerCollectionTask = new LifetimeCollectionTask(context, Sensor.POWER, SensorConstants.LIFETIME_STATISTICS_BATTERY_FILENAME, SensorConstants.LIFETIME_STATISTICS_CHARGER_FILENAME);
         }
         return mPowerCollectionTask;
+    }
+
+    public CollectionTask getEstimatedPowerCollectionTask(Context context) {
+        if (mEstimatedPowerCollectionTask == null) {
+            mEstimatedPowerCollectionTask = new CollectionTask(context, Sensor.POWER_ESTIMATION_SENSOR);
+        }
+        return mEstimatedPowerCollectionTask;
     }
 
     public ApplicationCollectionTask getApplicationCollectionTask(Context context) {

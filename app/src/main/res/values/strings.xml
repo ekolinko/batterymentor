@@ -65,6 +65,13 @@
     <string name="tab_power">POWER</string>
     <string name="tab_screen">SCREEN</string>
     <string name="tab_apps">APPS</string>
+    <string name="battery_details">Battery Details</string>
+    <string name="power">Power</string>
+    <string name="status">Status:</string>
+    <string name="level">Level:</string>
+    <string name="temperature">Temperature:</string>
+    <string name="voltage">Voltage:</string>
+    <string name="battery_manager">Battery Manager</string>
 
     <!-- Power Tab -->
     <string name="power_title_realtime_battery_usage">Using Battery</string>
@@ -82,6 +89,7 @@
     <string name="power_charging_rate">CHARGING RATE</string>
     <string name="power_discharging_rate">DISCHARGING RATE</string>
     <string name="value_celsius_template" formatted="false">%s\u2103</string>
+    <string name="value_voltage_template" formoatted="false">%s V</string>
     <string name="value_min_max_template" formatted="false">%s/%s mW</string>
     <string name="max_battery_life">20+</string>
     <string name="dialog_reset_min_max_title">Reset Min/Max</string>

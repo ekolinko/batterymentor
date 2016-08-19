@@ -1,7 +1,5 @@
 package com.powerbench.model;
 
-import android.util.Log;
-
 import com.powerbench.datamanager.Point;
 
 import java.io.Serializable;
@@ -38,10 +36,6 @@ public class QuadraticModel extends Model implements Serializable {
      */
     @Override
     public void createModel(ArrayList<Point> input) {
-        Log.d("tstatic", "createModel");
-        for (Point point : input) {
-            Log.d("tstatic", "x = " + point.getX() + " y = " + point.getY());
-        }
         int itemCount = input.size();
         int validItems = 0;
         double[][] data = new double[2][itemCount];
@@ -89,10 +83,6 @@ public class QuadraticModel extends Model implements Serializable {
         mCoeff1 = result[2];
         mCoeff2 = result[1];
         mIntercept = result[0];
-        int i = 0;
-        for (Double r : result) {
-            Log.d("tstatic", "r[ " + i + "] = " + r);
-        }
     }
 
     /**

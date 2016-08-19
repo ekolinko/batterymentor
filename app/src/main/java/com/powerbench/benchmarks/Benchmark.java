@@ -2,7 +2,6 @@ package com.powerbench.benchmarks;
 
 import android.content.Context;
 import android.os.CountDownTimer;
-import android.util.Log;
 
 import com.powerbench.constants.BenchmarkConstants;
 import com.powerbench.constants.Constants;
@@ -123,7 +122,6 @@ public abstract class Benchmark {
         mLock.lock();
         long remaining = milliseconds;
         while (remaining > 0) {
-            Log.d("tstatic","remaining = " + remaining);
             if (mChargerConnected) {
                 try {
                     mChargerDisconnectedCondition.await();

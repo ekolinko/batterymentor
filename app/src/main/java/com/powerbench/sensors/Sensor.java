@@ -6,6 +6,7 @@ import com.powerbench.debug.Debug;
 import com.powerbench.sensors.cpu.FrequencySensor;
 import com.powerbench.sensors.cpu.LoadSensor;
 import com.powerbench.sensors.power.CurrentSensor;
+import com.powerbench.sensors.power.PowerEstimationSensor;
 import com.powerbench.sensors.power.PowerSensor;
 import com.powerbench.sensors.power.VoltageSensor;
 
@@ -21,6 +22,7 @@ public abstract class Sensor {
     public static final PowerSensor POWER = new PowerSensor();
     public static final FrequencySensor FREQUENCY_SENSOR = new FrequencySensor();
     public static final LoadSensor LOAD_SENSOR = new LoadSensor();
+    public static final PowerEstimationSensor POWER_ESTIMATION_SENSOR = new PowerEstimationSensor();
 
     /**
      * The name of the file used for reading the sensor measurement.

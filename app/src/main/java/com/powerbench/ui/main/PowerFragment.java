@@ -69,6 +69,11 @@ public class PowerFragment extends CommonFragment {
     private TextView mPowerView;
 
     /**
+     * The estimated power view associated with this fragment.
+     */
+    private TextView mEstimatedPowerView;
+
+    /**
      * The power LED associated with this fragment.
      */
     private ImageView mPowerLed;
@@ -181,6 +186,7 @@ public class PowerFragment extends CommonFragment {
         mTitleView = (TextView) view.findViewById(R.id.powerbench_power_title);
         mHintView = (TextView) view.findViewById(R.id.powerbench_power_hint);
         mPowerView = (TextView) view.findViewById(R.id.powerbench_power_value);
+        mEstimatedPowerView = (TextView) view.findViewById(R.id.powerbench_estimated_value);
         mPowerLed = (ImageView) view.findViewById(R.id.powerbench_power_led);
         mHistogramView = (HistogramView) view.findViewById(R.id.powerbench_power_histogram);
         mRealtimeMinMaxContainerView = (LinearLayout) view.findViewById(R.id.powerbench_power_battery_min_max_container);
@@ -223,7 +229,7 @@ public class PowerFragment extends CommonFragment {
      */
     public void updatePowerViews(boolean forceRefresh) {
         if (needsUpdate() || forceRefresh) {
-            if (mPowerView != null && mHistogram != null) {
+            if (mPowerView != null && mEstimatedPowerView != null && mHistogram != null) {
                 if (mPowerFormatter == null)
                     mPowerFormatter = new DecimalFormat(getString(R.string.format_power));
 
@@ -240,6 +246,20 @@ public class PowerFragment extends CommonFragment {
                             value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.milliwatts));
                         }
                     }
+
+                    // TODO ekolinko: Remove separate estimated power for production version
+                    String estimatedValue;
+                    double estimatedPowerValue = CollectionManager.getInstance().getEstimatedPowerCollectionTask(getContext()).getAverage();
+                    if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.milliamps))) {
+                        estimatedValue = String.format(getString(R.string.value_units_template), mPowerFormatter.format(estimatedPowerValue / Sensor.VOLTAGE.measure()), getString(R.string.milliamps));
+                    } else {
+                        estimatedValue = String.format(getString(R.string.value_units_template), mPowerFormatter.format(estimatedPowerValue), getString(R.string.milliwatts));
+                    }
+                    String estimatedDiff = "*";
+                    int diff = (int)(Math.abs(estimatedPowerValue - powerValue)*100 / Math.abs(powerValue));
+                    estimatedDiff += " (" + diff + "%)";
+                    mTitleView.setText(estimatedValue);
+                    mEstimatedPowerView.setText(estimatedDiff);
 
                     if (mPowerLed != null && mPowerLed.getVisibility() == View.VISIBLE) {
                         double lifetimeAverage = mCollectionTask.getLifetimeStatistics().getAverage();
@@ -397,6 +417,9 @@ public class PowerFragment extends CommonFragment {
         mTheme = theme;
         if (mPowerView != null) {
             mPowerView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
+        }
+        if (mEstimatedPowerView != null) {
+            mEstimatedPowerView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
         }
         if (mTitleView != null) {
             mTitleView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));

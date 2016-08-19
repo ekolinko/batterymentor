@@ -128,15 +128,6 @@ public class RealtimeStatistics extends Statistics {
                 mAverage = super.getAverage();
                 int recentSize = DataConstants.STATISTICS_RECENT_DATA_SIZE;
                 if (mRecentData.size() > recentSize + 1) {
-//                    int length = mRecentData.size();
-//                    double sum = 0;
-//                    int firstIndex = (int)(length * DataConstants.STATISTICS_PERCENT_OF_SPIKES_TO_DROP);
-//                    int lastIndex = length - 1 - firstIndex;
-//                    for (int i = firstIndex; i < lastIndex; i++) {
-//                        sum += mRecentData.get(i).getY();
-//                    }
-//                    long total = lastIndex - firstIndex;
-//                    mAverage = (total > 0) ? (sum / total) : 0;
                     double previousShortAverage = 0;
                     for (int i = mRecentData.size() - 2; i > mRecentData.size() - recentSize - 2; i--) {
                         previousShortAverage += convertValue(mRecentData.get(i).getY());

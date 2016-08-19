@@ -158,6 +158,9 @@ public class CollectionTask {
      */
     protected void onChargerConnected() {
         mStatistics = mChargerStatistics;
+        if (mStatistics.getNumPoints() == 0) {
+            measureSensor();
+        }
     }
 
     /**
@@ -166,6 +169,9 @@ public class CollectionTask {
      */
     protected void onChargerDisconnected() {
         mStatistics = mBatteryStatistics;
+        if (mStatistics.getNumPoints() == 0) {
+            measureSensor();
+        }
     }
 
     public Context getContext() {

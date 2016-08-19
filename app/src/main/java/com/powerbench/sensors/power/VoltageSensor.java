@@ -22,10 +22,10 @@ public class VoltageSensor extends Sensor {
     }
 
     public double measure() {
-        return measureValue(SensorConstants.VOLTS_IN_MICROWATT);
+        return measureValue(SensorConstants.MICROVOLTS_IN_VOLT);
     }
 
     public double measureValueAlternate() {
-        return ChargerManager.getInstance().getBatteryVoltage() / SensorConstants.VOLTS_IN_MILLIWATT;
+        return ChargerManager.getInstance().getBatteryVoltage() / SensorConstants.MILLIVOLTS_IN_VOLT;
     }
 }

@@ -5,12 +5,18 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.powerbench.R;
+import com.powerbench.constants.Constants;
 import com.powerbench.constants.SettingsConstants;
 
 /**
  * Singleton class used for storing and accessing the app settings.
  */
 public class Settings {
+
+    /**
+     * The device context.
+     */
+    private Context mContext;
 
     private static class SingletonHolder {
         private static final Settings INSTANCE = new Settings();
@@ -74,6 +80,9 @@ public class Settings {
      * @param statusBarUnits the units shown in the status bar.
      */
     public void setStatusBarUnits(Context context, String statusBarUnits) {
+        if (context == null)
+            return;
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPreferences.edit().putString(context.getString(R.string.settings_status_bar_units_key), statusBarUnits).apply();
     }
@@ -85,6 +94,9 @@ public class Settings {
      * @return the units shown in the status bar.
      */
     public String getStatusBarUnits(Context context) {
+        if (context == null)
+            return Constants.EMPTY_STRING;
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getString(context.getString(R.string.settings_status_bar_units_key), context.getString(R.string.settings_status_bar_units_default));
     }
@@ -96,6 +108,9 @@ public class Settings {
      * @param statusBarUnits the units shown in the power tab.
      */
     public void setPowerTabUnits(Context context, String statusBarUnits) {
+        if (context == null)
+            return;
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPreferences.edit().putString(context.getString(R.string.settings_power_tab_units_key), statusBarUnits).apply();
     }
@@ -107,7 +122,18 @@ public class Settings {
      * @return the units shown in the power tab.
      */
     public String getPowerTabUnits(Context context) {
+        if (context == null)
+            return Constants.EMPTY_STRING;
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getString(context.getString(R.string.settings_power_tab_units_key), context.getString(R.string.settings_power_tab_units_default));
+    }
+
+    public void setContext(Context context) {
+        mContext = context;
+    }
+
+    public Context getContext() {
+        return mContext;
     }
 }

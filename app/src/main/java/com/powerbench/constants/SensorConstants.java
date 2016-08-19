@@ -33,12 +33,12 @@ public class SensorConstants {
     /**
      * The number of volts in a microwatt.
      */
-    public static final double VOLTS_IN_MICROWATT = 1000000;
+    public static final double MICROVOLTS_IN_VOLT = 1000000;
 
     /**
      * The number of volts in a milliwatt.
      */
-    public static final double VOLTS_IN_MILLIWATT = 1000;
+    public static final double MILLIVOLTS_IN_VOLT = 1000;
 
     /**
      * The minimum length of time between measurements of the same sensor. If two measurement

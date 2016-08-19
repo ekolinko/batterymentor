@@ -1,7 +1,6 @@
 package com.powerbench.model;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.powerbench.collectionmanager.CollectionManager;
 import com.powerbench.collectionmanager.CollectionTask;
@@ -67,7 +66,6 @@ public class ModelManager implements ChargerManager.ChargerListener {
             }
         }
         model = loadModelFromStorage(context, ModelConstants.CPU_MODEL_FILENAME);
-        Log.d("tstatic","CM = " + model);
         if (model instanceof LinearModel) {
             LinearModel cpuModel = (LinearModel) model;
             if (cpuModel != null) {
@@ -76,7 +74,6 @@ public class ModelManager implements ChargerManager.ChargerListener {
             }
         }
         model = loadModelFromStorage(context, ModelConstants.CPU_FREQUENCY_MODEL_FILENAME);
-        Log.d("tstatic","FM = " + model);
         if (model instanceof QuadraticModel) {
             QuadraticModel frequencyModel = (QuadraticModel) model;
             if (frequencyModel != null) {

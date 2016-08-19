@@ -54,7 +54,6 @@ public class LoadSensor extends Sensor {
             for (int i = 0; i < mNumCores; i++) {
                 double coreLoad = 0;
                 LoadMeasurement previous = mUsageCache[i];
-
                 String line = file.readLine();
                 StringTokenizer stringTokenizer = new StringTokenizer(line);
                 stringTokenizer.nextToken();
@@ -81,6 +80,42 @@ public class LoadSensor extends Sensor {
         }
         if (cpuLoad != Constants.INVALID_VALUE)
             cpuLoad = cpuLoad * Constants.PERCENT / mNumCores;
+        return cpuLoad;
+    }
+
+    public double measureCore(int core) {
+        double cpuLoad = Constants.INVALID_VALUE;
+        try {
+            RandomAccessFile file = new RandomAccessFile(getFilename(), SensorConstants.MODE_READ);
+            file.readLine();
+            for (int i = 0; i < core; i++) {
+                file.readLine();
+            }
+            double coreLoad = 0;
+            LoadMeasurement previous = mUsageCache[core];
+            String line = file.readLine();
+            StringTokenizer stringTokenizer = new StringTokenizer(line);
+            stringTokenizer.nextToken();
+            ArrayList<Integer> values = new ArrayList<Integer>();
+            int total = 0;
+            while (stringTokenizer.hasMoreTokens()) {
+                int value = Integer.parseInt(stringTokenizer.nextToken());
+                values.add(value);
+                total += value;
+            }
+            int usage = total - values.get(3);
+            if (previous.isValid()) {
+                int diffTotal = total - previous.getTotal();
+                if (diffTotal > 0) {
+                    coreLoad = (usage - previous.getUsage()) / (double) diffTotal;
+                }
+                cpuLoad = (cpuLoad == Constants.INVALID_VALUE) ? coreLoad : cpuLoad + coreLoad;
+            }
+            previous.setMeasurements(usage, total);
+        } catch (Exception e) {
+            if (Debug.isCollectionManagerLoggingEnabled())
+                Debug.printDebug(e);
+        }
         return cpuLoad;
     }
 
