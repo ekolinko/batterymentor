@@ -198,12 +198,15 @@ public class PowerBenchActivity extends CommonActivity {
         mHandler = new Handler();
         mPowerFragment = new PowerFragment();
         mScreenFragment = new ScreenFragment();
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-            mAppsFragment = new AppsFragment();
-            mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment, mAppsFragment };
-        } else {
-            mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment };
-        }
+
+        mAppsFragment = new AppsFragment();
+        mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment, mAppsFragment };
+//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+//            mAppsFragment = new AppsFragment();
+//            mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment, mAppsFragment };
+//        } else {
+//            mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment };
+//        }
 
         mPagerAdapter = new PowerbenchPagerAdapter(getSupportFragmentManager(), mTabFragments);
         mViewPager = (ViewPager) findViewById(R.id.powerbench_pager);
@@ -320,12 +323,13 @@ public class PowerBenchActivity extends CommonActivity {
         Button powerTab = (Button) findViewById(R.id.powerbench_tab_power);
         Button displayTab = (Button) findViewById(R.id.powerbench_tab_display);
         Button appsTab = (Button) findViewById(R.id.powerbench_tab_apps);
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-            mPagerTabs = new Button[] { powerTab, displayTab, appsTab };
-        } else {
-            appsTab.setVisibility(View.GONE);
-            mPagerTabs = new Button[] { powerTab, displayTab };
-        }
+        mPagerTabs = new Button[] { powerTab, displayTab, appsTab };
+//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+//            mPagerTabs = new Button[] { powerTab, displayTab, appsTab };
+//        } else {
+//            appsTab.setVisibility(View.GONE);
+//            mPagerTabs = new Button[] { powerTab, displayTab };
+//        }
         for (int position = 0; position < mPagerTabs.length; position++) {
             Button button = mPagerTabs[position];
             final int item = position;
@@ -474,7 +478,7 @@ public class PowerBenchActivity extends CommonActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this, getAppTheme().getDialogStyleResource()).setTitle(getString(R.string.battery_details))
                     .setView(batteryStatsView)
                     .setNegativeButton(R.string.close, null)
-                    .setPositiveButton(R.string.battery_manager, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.how_to_improve_battery_life, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));

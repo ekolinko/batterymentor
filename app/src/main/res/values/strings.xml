@@ -71,7 +71,7 @@
     <string name="level">Level:</string>
     <string name="temperature">Temperature:</string>
     <string name="voltage">Voltage:</string>
-    <string name="battery_manager">Battery Manager</string>
+    <string name="how_to_improve_battery_life">How to Improve Battery Life</string>
 
     <!-- Power Tab -->
     <string name="power_title_realtime_battery_usage">Using Battery</string>
