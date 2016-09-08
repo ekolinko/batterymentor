@@ -1,8 +1,6 @@
 package com.powerbench.ui.benchmark;
 
-import android.animation.ObjectAnimator;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -13,9 +11,9 @@ import com.powerbench.benchmarks.Benchmark;
 import com.powerbench.constants.Constants;
 import com.powerbench.constants.DeviceConstants;
 import com.powerbench.device.Permissions;
-import com.powerbench.model.ModelManager;
 import com.powerbench.ui.common.CommonActivity;
 import com.powerbench.ui.theme.Theme;
+import com.powerbench.utils.Utils;
 
 import java.text.DecimalFormat;
 
@@ -25,9 +23,14 @@ import java.text.DecimalFormat;
 public abstract class BenchmarkActivity extends CommonActivity {
 
     /**
+     * The progress label.
+     */
+    private TextView mProgressLabelTextView;
+
+    /**
      * The duration text view.
      */
-    private TextView mDurationTextView;
+    private TextView mProgressDurationTextView;
 
     /**
      * The progress view.
@@ -35,9 +38,14 @@ public abstract class BenchmarkActivity extends CommonActivity {
     private ProgressBar mProgressView;
 
     /**
-     * The progress text view.
+     * The progress error text view.
      */
-    private TextView mProgressTextView;
+    private TextView mProgressErrorTextView;
+
+//    /**
+//     * The progress text view.
+//     */
+//    private TextView mProgressTextView;
 
     /**
      * The button to stop the benchmark.
@@ -85,10 +93,10 @@ public abstract class BenchmarkActivity extends CommonActivity {
     @Override
     protected void initialize() {
         super.initialize();
-        mDurationTextView = (TextView)findViewById(R.id.benchmark_duration);
-        mDurationFormatter = new DecimalFormat(getString(R.string.format_duration));
+        mProgressLabelTextView = (TextView)findViewById(R.id.benchmark_progress_label);
+        mProgressDurationTextView = (TextView)findViewById(R.id.benchmark_progress_duration);
         mProgressView = (ProgressBar)findViewById(R.id.benchmark_progress_bar);
-        mProgressTextView = (TextView)findViewById(R.id.benchmark_progress_text_view);
+        mProgressErrorTextView = (TextView)findViewById(R.id.benchmark_progress_error);
         mStopButton = (Button) findViewById(R.id.button_stop);
         if (mStopButton != null) {
             mStopButton.setOnClickListener(new View.OnClickListener() {
@@ -200,9 +208,9 @@ public abstract class BenchmarkActivity extends CommonActivity {
      * @param duration the duration of the timer, in milliseconds.
      */
     protected void startProgress(long duration) {
-        if (mProgressTextView != null) {
-            mProgressTextView.setText(getString(R.string.benchmark_getting_ready));
-        }
+//        if (mProgressTextView != null) {
+//            mProgressTextView.setText(getString(R.string.benchmark_getting_ready));
+//        }
     }
 
     /**
@@ -219,21 +227,21 @@ public abstract class BenchmarkActivity extends CommonActivity {
      * Update the level of the benchmark.
      */
     protected void updateLevel(int level) {
-        if (mProgressTextView != null) {
-            mProgressTextView.setText(String.format(getString(R.string.value_percent_template), level));
-        }
+//        if (mProgressTextView != null) {
+//            mProgressTextView.setText(String.format(getString(R.string.value_percent_template), level));
+//        }
     }
 
     /**
      * Update the duration text view with the specified duration.
      */
     protected void updateDuration(long millisUntilFinished) {
-        if (mDurationTextView != null) {
+        if (mProgressDurationTextView != null) {
             final double duration = millisUntilFinished / ((double) Constants.SECOND);
             getHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    mDurationTextView.setText(String.format(getString(R.string.value_units_template), mDurationFormatter.format(duration), getString(R.string.seconds)));
+                    mProgressDurationTextView.setText(Utils.convertTimeRemainingToSimpleString(BenchmarkActivity.this, duration));
                 }
             });
         }
@@ -248,7 +256,7 @@ public abstract class BenchmarkActivity extends CommonActivity {
             getHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    mDurationTextView.setText(getString(R.string.benchmark_completing));
+                    mProgressDurationTextView.setText(getString(R.string.test_completing));
                 }
             });
         }
@@ -281,8 +289,11 @@ public abstract class BenchmarkActivity extends CommonActivity {
     @Override
     protected void applyTheme(Theme theme) {
         super.applyTheme(theme);
-        if (mDurationTextView != null) {
-            mDurationTextView.setTextColor(ContextCompat.getColor(this, theme.getColorResource()));
+        if (mProgressLabelTextView != null) {
+            mProgressLabelTextView.setTextColor(ContextCompat.getColor(this, theme.getColorResource()));
+        }
+        if (mProgressDurationTextView != null) {
+            mProgressDurationTextView.setTextColor(ContextCompat.getColor(this, theme.getColorResource()));
         }
         if (mProgressView != null) {
             int progress = mProgressView.getProgress();
@@ -290,11 +301,14 @@ public abstract class BenchmarkActivity extends CommonActivity {
             mProgressView.setProgress(0);
             mProgressView.setProgress(progress);
         }
-        if (mProgressTextView != null) {
-            mProgressTextView.setTextColor(ContextCompat.getColor(this, theme.getColorResource()));
+//        if (mProgressTextView != null) {
+//            mProgressTextView.setTextColor(ContextCompat.getColor(this, theme.getColorResource()));
+//        }
+        if (mProgressErrorTextView != null) {
+            mProgressErrorTextView.setTextColor(ContextCompat.getColor(this, theme.getColorResource()));
         }
         if (mStopButton != null) {
-            mStopButton.setBackgroundColor(ContextCompat.getColor(this, theme.getColorResource()));
+            mStopButton.setTextColor(ContextCompat.getColor(this, theme.getColorResource()));
         }
     }
 
@@ -309,7 +323,7 @@ public abstract class BenchmarkActivity extends CommonActivity {
             getHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    mDurationTextView.setText(getString(R.string.benchmark_complete));
+                    mProgressDurationTextView.setText(getString(R.string.test_complete));
                 }
             });
             return true;
@@ -325,18 +339,30 @@ public abstract class BenchmarkActivity extends CommonActivity {
     }
 
     @Override
-    public void onChargerConnected() {
-        super.onChargerConnected();
+    public void onChargerConnectedUIThread() {
+        super.onChargerConnectedUIThread();
         if (mBenchmark != null) {
             mBenchmark.onChargerConnected();
+        }
+        if (mProgressLabelTextView != null) {
+            mProgressLabelTextView.setText(R.string.test_paused);
+        }
+        if (mProgressErrorTextView != null) {
+            mProgressErrorTextView.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
-    public void onChargerDisconnected() {
-        super.onChargerDisconnected();
+    public void onChargerDisconnectedUIThread() {
+        super.onChargerDisconnectedUIThread();
         if (mBenchmark != null) {
             mBenchmark.onChargerDisconnected();
+        }
+        if (mProgressLabelTextView != null) {
+            mProgressLabelTextView.setText(R.string.test_in_progress);
+        }
+        if (mProgressErrorTextView != null) {
+            mProgressErrorTextView.setVisibility(View.GONE);
         }
     }
 }

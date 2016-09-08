@@ -4,5 +4,5 @@
     <item android:drawable="@drawable/zero" android:right="32dp" android:bottom="26dp"/>
     <item android:drawable="@drawable/decimal_point" android:left="16dp" android:right="16dp" android:bottom="26dp" />
     <item android:drawable="@drawable/six" android:left="32dp" android:bottom="26dp" />
-    <item android:drawable="@drawable/h" android:top="26dp" />
+    <item android:drawable="@drawable/hrs" android:top="26dp" />
 </layer-list>

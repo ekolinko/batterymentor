@@ -112,7 +112,7 @@ public abstract class Theme {
      * @return the primary color of this theme.
      */
     public int initializeColorResource() {
-        return R.color.powerbench_blue;
+        return R.color.material_blue;
     }
 
     /**
@@ -121,7 +121,7 @@ public abstract class Theme {
      * @return the action bar color of this theme.
      */
     public int initializeActionBarColorResource() {
-        return R.color.powerbench_blue_dark;
+        return R.color.material_blue_dark;
     }
 
     /**
@@ -148,7 +148,7 @@ public abstract class Theme {
      * @return the screen test icon resource.
      */
     public int initializeScreenTestResource() {
-        return R.drawable.remove_icon_screen_test_blue;
+        return R.drawable.phone_blue;
     }
 
     /**
@@ -184,7 +184,7 @@ public abstract class Theme {
      * @return the semitransparent color resource.
      */
     public int initializeSemitransparentColorResource() {
-        return R.color.powerbench_blue_semitransparent;
+        return R.color.material_blue_semitransparent;
     }
 
     /**

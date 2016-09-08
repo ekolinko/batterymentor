@@ -6,6 +6,9 @@
     android:padding="15dp">
     <LinearLayout android:id="@+id/powerbench_list_label_container"
         style="@style/powerbench_list_label_container">
+        <TextView android:id="@+id/label_battery_life"
+            style="@style/powerbench_list_label"
+            android:text="@string/battery_remaining" />
         <TextView android:id="@+id/label_status"
             style="@style/powerbench_list_label"
             android:text="@string/status" />
@@ -21,6 +24,8 @@
     </LinearLayout>
     <LinearLayout style="@style/powerbench_list_value_container"
         android:layout_toRightOf="@+id/powerbench_list_label_container">
+        <TextView android:id="@+id/value_battery_life"
+            style="@style/powerbench_list_value" />
         <TextView android:id="@+id/value_status"
             style="@style/powerbench_list_value" />
         <TextView android:id="@+id/value_level"

@@ -126,4 +126,9 @@ public class SensorConstants {
      * The conversion factor to convert the battery temperature from tenths of a celsius to a celsius.
      */
     public static final float BATTERY_TEMPERATURE_CONVERSION_FACTOR = 10;
+
+    /**
+     * The minimum power that can measured by the battery power sensor;
+     */
+    public static final double BATTERY_POWER_MIN = 300;
 }

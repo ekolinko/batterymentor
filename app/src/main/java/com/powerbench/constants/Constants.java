@@ -71,6 +71,11 @@ public class Constants {
     public static double MINUTES_IN_HOUR = 60;
 
     /**
+     * The number of seconds in a minute.
+     */
+    public static double SECONDS_IN_MINUTE = 60;
+
+    /**
      * The interval at which to refresh the ads.
      */
     public static final long AD_REFRESH_INTERVAL = 5*MINUTE;

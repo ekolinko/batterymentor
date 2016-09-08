@@ -19,12 +19,12 @@ public class BatteryTheme extends Theme {
 
     @Override
     public int initializeColorResource() {
-        return R.color.powerbench_blue;
+        return R.color.material_blue;
     }
 
     @Override
     public int initializeActionBarColorResource() {
-        return R.color.powerbench_blue_dark;
+        return R.color.material_blue_dark;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class BatteryTheme extends Theme {
 
     @Override
     public int initializeScreenTestResource() {
-        return R.drawable.remove_icon_screen_test_blue;
+        return R.drawable.phone_blue;
     }
 
     public int initializeScreenSunResource() {
@@ -57,7 +57,7 @@ public class BatteryTheme extends Theme {
 
     @Override
     public int initializeSemitransparentColorResource() {
-        return R.color.powerbench_blue_semitransparent;
+        return R.color.material_blue_semitransparent;
     }
 
     @Override

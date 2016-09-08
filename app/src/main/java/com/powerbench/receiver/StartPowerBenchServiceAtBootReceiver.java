@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.powerbench.PowerBenchService;
+import com.powerbench.BatteryMentorService;
 import com.powerbench.settings.Settings;
 
 /**
@@ -15,7 +15,7 @@ public class StartPowerBenchServiceAtBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && Settings.getInstance().getStartupWithDevice(context)) {
-            Intent serviceIntent = new Intent(context, PowerBenchService.class);
+            Intent serviceIntent = new Intent(context, BatteryMentorService.class);
             context.startService(serviceIntent);
         }
     }

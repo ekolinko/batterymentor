@@ -30,7 +30,7 @@
                 android:layout_below="@id/battery_life_container">
                 <Button android:id="@+id/powerbench_tab_power"
                     style="@style/powerbench_pager_tab"
-                    android:text="@string/tab_power"
+                    android:text="@string/tab_battery"
                     android:enabled="false"/>
                 <Button android:id="@+id/powerbench_tab_display"
                     style="@style/powerbench_pager_tab"

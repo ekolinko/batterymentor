@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -16,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,6 +44,7 @@ import com.powerbench.ui.common.CommonActivity;
 import com.powerbench.ui.common.CommonFragment;
 import com.powerbench.ui.settings.SettingsActivity;
 import com.powerbench.ui.theme.Theme;
+import com.powerbench.ui.tips.BatteryTipsActivity;
 import com.powerbench.ui.tutorial.TutorialActivity;
 import com.powerbench.utils.Utils;
 
@@ -51,7 +52,7 @@ import com.powerbench.utils.Utils;
  * The main powerbench activity that allows a user to view battery power consumption and charging
  * rate in realtime.
  */
-public class PowerBenchActivity extends CommonActivity {
+public class BatteryMentorActivity extends CommonActivity {
 
     /**
      * The primary battery collection task.
@@ -134,6 +135,16 @@ public class PowerBenchActivity extends CommonActivity {
     private boolean mBatteryStatsShown;
 
     /**
+     * The battery life label in the details dialog.
+     */
+    private TextView mBatteryLifeDetailsLabel;
+
+    /**
+     * The battery life view in the details dialog.
+     */
+    private TextView mBatteryLifeDetails;
+
+    /**
      * The battery status view.
      */
     private TextView mBatteryStatus;
@@ -178,6 +189,16 @@ public class PowerBenchActivity extends CommonActivity {
      */
     private BatteryModel mBatteryModel;
 
+    /**
+     * The battery life value.
+     */
+    private String mBatteryLifeValue = Constants.EMPTY_STRING;
+
+    /**
+     * The battery tips button.
+     */
+    private Button mBatteryTipsButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -199,8 +220,8 @@ public class PowerBenchActivity extends CommonActivity {
         mPowerFragment = new PowerFragment();
         mScreenFragment = new ScreenFragment();
 
-        mAppsFragment = new AppsFragment();
-        mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment, mAppsFragment };
+//        mAppsFragment = new AppsFragment();
+        mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment };
 //        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
 //            mAppsFragment = new AppsFragment();
 //            mTabFragments = new CommonFragment[] { mPowerFragment, mScreenFragment, mAppsFragment };
@@ -237,7 +258,7 @@ public class PowerBenchActivity extends CommonActivity {
                     @Override
                     public void run() {
                         mPowerFragment.updatePowerViews(false);
-                        updateBatteryStats();
+                        updateBatteryDetails();
                     }
                 });
             }
@@ -250,6 +271,24 @@ public class PowerBenchActivity extends CommonActivity {
         mEstimatedPowerCollectionTask.start();
         mApplicationCollectionTask.start();
         Device.getInstance().getBatteryCapacity(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case UIConstants.TAB_REQUEST_CODE:
+                    if (UIConstants.POWER_TAB.equals(data.getData().toString())) {
+                        if (mViewPager != null && mViewPager.getChildCount() > UIConstants.POWER_TAB_INDEX)
+                            mViewPager.setCurrentItem(UIConstants.POWER_TAB_INDEX);
+                    } else if (UIConstants.SCREEN_TAB.equals(data.getData().toString())) {
+                    if (mViewPager != null && mViewPager.getChildCount() > UIConstants.SCREEN_TAB_INDEX)
+                        mViewPager.setCurrentItem(UIConstants.SCREEN_TAB_INDEX);
+                }
+                    break;
+            }
+        }
     }
 
     /**
@@ -287,8 +326,8 @@ public class PowerBenchActivity extends CommonActivity {
             tutorialButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Settings.getInstance().setShowTutorial(PowerBenchActivity.this, true);
-                    startActivityForResult(new Intent(PowerBenchActivity.this, TutorialActivity.class), UIConstants.TUTORIAL_REFRESH_REQUEST_CODE);
+                    Settings.getInstance().setShowTutorial(BatteryMentorActivity.this, true);
+                    startActivityForResult(new Intent(BatteryMentorActivity.this, TutorialActivity.class), UIConstants.TUTORIAL_REFRESH_REQUEST_CODE);
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
             });
@@ -299,7 +338,18 @@ public class PowerBenchActivity extends CommonActivity {
             settingsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(PowerBenchActivity.this, SettingsActivity.class));
+                    startActivityForResult(new Intent(BatteryMentorActivity.this, SettingsActivity.class), UIConstants.TAB_REQUEST_CODE);
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                }
+            });
+        }
+
+        mBatteryTipsButton = (Button) findViewById(R.id.button_battery_tips);
+        if (mBatteryTipsButton != null) {
+            mBatteryTipsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivityForResult(new Intent(BatteryMentorActivity.this, BatteryTipsActivity.class), UIConstants.TAB_REQUEST_CODE);
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
             });
@@ -323,7 +373,8 @@ public class PowerBenchActivity extends CommonActivity {
         Button powerTab = (Button) findViewById(R.id.powerbench_tab_power);
         Button displayTab = (Button) findViewById(R.id.powerbench_tab_display);
         Button appsTab = (Button) findViewById(R.id.powerbench_tab_apps);
-        mPagerTabs = new Button[] { powerTab, displayTab, appsTab };
+        appsTab.setVisibility(View.GONE);
+        mPagerTabs = new Button[] { powerTab, displayTab };
 //        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
 //            mPagerTabs = new Button[] { powerTab, displayTab, appsTab };
 //        } else {
@@ -390,6 +441,10 @@ public class PowerBenchActivity extends CommonActivity {
             mBatteryLifeLabel.setVisibility(View.GONE);
         }
         mBatteryLife.setText(value);
+        if (mBatteryLifeDetails != null) {
+            mBatteryLifeDetails.setText(value);
+        }
+        mBatteryLifeValue = value;
     }
 
     /**
@@ -447,6 +502,19 @@ public class PowerBenchActivity extends CommonActivity {
             LayoutInflater inflater = getLayoutInflater();
             ChargerManager chargerManager = ChargerManager.getInstance();
             View batteryStatsView = inflater.inflate(R.layout.dialog_battery_stats, null);
+            mBatteryLifeDetailsLabel = (TextView) batteryStatsView.findViewById(R.id.label_battery_life);
+            if (mBatteryLifeDetailsLabel != null) {
+                if (isChargerConnected())
+                    mBatteryLifeDetailsLabel.setText(R.string.time_until_full);
+                else
+                    mBatteryLifeDetailsLabel.setText(R.string.battery_remaining);
+                mBatteryLifeDetailsLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+            }
+            mBatteryLifeDetails = (TextView) batteryStatsView.findViewById(R.id.value_battery_life);
+            if (mBatteryLifeDetails != null) {
+                mBatteryLifeDetails.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+                mBatteryLifeDetails.setText(mBatteryLifeValue);
+            }
             TextView batteryStatusLabel = (TextView) batteryStatsView.findViewById(R.id.label_status);
             if (batteryStatusLabel != null)
                 batteryStatusLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
@@ -478,10 +546,10 @@ public class PowerBenchActivity extends CommonActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this, getAppTheme().getDialogStyleResource()).setTitle(getString(R.string.battery_details))
                     .setView(batteryStatsView)
                     .setNegativeButton(R.string.close, null)
-                    .setPositiveButton(R.string.how_to_improve_battery_life, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(isChargerConnected() ? R.string.charger_tips : R.string.battery_tips, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY));
+                            startActivityForResult(new Intent(BatteryMentorActivity.this, BatteryTipsActivity.class), UIConstants.TAB_REQUEST_CODE);
                         }
                     }).setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
@@ -490,14 +558,14 @@ public class PowerBenchActivity extends CommonActivity {
                         }
                     });
             mBatteryStatsShown = true;
-            updateBatteryStats();
+            updateBatteryDetails();
             builder.show();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    protected void updateBatteryStats() {
+    protected void updateBatteryDetails() {
         if (mBatteryStatsShown) {
             ChargerManager chargerManager = ChargerManager.getInstance();
             if (mBatteryStatus != null) {
@@ -549,9 +617,17 @@ public class PowerBenchActivity extends CommonActivity {
     }
 
     @Override
+    public void finish() {
+        if (getService() != null)
+            getService().cancelNotification();
+        super.finish();
+    }
+
+    @Override
     public void onDestroy() {
         mApplicationCollectionTask.stop();
-        getService().cancelNotification();
+        if (getService() != null)
+            getService().cancelNotification();
         super.onDestroy();
     }
 
@@ -569,7 +645,13 @@ public class PowerBenchActivity extends CommonActivity {
         if (mBatteryStatusMenuItem != null) {
             mBatteryStatusMenuItem.setIcon(R.drawable.battery_charging);
         }
-        updateBatteryStats();
+        if (mBatteryLifeDetailsLabel != null) {
+            mBatteryLifeDetailsLabel.setText(R.string.time_until_full);
+        }
+        if (mBatteryTipsButton != null) {
+            mBatteryTipsButton.setText(R.string.charger_tips);
+        }
+        updateBatteryDetails();
     }
 
     @Override
@@ -585,7 +667,13 @@ public class PowerBenchActivity extends CommonActivity {
         if (mBatteryStatusMenuItem != null) {
             mBatteryStatusMenuItem.setIcon(R.drawable.battery_discharging);
         }
-        updateBatteryStats();
+        if (mBatteryLifeDetailsLabel != null) {
+            mBatteryLifeDetailsLabel.setText(R.string.battery_remaining);
+        }
+        if (mBatteryTipsButton != null) {
+            mBatteryTipsButton.setText(R.string.battery_tips);
+        }
+        updateBatteryDetails();
     }
 
     @Override
@@ -594,7 +682,7 @@ public class PowerBenchActivity extends CommonActivity {
         if (mBatteryStatusMenuItem != null) {
             mBatteryStatusMenuItem.setTitle(String.format(getString(R.string.value_percent_template), Integer.toString(level)));
         }
-        updateBatteryStats();
+        updateBatteryDetails();
     }
 
     /**

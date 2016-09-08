@@ -7,7 +7,7 @@
         android:layout_alignParentTop="true" />
     <ImageView android:id="@+id/powerbench_tutorial_image"
         style="@style/powerbench_tutorial_image"
-        android:src="@drawable/remove_icon_screen_test_blue"
+        android:src="@drawable/phone_blue"
         android:layout_below="@id/powerbench_tutorial_title" />
     <TextView android:id="@+id/powerbench_tutorial_text"
         style="@style/powerbench_tutorial_text"

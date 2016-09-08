@@ -101,6 +101,11 @@ public class UIConstants {
     public static final int TUTORIAL_REFRESH_REQUEST_CODE = 2;
 
     /**
+     * The show screen tab request code.
+     */
+    public static final int TAB_REQUEST_CODE = 3;
+
+    /**
      * The number of histogram points used for drawing purposes.
      */
     public static final int HISTOGRAM_NUM_POINTS_FOR_DRAW = 80;
@@ -118,5 +123,25 @@ public class UIConstants {
     /**
      * The maximum battery life / until fully charger to show in minutes
      */
-    public static double MAX_BATTERY_LIFE = 20*Constants.MINUTES_IN_HOUR;
+    public static final double MAX_BATTERY_LIFE = 20*Constants.MINUTES_IN_HOUR;
+
+    /**
+     * The index of the power tab.
+     */
+    public static final int POWER_TAB_INDEX = 0;
+
+    /**
+     * The index of the screen tab.
+     */
+    public static final int SCREEN_TAB_INDEX = 1;
+
+    /**
+     * The power tab.
+     */
+    public static final String POWER_TAB = "power_tab";
+
+    /**
+     * The screen tab.
+     */
+    public static final String SCREEN_TAB = "screen_tab";
 }

@@ -19,12 +19,12 @@ public class ChargerTheme extends Theme {
 
     @Override
     public int initializeColorResource() {
-        return R.color.powerbench_red;
+        return R.color.material_red;
     }
 
     @Override
     public int initializeActionBarColorResource() {
-        return R.color.powerbench_red_dark;
+        return R.color.material_red_dark;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ChargerTheme extends Theme {
 
     @Override
     public int initializeScreenTestResource() {
-        return R.drawable.remove_icon_screen_test_red;
+        return R.drawable.phone_red;
     }
 
     public int initializeScreenSunResource() {
@@ -57,7 +57,7 @@ public class ChargerTheme extends Theme {
 
     @Override
     public int initializeSemitransparentColorResource() {
-        return R.color.powerbench_red_semitransparent;
+        return R.color.material_red_semitransparent;
     }
 
     @Override

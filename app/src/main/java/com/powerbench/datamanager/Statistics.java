@@ -11,6 +11,11 @@ import java.io.Serializable;
 public class Statistics implements Serializable, Histogram {
 
     /**
+     * The last measured value.
+     */
+    private double mValue;
+
+    /**
      * The total sum of the lifetime statistics. Used for calculating the average.
      */
     private double mTotal;
@@ -24,6 +29,16 @@ public class Statistics implements Serializable, Histogram {
      * The histogram points associated with the statistics.
      */
     private HistogramPoint[] mHistogramData;
+
+    /**
+     * The minimum value of the data.
+     */
+    private double mMin = Double.POSITIVE_INFINITY;
+
+    /**
+     * The maximum value of the data.
+     */
+    private double mMax = Double.NEGATIVE_INFINITY;
 
     /**
      * Flag indicating whether these statistics are related to the charger.
@@ -54,10 +69,13 @@ public class Statistics implements Serializable, Histogram {
         if (point == null)
             return;
 
-        double value = convertValue(point.getY());
-        mTotal += value;
+        mValue = convertValue(point.getY());
+        mTotal += mValue;
         mNumPoints++;
-
+        if (mValue > mMax)
+            mMax = mValue;
+        if (mValue < mMin)
+            mMin = mValue;
         addPointToHistogram(point);
     }
 
@@ -138,6 +156,16 @@ public class Statistics implements Serializable, Histogram {
         return 1d - getWeight();
     }
 
+    /**
+     * Reset the statistics.
+     */
+    public void reset() {
+        mMin = Double.POSITIVE_INFINITY;
+        mMax = Double.NEGATIVE_INFINITY;
+        mTotal = 0;
+        mNumPoints = 0;
+    }
+
     @Override
     public HistogramPoint[] getHistogramData() {
         return mHistogramData;
@@ -157,5 +185,17 @@ public class Statistics implements Serializable, Histogram {
 
     public boolean areChargerStatistics() {
         return mChargerStatistics;
+    }
+
+    public double getMin() {
+        return mMin;
+    }
+
+    public double getMax() {
+        return mMax;
+    }
+
+    public double getValue() {
+        return mValue;
     }
 }

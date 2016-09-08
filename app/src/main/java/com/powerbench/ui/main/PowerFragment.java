@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,7 +17,7 @@ import com.powerbench.collectionmanager.LifetimeCollectionTask;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.datamanager.Histogram;
 import com.powerbench.datamanager.RealtimeStatistics;
-import com.powerbench.sensors.ChargerManager;
+import com.powerbench.datamanager.Statistics;
 import com.powerbench.sensors.Sensor;
 import com.powerbench.settings.Settings;
 import com.powerbench.ui.common.CommonFragment;
@@ -59,7 +58,7 @@ public class PowerFragment extends CommonFragment {
     private TextView mTitleView;
 
     /**
-     * The hint view assocaited with this fragment.
+     * The hint view associated with this fragment.
      */
     private TextView mHintView;
 
@@ -84,61 +83,6 @@ public class PowerFragment extends CommonFragment {
     private HistogramView mHistogramView;
 
     /**
-     * The realtime min/max container view associated with this fragment.
-     */
-    private LinearLayout mRealtimeMinMaxContainerView;
-
-    /**
-     * The battery level header view associated with this fragment.
-     */
-    private TextView mBatteryLevelHeaderView;
-
-    /**
-     * The charging status header view associated with this fragment.
-     */
-    private TextView mChargingStatusHeaderView;
-
-    /**
-     * The battery temperature header view associated with this fragment.
-     */
-    private TextView mBatteryTemperatureHeaderView;
-
-    /**
-     * The realtime min/max header view associated with this fragment.
-     */
-    private TextView mRealtimeMinMaxHeaderView;
-
-    /**
-     * The charging rate header view associated with this fragment.
-     */
-    private TextView mChargingRateHeaderView;
-
-    /**
-     * The battery level view associated with this fragment.
-     */
-    private TextView mBatteryLevelView;
-
-    /**
-     * The charging status view associated with this fragment.
-     */
-    private TextView mChargingStatusView;
-
-    /**
-     * The battery temperature view associated with this fragment.
-     */
-    private TextView mBatteryTemperatureView;
-
-    /**
-     * The realtime min/max view associated with this fragment.
-     */
-    private TextView mRealtimeMinMaxView;
-
-    /**
-     * The charging rate view associated with this fragment.
-     */
-    private TextView mChargingRateView;
-
-    /**
      * The value label view associated with this fragment.
      */
     private TextView mValueLabel;
@@ -149,19 +93,14 @@ public class PowerFragment extends CommonFragment {
     private TextView mMinValue;
 
     /**
-     * The minimum label view associated with this fragment.
-     */
-    private TextView mMinLabel;
-
-    /**
      * The maximum value view associated with this fragment.
      */
     private TextView mMaxValue;
 
     /**
-     * The maximum label view associated with this fragment.
+     * The button used to reset the statistics.
      */
-    private TextView mMaxLabel;
+    private ImageView mButtonResetStatistics;
 
     /**
      * The current theme.
@@ -189,26 +128,50 @@ public class PowerFragment extends CommonFragment {
         mEstimatedPowerView = (TextView) view.findViewById(R.id.powerbench_estimated_value);
         mPowerLed = (ImageView) view.findViewById(R.id.powerbench_power_led);
         mHistogramView = (HistogramView) view.findViewById(R.id.powerbench_power_histogram);
-        mRealtimeMinMaxContainerView = (LinearLayout) view.findViewById(R.id.powerbench_power_battery_min_max_container);
-        mBatteryLevelHeaderView = (TextView) view.findViewById(R.id.powerbench_power_battery_level_header);
-        mChargingStatusHeaderView = (TextView) view.findViewById(R.id.powerbench_power_charging_status_header);
-        mBatteryTemperatureHeaderView = (TextView) view.findViewById(R.id.powerbench_power_battery_temperature_header);
-        mRealtimeMinMaxHeaderView = (TextView) view.findViewById(R.id.powerbench_power_battery_min_max_header);
-        mChargingRateHeaderView = (TextView) view.findViewById(R.id.powerbench_power_charging_rate_header);
-        mBatteryLevelView = (TextView) view.findViewById(R.id.powerbench_power_battery_level);
-        mChargingStatusView = (TextView) view.findViewById(R.id.powerbench_power_charging_status);
-        mBatteryTemperatureView = (TextView) view.findViewById(R.id.powerbench_power_battery_temperature);
-        mRealtimeMinMaxView = (TextView) view.findViewById(R.id.powerbench_power_battery_min_max);
-        mChargingRateView = (TextView) view.findViewById(R.id.powerbench_power_charging_rate);
         mValueLabel = (TextView) view.findViewById(R.id.powerbench_power_value_label);
         mMinValue = (TextView) view.findViewById(R.id.powerbench_power_min);
-        mMinLabel = (TextView) view.findViewById(R.id.powerbench_power_min_label);
         mMaxValue = (TextView) view.findViewById(R.id.powerbench_power_max);
-        mMaxLabel = (TextView) view.findViewById(R.id.powerbench_power_max_label);
-        mDivider = view.findViewById(R.id.divider_power_details_container);
-        RelativeLayout powerContainer = (RelativeLayout) view.findViewById(R.id.powerbench_power_container);
-        if (powerContainer != null) {
-            powerContainer.setOnClickListener(new View.OnClickListener() {
+        mButtonResetStatistics = (ImageView) view.findViewById(R.id.battery_mentor_button_reset);
+        mButtonResetStatistics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mHistogram != null) {
+                    if (mShowLifetimeData) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), mTheme.getDialogStyleResource());
+                        builder.setTitle(R.string.dialog_reset_lifetime_statistics_title).
+                                setMessage(R.string.dialog_reset_lifetime_statistics_message)
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        Statistics lifetimeStatistics = mCollectionTask.getLifetimeStatistics();
+                                        lifetimeStatistics.reset();
+                                        updatePowerViews(true);
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, null);
+                        builder.show();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), mTheme.getDialogStyleResource());
+                        builder.setTitle(R.string.dialog_reset_realtime_statistics_title).
+                                setMessage(R.string.dialog_reset_realtime_statistics_message)
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        RealtimeStatistics realtimeStatistics = mCollectionTask.getRealtimeStatistics();
+                                        realtimeStatistics.reset();
+                                        updatePowerViews(true);
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, null);
+                        builder.show();
+                    }
+                }
+
+
+
+            }
+        });
+        // RelativeLayout powerContainer = (RelativeLayout) view.findViewById(R.id.powerbench_power_container);
+        if (mHistogramView != null) {
+            mHistogramView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mShowLifetimeData = !mShowLifetimeData;
@@ -216,6 +179,7 @@ public class PowerFragment extends CommonFragment {
                 }
             });
         }
+
         if (mTheme != null) {
             applyTheme(mTheme);
         }
@@ -282,19 +246,6 @@ public class PowerFragment extends CommonFragment {
             }
 
             if (mCollectionTask != null) {
-                if (mRealtimeMinMaxView != null) {
-                    double minValue = mCollectionTask.getRealtimeStatistics().getMin();
-                    double maxValue = mCollectionTask.getRealtimeStatistics().getMax();
-                    if (isChargerConnected()) {
-                        double temp = -maxValue + 0.0;
-                        maxValue = -minValue + 0.0;
-                        minValue = temp;
-                    }
-
-                    String min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue);
-                    String max = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue);
-                    mRealtimeMinMaxView.setText(String.format(getString(R.string.value_min_max_template), min, max));
-                }
                 if (mMinValue != null && mMaxValue != null) {
                     double minValue = mCollectionTask.getRealtimeStatistics().getMin();
                     double maxValue = mCollectionTask.getRealtimeStatistics().getMax();
@@ -303,33 +254,11 @@ public class PowerFragment extends CommonFragment {
                         maxValue = -minValue + 0.0;
                         minValue = temp;
                     }
-
                     String min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue);
                     String max = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue);
                     mMinValue.setText(String.format(getString(R.string.power_template), min));
                     mMaxValue.setText(String.format(getString(R.string.power_template), max));
                 }
-            }
-
-            ChargerManager chargerManager = ChargerManager.getInstance();
-            if (mBatteryLevelView != null) {
-                mBatteryLevelView.setText(String.format(getString(R.string.value_percent_template), chargerManager.getBatteryLevel()));
-            }
-            if (mChargingStatusView != null) {
-                mChargingStatusView.setText(chargerManager.getChargingStatus());
-            }
-            if (mBatteryTemperatureView != null) {
-                mBatteryTemperatureView.setText(String.format(getString(R.string.value_celsius_template), chargerManager.getBatteryTemperature()));
-            }
-            if (mChargingRateHeaderView != null) {
-                if (isChargerConnected()) {
-                    mChargingRateHeaderView.setText(R.string.power_charging_rate);
-                } else {
-                    mChargingRateHeaderView.setText(R.string.power_discharging_rate);
-                }
-            }
-            if (mChargingRateView != null) {
-                mChargingRateView.setText("N/A");
             }
         }
     }
@@ -382,27 +311,6 @@ public class PowerFragment extends CommonFragment {
                         mValueLabel.setText(R.string.realtime);
                 }
             }
-            if (mRealtimeMinMaxContainerView != null) {
-                mRealtimeMinMaxContainerView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(R.string.dialog_reset_min_max_title).
-                                setMessage(R.string.dialog_reset_min_max_message)
-                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        RealtimeStatistics realtimeStatistics = mCollectionTask.getRealtimeStatistics();
-                                        realtimeStatistics.resetMin();
-                                        realtimeStatistics.resetMax();
-                                        updatePowerViews(true);
-                                    }
-                                })
-                                .setNegativeButton(R.string.cancel, null);
-                        builder.show();
-                        return true;
-                    }
-                });
-            }
         }
         updatePowerViews(true);
     }
@@ -428,54 +336,12 @@ public class PowerFragment extends CommonFragment {
             mHistogramView.applyTheme(theme);
             mHistogramView.postInvalidate();
         }
-        if (mBatteryLevelHeaderView != null) {
-            mBatteryLevelHeaderView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-        }
-        if (mBatteryLevelView != null) {
-            mBatteryLevelView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-        }
-        if (mChargingStatusHeaderView != null) {
-            mChargingStatusHeaderView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-        }
-        if (mChargingStatusView != null) {
-            mChargingStatusView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-        }
-        if (mBatteryTemperatureHeaderView != null) {
-            mBatteryTemperatureHeaderView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-        }
-        if (mBatteryTemperatureView != null) {
-            mBatteryTemperatureView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-        }
-        if (mRealtimeMinMaxHeaderView != null) {
-            mRealtimeMinMaxHeaderView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-        }
-        if (mRealtimeMinMaxView != null) {
-            mRealtimeMinMaxView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-        }
-        if (mChargingRateHeaderView != null) {
-            mChargingRateHeaderView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-        }
-        if (mChargingRateView != null) {
-            mChargingRateView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-        }
-        if (mDivider != null) {
-            mDivider.setBackgroundColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-        }
-//        if (mValueLabel != null) {
-//            mValueLabel.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-//        }
         if (mMinValue != null) {
             mMinValue.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
         }
-//        if (mMinLabel != null) {
-//            mMinLabel.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-//        }
         if (mMaxValue != null) {
             mMaxValue.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
         }
-//        if (mMaxLabel != null) {
-//            mMaxLabel.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-//        }
     }
 
     /**

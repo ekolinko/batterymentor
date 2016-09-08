@@ -79,8 +79,8 @@ public class HistogramView extends View {
      */
     private void initialize() {
         mPaint = new Paint();
-        mStrokeColor = ContextCompat.getColor(getContext(), R.color.powerbench_blue);
-        mFillColor = ContextCompat.getColor(getContext(), R.color.powerbench_blue_semitransparent);
+        mStrokeColor = ContextCompat.getColor(getContext(), R.color.material_blue);
+        mFillColor = ContextCompat.getColor(getContext(), R.color.material_blue_semitransparent);
         mBackgroundPaint = new Paint();
         mBackgroundPaint.setColor(ContextCompat.getColor(getContext(), R.color.background));
         mBackgroundPaint.setStyle(Paint.Style.FILL);

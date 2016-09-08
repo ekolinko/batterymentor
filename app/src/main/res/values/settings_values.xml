@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="settings_screen">settingsScreen</string>
     <string name="settings_startup_with_device_key">startupWithDevice</string>
     <string name="settings_status_bar_units_key">statusBarUnits</string>
     <string name="settings_power_tab_units_key">powerTabUnits</string>
+    <string name="settings_rerun_screen_test">rerunScreenTest</string>
     <bool name="settings_startup_with_device_default">false</bool>
     <string name="settings_status_bar_units_default">@string/milliwatts</string>
     <string name="settings_power_tab_units_default">@string/milliwatts</string>

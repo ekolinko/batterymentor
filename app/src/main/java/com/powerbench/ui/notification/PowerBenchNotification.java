@@ -9,12 +9,11 @@ import android.support.v4.app.TaskStackBuilder;
 
 import com.powerbench.R;
 import com.powerbench.constants.Constants;
-import com.powerbench.constants.SettingsConstants;
 import com.powerbench.constants.UIConstants;
 import com.powerbench.model.ModelManager;
 import com.powerbench.sensors.Sensor;
 import com.powerbench.settings.Settings;
-import com.powerbench.ui.main.PowerBenchActivity;
+import com.powerbench.ui.main.BatteryMentorActivity;
 
 import java.text.DecimalFormat;
 
@@ -58,9 +57,9 @@ public class PowerBenchNotification {
                         .setContentText(context.getString(R.string.notification_measuring))
                         .setDeleteIntent(createOnDismissedIntent(context, Constants.NOTIFICATION_ID));
         mBatteryLifeFormatter = new DecimalFormat(context.getString(R.string.format_battery_life));
-        Intent resultIntent = new Intent(context, PowerBenchActivity.class);
+        Intent resultIntent = new Intent(context, BatteryMentorActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(PowerBenchActivity.class);
+        stackBuilder.addParentStack(BatteryMentorActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
@@ -128,14 +127,6 @@ public class PowerBenchNotification {
                         .setDeleteIntent(createOnDismissedIntent(context, Constants.NOTIFICATION_ID));
         return mBuilder.build();
     }
-
-    /**
-     * Update the notification with the current value.
-     *
-     * @param context the context of the application.
-     * @return the updated notification.
-     */
-
 
     /**
      * Create an intent that is triggered when the notification is dismissed.

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/powerbench_ad">
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_alignParentTop="true">
+            <RelativeLayout android:id="@+id/battery_tip_screen_test"
+                style="@style/battery_tip_container"
+                android:visibility="gone">
+                <ImageView android:id="@+id/battery_tip_icon"
+                    style="@style/battery_tip_icon"
+                    android:src="@drawable/ic_phone_android_white_48dp"
+                    android:background="@drawable/tip_icon_bg_blue"
+                    android:layout_alignParentTop="true"/>
+                <LinearLayout style="@style/battery_tip_contents_container">
+                    <TextView android:id="@+id/battery_tip_title"
+                        style="@style/battery_tip_title"
+                        android:text="@string/battery_tip_title_run_screen_test" />
+                    <TextView android:id="@+id/battery_tip_summary"
+                        style="@style/battery_tip_summary"
+                        android:text="@string/battery_tip_title_run_screen_test_summary" />
+                </LinearLayout>
+            </RelativeLayout>
+            <RelativeLayout android:id="@+id/battery_tip_screen_brightness"
+                style="@style/battery_tip_container"
+                android:visibility="gone">
+                <ImageView android:id="@id/battery_tip_icon"
+                    style="@style/battery_tip_icon"
+                    android:src="@drawable/ic_brightness_high_white_48dp"
+                    android:background="@drawable/tip_icon_bg_blue"
+                    android:layout_alignParentTop="true"/>
+                <LinearLayout style="@style/battery_tip_contents_container">
+                    <TextView android:id="@id/battery_tip_title"
+                        style="@style/battery_tip_title"
+                        android:text="@string/battery_tip_title_reduce_screen_brightness" />
+                    <TextView android:id="@id/battery_tip_summary"
+                        style="@style/battery_tip_summary"
+                        android:text="@string/battery_tip_title_reduce_screen_brightness_summary" />
+                </LinearLayout>
+            </RelativeLayout>
+            <RelativeLayout android:id="@+id/charger_tip_try_different_chargers"
+                style="@style/battery_tip_container">
+                <ImageView android:id="@id/battery_tip_icon"
+                    style="@style/battery_tip_icon"
+                    android:src="@drawable/ic_usb_white_24dp"
+                    android:background="@drawable/tip_icon_bg_red"
+                    android:layout_alignParentTop="true"/>
+                <LinearLayout style="@style/battery_tip_contents_container">
+                    <TextView android:id="@id/battery_tip_title"
+                        style="@style/battery_tip_title"
+                        android:text="@string/charger_tip_title_try_different_chargers" />
+                    <TextView android:id="@id/battery_tip_summary"
+                        style="@style/battery_tip_summary"
+                        android:text="@string/charger_tip_title_try_different_chargers_summary" />
+                </LinearLayout>
+            </RelativeLayout>
+            <View style="@style/divider_horizontal_gray" />
+            <RelativeLayout android:id="@+id/battery_tip_force_stop_unused_apps"
+                style="@style/battery_tip_container"
+                android:visibility="gone">
+                <ImageView android:id="@id/battery_tip_icon"
+                    style="@style/battery_tip_icon"
+                    android:src="@drawable/ic_adb_white_48dp"
+                    android:background="@drawable/tip_icon_bg_teal"
+                    android:layout_alignParentTop="true"/>
+                <LinearLayout style="@style/battery_tip_contents_container">
+                    <TextView android:id="@id/battery_tip_title"
+                        style="@style/battery_tip_title"
+                        android:text="@string/battery_tip_title_force_stop_unused_apps" />
+                    <TextView android:id="@id/battery_tip_summary"
+                        style="@style/battery_tip_summary"
+                        android:text="@string/battery_tip_title_force_stop_unused_apps_summary" />
+                </LinearLayout>
+            </RelativeLayout>
+            <RelativeLayout android:id="@+id/charger_tip_turn_off_screen"
+                style="@style/battery_tip_container">
+                <ImageView android:id="@id/battery_tip_icon"
+                    style="@style/battery_tip_icon"
+                    android:src="@drawable/ic_phone_android_white_48dp"
+                    android:background="@drawable/tip_icon_bg_orange"
+                    android:layout_alignParentTop="true"/>
+                <LinearLayout style="@style/battery_tip_contents_container">
+                    <TextView android:id="@id/battery_tip_title"
+                        style="@style/battery_tip_title"
+                        android:text="@string/charger_tip_title_turn_off_screen" />
+                    <TextView android:id="@id/battery_tip_summary"
+                        style="@style/battery_tip_summary"
+                        android:text="@string/charger_tip_title_turn_off_screen_summary" />
+                </LinearLayout>
+            </RelativeLayout>
+            <View style="@style/divider_horizontal_gray" />
+            <RelativeLayout android:id="@+id/battery_tip_use_wifi"
+                style="@style/battery_tip_container"
+                android:visibility="gone">
+                <ImageView android:id="@id/battery_tip_icon"
+                    style="@style/battery_tip_icon"
+                    android:src="@drawable/ic_network_wifi_white_48dp"
+                    android:background="@drawable/tip_icon_bg_light_blue"
+                    android:layout_alignParentTop="true"/>
+                <LinearLayout style="@style/battery_tip_contents_container">
+                    <TextView android:id="@id/battery_tip_title"
+                        style="@style/battery_tip_title"
+                        android:text="@string/battery_tip_title_use_wifi" />
+                    <TextView android:id="@id/battery_tip_summary"
+                        style="@style/battery_tip_summary"
+                        android:text="@string/battery_tip_title_use_wifi_summary" />
+                </LinearLayout>
+            </RelativeLayout>
+            <RelativeLayout android:id="@+id/charger_tip_turn_on_airplane_mode"
+                style="@style/battery_tip_container">
+                <ImageView android:id="@id/battery_tip_icon"
+                    style="@style/battery_tip_icon"
+                    android:src="@drawable/ic_airplanemode_active_white_24dp"
+                    android:background="@drawable/tip_icon_bg_pink"
+                    android:layout_alignParentTop="true"/>
+                <LinearLayout style="@style/battery_tip_contents_container">
+                    <TextView android:id="@id/battery_tip_title"
+                        style="@style/battery_tip_title"
+                        android:text="@string/charger_tip_title_turn_on_airplane_mode" />
+                    <TextView android:id="@id/battery_tip_summary"
+                        style="@style/battery_tip_summary"
+                        android:text="@string/charger_tip_title_turn_on_airplane_mode_summary" />
+                </LinearLayout>
+            </RelativeLayout>
+            <View style="@style/divider_horizontal_gray" />
+            <RelativeLayout android:id="@+id/battery_tip_disable_location_services"
+                style="@style/battery_tip_container"
+                android:visibility="gone">
+                <ImageView android:id="@id/battery_tip_icon"
+                    style="@style/battery_tip_icon"
+                    android:src="@drawable/ic_location_on_white_48dp"
+                    android:background="@drawable/tip_icon_bg_purple"
+                    android:layout_alignParentTop="true"/>
+                <LinearLayout style="@style/battery_tip_contents_container">
+                    <TextView android:id="@id/battery_tip_title"
+                        style="@style/battery_tip_title"
+                        android:text="@string/battery_tip_title_disable_location_services" />
+                    <TextView android:id="@id/battery_tip_summary"
+                        style="@style/battery_tip_summary"
+                        android:text="@string/battery_tip_title_disable_location_services_summary" />
+                </LinearLayout>
+            </RelativeLayout>
+            <RelativeLayout android:id="@+id/charger_tip_plug_into_an_outlet"
+                style="@style/battery_tip_container">
+                <ImageView android:id="@id/battery_tip_icon"
+                    style="@style/battery_tip_icon"
+                    android:src="@drawable/ic_power_white_24dp"
+                    android:background="@drawable/tip_icon_bg_deep_orange"
+                    android:layout_alignParentTop="true"/>
+                <LinearLayout style="@style/battery_tip_contents_container">
+                    <TextView android:id="@id/battery_tip_title"
+                        style="@style/battery_tip_title"
+                        android:text="@string/charger_tip_title_plug_directly_into_outlet" />
+                    <TextView android:id="@id/battery_tip_summary"
+                        style="@style/battery_tip_summary"
+                        android:text="@string/charger_tip_title_plug_directly_into_outlet_summary" />
+                </LinearLayout>
+            </RelativeLayout>
+            <View style="@style/divider_horizontal_gray" />
+        </LinearLayout>
+    </ScrollView>
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/powerbench_ad"
+        style="@style/powerbench_ad"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/advertising_id">
+    </com.google.android.gms.ads.AdView>
+</RelativeLayout>

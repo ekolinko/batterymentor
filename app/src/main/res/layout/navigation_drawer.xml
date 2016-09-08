@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:id="@+id/navigation_drawer"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="260dp"
+    android:layout_width="280dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:orientation="vertical"
@@ -14,6 +14,10 @@
         style="@style/navigation_button"
         android:text="@string/navigation_settings"
         android:drawableLeft="@drawable/icon_settings"/>
+    <Button android:id="@+id/button_battery_tips"
+        style="@style/navigation_button"
+        android:text="@string/battery_tips"
+        android:drawableLeft="@drawable/icon_battery_tips"/>
     <Button android:id="@+id/button_exit"
         style="@style/navigation_button"
         android:text="@string/navigation_exit"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/powerbench_blue_dark</color>
-    <color name="colorPrimaryDark">@color/powerbench_blue</color>
+    <color name="colorPrimary">@color/material_blue_dark</color>
+    <color name="colorPrimaryDark">@color/material_blue</color>
     <color name="colorAccent">#FF4081</color>
 
     <!-- Common -->
@@ -16,31 +16,39 @@
 
     <!-- Button -->
     <color name="button_pressed">#22000000</color>
-    <color name="powerbench_blue_pressed">#AA3F51B5</color>
-    <color name="powerbench_red_pressed">#AAF44336</color>
+    <color name="material_blue_pressed">#AA3F51B5</color>
+    <color name="material_red_pressed">#AAF44336</color>
 
     <!-- LED colors -->
     <color name="led_green">#8BC34A</color>
     <color name="led_yellow">#FFEB3B</color>
     <color name="led_red">#F44336</color>
 
+    <!-- Material -->
+    <color name="material_blue_dark">#303F9F</color>
+    <color name="material_blue">#3F51B5</color>
+    <color name="material_blue_semitransparent">#883F51B5</color>
+    <color name="material_red_dark">#D32F2F</color>
+    <color name="material_red">#F44336</color>
+    <color name="material_red_semitransparent">#88F44336</color>
+    <color name="material_teal">#009688</color>
+    <color name="material_light_blue">#2196F3</color>
+    <color name="material_purple">#9C27B0</color>
+    <color name="material_deep_purple">#673AB7</color>
+    <color name="material_orange">#FF9800</color>
+    <color name="material_amber">#FFC107</color>
+    <color name="material_deep_orange">#FF5722</color>
+    <color name="material_pink">#E91E63</color>
+
     <!-- Navigation -->
     <color name="navigation_menu_background">#111</color>
 
     <!-- Personalization -->
-    <color name="personalization_battery_default">@color/powerbench_blue</color>
-    <color name="personalization_charger_default">@color/powerbench_red</color>
-
-    <!-- PowerBench -->
-    <color name="powerbench_blue_dark">#303F9F</color>
-    <color name="powerbench_blue">#3F51B5</color>
-    <color name="powerbench_blue_semitransparent">#883F51B5</color>
-    <color name="powerbench_red_dark">#D32F2F</color>
-    <color name="powerbench_red">#F44336</color>
-    <color name="powerbench_red_semitransparent">#88F44336</color>
+    <color name="personalization_battery_default">@color/material_blue</color>
+    <color name="personalization_charger_default">@color/material_red</color>
 
     <!-- Text -->
-    <color name="powerbench_text">@color/black</color>
-    <color name="powerbench_text_dark">@color/white</color>
+    <color name="material_text">@color/black</color>
+    <color name="material_text_dark">@color/white</color>
 
 </resources>

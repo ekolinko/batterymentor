@@ -23,7 +23,7 @@ import com.powerbench.ui.notification.PowerBenchNotification;
  * service also provides access to all the core modules for the UI, manages a list of all
  * collection tasks and benchmarks, and makes notification updates in realtime.
  */
-public class PowerBenchService extends Service {
+public class BatteryMentorService extends Service {
 
     /**
      * Interface that allows clients to bind to the servic.e
@@ -88,7 +88,7 @@ public class PowerBenchService extends Service {
     public void updateNotification() {
         if (mShowNotification) {
             double average = mPowerCollectionTask.getRealtimeStatistics().getAverage();
-            mNotification = PowerBenchNotification.getInstance().updateNotification(PowerBenchService.this, Math.abs(average));
+            mNotification = PowerBenchNotification.getInstance().updateNotification(BatteryMentorService.this, Math.abs(average));
             mNotificationManager.notify(Constants.NOTIFICATION_ID, mNotification);
         }
     }
@@ -118,14 +118,12 @@ public class PowerBenchService extends Service {
         }
     }
 
-
-
     /**
      * The binder that clients use to bind to this service.
      */
     public class PowerBenchBinder extends Binder {
-        public PowerBenchService getService() {
-            return PowerBenchService.this;
+        public BatteryMentorService getService() {
+            return BatteryMentorService.this;
         }
     }
 

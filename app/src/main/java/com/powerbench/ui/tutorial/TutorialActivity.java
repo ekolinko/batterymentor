@@ -145,13 +145,13 @@ public class TutorialActivity extends CommonActivity {
         boolean showTutorial = Settings.getInstance().getShowTutorial(this);
         if (showTutorial) {
             TutorialFragment welcomeFragment = new TutorialFragment();
-            welcomeFragment.setArguments(bundleArguments(R.string.tutorial_welcome_title, R.drawable.remove_icon_screen_test_blue, R.string.tutorial_welcome_text));
+            welcomeFragment.setArguments(bundleArguments(R.string.tutorial_welcome_title, R.drawable.phone_blue, R.string.tutorial_welcome_text));
             TutorialFragment realtimePowerFragment = new TutorialFragment();
-            realtimePowerFragment.setArguments(bundleArguments(R.string.tutorial_realtime_power_title, R.drawable.remove_icon_screen_test_blue, R.string.tutorial_realtime_power_text));
+            realtimePowerFragment.setArguments(bundleArguments(R.string.tutorial_realtime_power_title, R.drawable.phone_blue, R.string.tutorial_realtime_power_text));
             TutorialFragment brightnessFragment = new TutorialFragment();
-            brightnessFragment.setArguments(bundleArguments(R.string.tutorial_screen_title, R.drawable.remove_icon_screen_test_blue, R.string.tutorial_screen_text));
+            brightnessFragment.setArguments(bundleArguments(R.string.tutorial_screen_title, R.drawable.phone_blue, R.string.tutorial_screen_text));
             TutorialFragment appsFragment = new TutorialFragment();
-            appsFragment.setArguments(bundleArguments(R.string.tutorial_apps_title, R.drawable.remove_icon_screen_test_blue, R.string.tutorial_apps_text));
+            appsFragment.setArguments(bundleArguments(R.string.tutorial_apps_title, R.drawable.phone_blue, R.string.tutorial_apps_text));
             tutorialFragments.add(welcomeFragment);
             tutorialFragments.add(realtimePowerFragment);
             tutorialFragments.add(brightnessFragment);
@@ -160,7 +160,7 @@ public class TutorialActivity extends CommonActivity {
         mPermissionPagesShown = !Permissions.getInstance().isSettingsPermissionGranted(this);
         if (mPermissionPagesShown) {
             TutorialFragment settingsFragment = new TutorialFragment();
-            settingsFragment.setArguments(bundleArguments(R.string.tutorial_settings_title, R.drawable.remove_icon_screen_test_blue, R.string.tutorial_settings_text));
+            settingsFragment.setArguments(bundleArguments(R.string.tutorial_settings_title, R.drawable.phone_blue, R.string.tutorial_settings_text));
             tutorialFragments.add(settingsFragment);
         }
 

@@ -67,6 +67,11 @@ public class CollectionTask {
     private ChargerManager.ChargerListener mChargerListener;
 
     /**
+     * Flag indicating whether the charger is connected.
+     */
+    private boolean mChargerConnected;
+
+    /**
      * Create a new collection task with the specified sensor and the default collection interval.
      *
      * @param sensor the sensor that is measured during data collection.
@@ -112,6 +117,7 @@ public class CollectionTask {
         mBatteryStatistics = new RealtimeStatistics(false);
         mChargerStatistics = new RealtimeStatistics(true);
         mStatistics = mBatteryStatistics;
+        mChargerConnected = false;
         mChargerListener = new ChargerManager.ChargerListener() {
             @Override
             public void onChargerConnected() {
@@ -157,6 +163,7 @@ public class CollectionTask {
      * task is running.
      */
     protected void onChargerConnected() {
+        mChargerConnected = true;
         mStatistics = mChargerStatistics;
         if (mStatistics.getNumPoints() == 0) {
             measureSensor();
@@ -168,10 +175,20 @@ public class CollectionTask {
      * task is running.
      */
     protected void onChargerDisconnected() {
+        mChargerConnected = false;
         mStatistics = mBatteryStatistics;
         if (mStatistics.getNumPoints() == 0) {
             measureSensor();
         }
+    }
+
+    /**
+     * Return true if the charger is connected, false otherwise.
+     *
+     * @return true if the charger is connected, false otherwise.
+     */
+    public boolean isChargerConnected() {
+        return mChargerConnected;
     }
 
     public Context getContext() {
@@ -240,6 +257,9 @@ public class CollectionTask {
      */
     public Point measureSensor() {
         mPoint = mSensor.measurePoint();
+        if (!isChargerConnected() && mPoint.getY() < SensorConstants.BATTERY_POWER_MIN) {
+            mPoint.setY(SensorConstants.BATTERY_POWER_MIN);
+        }
         mStatistics.addPoint(mPoint);
         notifyAllListenersOfMeasurement(mPoint);
         return mPoint;

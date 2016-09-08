@@ -14,11 +14,6 @@ import java.util.LinkedList;
 public class RealtimeStatistics extends Statistics {
 
     /**
-     * The current value of the data.
-     */
-    private double mValue;
-
-    /**
      * The global median of the data.
      */
     private double mMedian;
@@ -27,16 +22,6 @@ public class RealtimeStatistics extends Statistics {
      * The global average of the data.
      */
     private double mAverage;
-
-    /**
-     * The minimum value of the data.
-     */
-    private double mMin = Double.POSITIVE_INFINITY;
-
-    /**
-     * The maximum value of the data.
-     */
-    private double mMax = Double.NEGATIVE_INFINITY;
 
     /**
      * Flag indicating that the median has already been calculated and no data has come in to
@@ -82,11 +67,6 @@ public class RealtimeStatistics extends Statistics {
             }
             mMedianCalculated = false;
             mAverageCalculated = false;
-            mValue = convertValue(point.getY());
-            if (mValue > mMax)
-                mMax = mValue;
-            if (mValue < mMin)
-                mMin = mValue;
             super.addPoint(point);
         }
     }
@@ -201,18 +181,14 @@ public class RealtimeStatistics extends Statistics {
         return (getSize() / (double)(getMaximumSize()) * DataConstants.REALTIME_STATISTICS_MAX_WEIGHT);
     }
 
-    /**
-     * Reset the minimum value.
-     */
-    public void resetMin() {
-        mMin = Double.POSITIVE_INFINITY;
-    }
-
-    /**
-     * Reset the maximum value.
-     */
-    public void resetMax() {
-        mMax = Double.NEGATIVE_INFINITY;
+    @Override
+    public void reset() {
+        mAverageCalculated = false;
+        mMedianCalculated = false;
+        synchronized (mRecentData) {
+            mRecentData.clear();
+        }
+        super.reset();
     }
 
     public void setLifetimeStatistics(Statistics lifetimeStatistics) {
@@ -221,17 +197,5 @@ public class RealtimeStatistics extends Statistics {
 
     public Statistics getLifetimeStatistics() {
         return mLifetimeStatistics;
-    }
-
-    public double getValue() {
-        return mValue;
-    }
-
-    public double getMin() {
-        return mMin;
-    }
-
-    public double getMax() {
-        return mMax;
     }
 }

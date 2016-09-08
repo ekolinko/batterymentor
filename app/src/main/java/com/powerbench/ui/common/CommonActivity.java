@@ -19,7 +19,7 @@ import android.view.WindowManager;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.powerbench.PowerBenchService;
+import com.powerbench.BatteryMentorService;
 import com.powerbench.R;
 import com.powerbench.constants.Constants;
 import com.powerbench.constants.DeviceConstants;
@@ -38,7 +38,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     /**
      * The powerbench service.
      */
-    private PowerBenchService mService;
+    private BatteryMentorService mService;
 
     /**
      * The current theme.
@@ -96,7 +96,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, PowerBenchService.class);
+        Intent intent = new Intent(this, BatteryMentorService.class);
         startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
@@ -220,7 +220,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      * Return the powerbench service. If the service has not yet been bound, wait until it has
      * been bound.
      */
-    public PowerBenchService getService() {
+    public BatteryMentorService getService() {
         return mService;
     }
 
@@ -358,14 +358,14 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     }
 
     /**
-     * Connection used to bind to {@link PowerBenchService}.
+     * Connection used to bind to {@link BatteryMentorService}.
      */
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
-            PowerBenchService.PowerBenchBinder binder = (PowerBenchService.PowerBenchBinder) service;
+            BatteryMentorService.PowerBenchBinder binder = (BatteryMentorService.PowerBenchBinder) service;
             mService = binder.getService();
             mServiceBound = true;
             CommonActivity.this.onServiceBound();

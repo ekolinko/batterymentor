@@ -10,7 +10,7 @@
             <solid android:color="@android:color/transparent" />
             <stroke
                 android:width="4dp"
-                android:color="@color/powerbench_red" />
+                android:color="@color/material_red" />
         </shape>
     </item>
 </layer-list>
