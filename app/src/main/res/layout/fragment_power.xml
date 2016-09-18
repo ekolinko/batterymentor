@@ -7,10 +7,6 @@
         style="@style/powerbench_power_title"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
-    <TextView android:id="@+id/powerbench_estimated_value"
-        style="@style/powerbench_power_title"
-        android:layout_toRightOf="@+id/powerbench_power_title"
-        android:layout_alignParentTop="true"/>
     <RelativeLayout android:id="@+id/powerbench_power_value_container"
         style="@style/powerbench_power_value_container"
         android:layout_below="@id/powerbench_power_title">
@@ -18,11 +14,17 @@
             style="@style/powerbench_power_value"
             android:layout_centerHorizontal="true" />
         <ImageView android:id="@+id/powerbench_power_led"
-            style="@style/powerbench_power_led"
-            android:layout_toRightOf="@id/powerbench_power_value"
-            android:layout_alignBottom="@id/powerbench_power_value"
+            style="@style/powerbench_power_indicator"
             android:layout_alignTop="@id/powerbench_power_value"
+            android:layout_alignBottom="@id/powerbench_power_value"
+            android:layout_toRightOf="@id/powerbench_power_value"
             android:src="@drawable/led_green" />
+        <TextView android:id="@+id/powerbench_power_estimation_indicator"
+            style="@style/powerbench_power_indicator"
+            android:layout_toLeftOf="@+id/powerbench_power_value_label"
+            android:layout_alignTop="@+id/powerbench_power_value_label"
+            android:layout_alignBottom="@+id/powerbench_power_value_label"
+            android:text="@string/power_estimation_indicator" />
         <TextView android:id="@+id/powerbench_power_value_label"
             style="@style/powerbench_power_label"
             android:layout_below="@id/powerbench_power_value"
@@ -61,7 +63,8 @@
             android:layout_alignRight="@+id/powerbench_power_max"
             android:text="@string/max"/>
     </RelativeLayout>
-    <com.powerbench.ui.common.HistogramView android:id="@+id/powerbench_power_histogram"
+    <com.batterymentor.ui.common.HistogramView
+        android:id="@+id/powerbench_power_histogram"
         style="@style/powerbench_power_histogram"
         android:padding="20dp"
         android:layout_below="@id/powerbench_power_value_container"

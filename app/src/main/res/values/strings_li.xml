@@ -17,11 +17,19 @@
     <string name="uri_package">package</string>
     <string name="value_percent_template" formatted="false">%s%%</string>
 
+    <!-- Feedback -->
+    <string name="feedback_mailto">mailto</string>
+    <string name="feedback_email">batterymentor.feedback@gmail.com</string>
+    <string name="feedback_subject_template" formatted="false">Battery Mentor %s Feedback</string>
+
     <!-- Formatting -->
     <string name="format_power">#0</string>
     <string name="format_battery_life">#0.0</string>
     <string name="format_cpu">#0.0</string>
     <string name="format_duration">#0.0</string>
     <string name="format_model_coefficient">#0.0000</string>
+
+    <!-- Symbols -->
+    <string name="power_estimation_indicator">*</string>
 
 </resources>

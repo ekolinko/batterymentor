@@ -23,8 +23,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:paddingTop="25dp"
             android:orientation="vertical">
-            <com.powerbench.ui.common.SunView android:id="@+id/gadget_screen_sun_view"
+            <com.batterymentor.ui.common.SunView
+                android:id="@+id/gadget_screen_sun_view"
                 android:layout_width="128dp"
                 android:layout_height="128dp" />
             <SeekBar android:id="@+id/gadget_screen_brightness_slider"

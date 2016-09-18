@@ -15,6 +15,12 @@
         <item name="colorAccent">@color/material_red</item>
     </style>
 
+    <style name="battery_no_title_bar_style" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
     <style name="battery_style_alert_dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@color/colorPrimary</item>
@@ -25,6 +31,22 @@
         <item name="colorAccent">@color/material_red</item>
         <item name="android:textColorPrimary">@color/material_red</item>
         <item name="android:background">@color/white</item>
+    </style>
+
+    <!-- About -->
+    <style name="about_name">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/material_blue</item>
+        <item name="android:paddingTop">10dp</item>
+    </style>
+
+    <style name="about_version">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/material_blue</item>
     </style>
 
     <!-- Benchmarks -->
@@ -168,7 +190,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:paddingBottom">20dp</item>
+        <item name="android:paddingBottom">5dp</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
     </style>
@@ -281,10 +303,12 @@
         <item name="android:textSize">22sp</item>
     </style>
 
-    <style name="powerbench_power_led">
+    <style name="powerbench_power_indicator">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">3dp</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="powerbench_power_value_minor">
@@ -436,13 +460,12 @@
     </style>
 
     <!-- Navigation -->
-    <style name="navigation_button">
+    <style name="navigation_button" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:gravity">left|center_vertical</item>
-        <item name="android:background">@color/button_material</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
         <item name="android:paddingTop">10dp</item>
@@ -528,35 +551,34 @@
         <item name="android:gravity">center</item>
         <item name="android:padding">10dp</item>
         <item name="android:textColor">@color/material_blue</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:background">@color/button_material</item>
     </style>
 
     <style name="powerbench_tutorial_title">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/material_text</item>
-        <item name="android:textSize">30sp</item>
-        <item name="android:padding">15dp</item>
+        <item name="android:textColor">@color/material_blue</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="powerbench_tutorial_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/material_blue</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingRight">15dp</item>
+        <item name="android:paddingBottom">15dp</item>
     </style>
 
     <style name="powerbench_tutorial_image">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">25dp</item>
         <item name="android:layout_centerHorizontal">true</item>
-    </style>
-
-    <style name="powerbench_tutorial_text">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:textColor">@color/material_text</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:paddingTop">15dp</item>
-        <item name="android:paddingBottom">15dp</item>
-        <item name="android:paddingLeft">15dp</item>
-        <item name="android:paddingRight">15dp</item>
     </style>
 
 </resources>
