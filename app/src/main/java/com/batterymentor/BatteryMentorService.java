@@ -11,11 +11,11 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import com.batterymentor.collectionmanager.CollectionManager;
+import com.batterymentor.collectionmanager.CollectionTask;
 import com.batterymentor.collectionmanager.LifetimeCollectionTask;
 import com.batterymentor.constants.Constants;
 import com.batterymentor.constants.UIConstants;
 import com.batterymentor.datamanager.Point;
-import com.batterymentor.collectionmanager.CollectionTask;
 import com.batterymentor.ui.notification.PowerBenchNotification;
 
 /**
@@ -66,7 +66,9 @@ public class BatteryMentorService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mNotification = PowerBenchNotification.getInstance().createNotification(this);
+        if (mShowNotification) {
+            mNotification = PowerBenchNotification.getInstance().createNotification(this);
+        }
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(Constants.NOTIFICATION_ID, mNotification);
         mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(this);
@@ -102,7 +104,6 @@ public class BatteryMentorService extends Service {
      * Start the notification.
      */
     public void startNotification() {
-        mShowNotification = true;
         updateNotification();
     }
 

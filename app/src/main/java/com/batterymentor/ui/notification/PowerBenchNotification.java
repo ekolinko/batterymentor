@@ -11,9 +11,11 @@ import com.batterymentor.R;
 import com.batterymentor.constants.Constants;
 import com.batterymentor.constants.UIConstants;
 import com.batterymentor.model.ModelManager;
+import com.batterymentor.sensors.ChargerManager;
 import com.batterymentor.sensors.Sensor;
 import com.batterymentor.settings.Settings;
 import com.batterymentor.ui.main.BatteryMentorActivity;
+import com.batterymentor.utils.Utils;
 
 import java.text.DecimalFormat;
 
@@ -74,7 +76,6 @@ public class PowerBenchNotification {
      * @return the updated notification.
      */
     public Notification updateNotification(Context context, double value) {
-
         String message;
         int resourceId;
         if (Settings.getInstance().getStatusBarUnits(context).equals(context.getString(R.string.milliamps))) {
@@ -93,13 +94,48 @@ public class PowerBenchNotification {
                         UIConstants.NOTIFICATION_ROUNDING_FACTOR_TENS_OF_THOUSANDS) * UIConstants.NOTIFICATION_ROUNDING_FACTOR_TENS_OF_THOUSANDS;
             }
 
-            resourceId = mResourceCache.getCurrentResourceForValue(roundedValue);
-            message = String.format(context.getString(R.string.notification_current_template), roundedValue);
+            ChargerManager chargerManager = ChargerManager.getInstance();
+            int batteryLevel = chargerManager.getBatteryLevel();
+            boolean isChargerConnected = chargerManager.isCharging();
+            if (roundedValue <= 0 && isChargerConnected) {
+                message = context.getString(R.string.not_charging);
+                resourceId = R.drawable.notification_battery_life_not_charging;
+            } else {
+                message = String.format(context.getString(R.string.notification_current_template), roundedValue);
+                resourceId = mResourceCache.getCurrentResourceForValue(roundedValue);
+            }
         } else if (Settings.getInstance().getStatusBarUnits(context).equals(context.getString(R.string.hr))) {
             double batteryLife = ModelManager.getInstance().getBatteryModel(context).getBatteryLife();
-            int roundedValue = (int) Math.round((batteryLife * UIConstants.NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR));
-            resourceId = mResourceCache.getBatteryLifeResourceForValue(roundedValue);
-            message = String.format(context.getString(R.string.notification_battery_life_template), mBatteryLifeFormatter.format(batteryLife));
+            int batteryLifeRounded = (int) Math.round((batteryLife / UIConstants.NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR));
+
+            ChargerManager chargerManager = ChargerManager.getInstance();
+            int batteryLevel = chargerManager.getBatteryLevel();
+            boolean isChargerConnected = chargerManager.isCharging();
+            if (batteryLevel == Constants.INT_PERCENT && isChargerConnected) {
+                resourceId = R.drawable.notification_is_full;
+            } else if (batteryLife <= 0 && isChargerConnected) {
+                resourceId = R.drawable.notification_battery_life_not_charging;
+            } else if (batteryLife >= UIConstants.MAX_BATTERY_LIFE) {
+                resourceId = R.drawable.notification_battery_life_max;
+            } else {
+                resourceId = mResourceCache.getBatteryLifeResourceForValue(batteryLifeRounded);
+            }
+
+            message = Utils.convertBatteryLifeToSimpleString(context, batteryLife);
+            if (isChargerConnected) {
+                message += Constants.SPACE + context.getString(R.string.battery_life_until_full).toLowerCase();
+            } else {
+                message += Constants.SPACE + context.getString(R.string.remaining).toLowerCase();
+            }
+            if (batteryLevel == Constants.INT_PERCENT && isChargerConnected) {
+                message = context.getString(R.string.fully_charged);
+            } else if (batteryLife <= 0 && isChargerConnected) {
+                message = context.getString(R.string.not_charging);
+            } else if (batteryLife >= UIConstants.MAX_BATTERY_LIFE) {
+                message = String.format(context.getString(R.string.value_units_template), context.getString(R.string.max_battery_life), context.getString(R.string.hours));
+            } else if (Double.isInfinite(batteryLife)) {
+                message = String.format(context.getString(R.string.value_units_template), context.getString(R.string.invalid_value), context.getString(R.string.hours));
+            }
         } else {
             int roundedValue = (int) Math.round(value);
 
@@ -115,8 +151,16 @@ public class PowerBenchNotification {
                         UIConstants.NOTIFICATION_ROUNDING_FACTOR_TENS_OF_THOUSANDS) * UIConstants.NOTIFICATION_ROUNDING_FACTOR_TENS_OF_THOUSANDS;
             }
 
-            resourceId = mResourceCache.getPowerResourceForValue(roundedValue);
-            message = String.format(context.getString(R.string.notification_power_template), roundedValue);
+            ChargerManager chargerManager = ChargerManager.getInstance();
+            int batteryLevel = chargerManager.getBatteryLevel();
+            boolean isChargerConnected = chargerManager.isCharging();
+            if (roundedValue <= 0 && isChargerConnected) {
+                message = context.getString(R.string.not_charging);
+                resourceId = R.drawable.notification_battery_life_not_charging;
+            } else {
+                message = String.format(context.getString(R.string.notification_power_template), roundedValue);
+                resourceId = mResourceCache.getPowerResourceForValue(roundedValue);
+            }
         }
 
         NotificationCompat.Builder mBuilder =

@@ -131,4 +131,9 @@ public class SensorConstants {
      * The minimum power that can measured by the battery power sensor;
      */
     public static final double BATTERY_POWER_MIN = 300;
+
+    /**
+     * The default voltage for the voltage sensor when not supported.
+     */
+    public static final double SENSOR_VOLTAGE_DEFAULT = 1;
 }

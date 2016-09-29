@@ -6,6 +6,7 @@
     <android.support.v4.view.ViewPager android:id="@+id/powerbench_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
         android:layout_above="@+id/powerbench_pager_navigation" />
     <LinearLayout android:id="@+id/powerbench_pager_navigation"
         android:layout_width="match_parent"
@@ -22,8 +23,12 @@
     <com.google.android.gms.ads.AdView
         android:id="@+id/powerbench_ad"
         style="@style/powerbench_ad"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/align_parent_bottom_view"
         ads:adSize="BANNER"
         ads:adUnitId="@string/advertising_id">
     </com.google.android.gms.ads.AdView>
+    <View android:id="@+id/align_parent_bottom_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

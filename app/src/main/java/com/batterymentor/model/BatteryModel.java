@@ -114,6 +114,9 @@ public class BatteryModel {
     }
 
     public double getBatteryLife() {
+        if (mBatteryLife == null)
+            return Double.POSITIVE_INFINITY;
+
         return mBatteryLife;
     }
 

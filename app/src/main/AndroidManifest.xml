@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.batterymentor"
     android:versionCode="1"
-    android:versionName="0.0.0.25">
+    android:versionName="0.0.0.26">
     <!-- Used for changing brightness in brightness benchmark -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

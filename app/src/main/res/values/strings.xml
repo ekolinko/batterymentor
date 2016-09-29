@@ -22,6 +22,7 @@
     <string name="cancel">CANCEL</string>
     <string name="ok">OK</string>
     <string name="close">CLOSE</string>
+    <string name="current_template" formatted="false">%s mA</string>
     <string name="power_template" formatted="false">%s mW</string>
     <string name="more_details">More Details</string>
     <string name="minute_remaining_template" formatted="false">%s minute remaining</string>
@@ -30,6 +31,7 @@
     <string name="seconds_remaining_template" formatted="false">%s seconds remaining</string>
     <string name="less_than_a_minute">Less than a minute</string>
     <string name="version">Version</string>
+    <string name="remaining">remaining</string>
 
     <!-- Feedback -->
     <string name="feedback_dialog_title">Send Feedback</string>
@@ -154,7 +156,7 @@
     <string name="battery_tip_title_disable_location_services_summary">Some apps use location services even when closed and consume power in the background.\n\nTap here to open the location manager and either disable location services, use the battery saving mode, or force stop apps that have high battery use to improve battery life.</string>
     <string name="charger_tip_title_try_different_chargers">Try Different Charging Cables</string>
     <string name="charger_tip_title_try_different_chargers_summary">USB cables and AC adapters from different vendors charge at different speeds. Typically, accessories bought directly from device manufacturers charge faster than accessories bought from third-party vendors.</string>
-    <string name="charger_tip_title_try_different_chargers_summary_extra">\n\nTap here to open the battery tab and connect different chargers to see how fast they charge your mobile device.</string>
+    <string name="charger_tip_title_try_different_chargers_summary_extra">\n\nTap here to open the battery tab and connect different chargers to see how fast they charge your mobile device. Please check to make sure your battery level is at 80% or less when evaluating a charger.</string>
     <string name="charger_tip_title_turn_off_screen">Turn Off the Screen</string>
     <string name="charger_tip_title_turn_off_screen_summary">The screen is the largest consumer of power in mobile devices. Turn off your screen using the power button to charge your mobile device faster.</string>
     <string name="charger_tip_title_turn_on_airplane_mode">Turn on Airplane Mode</string>

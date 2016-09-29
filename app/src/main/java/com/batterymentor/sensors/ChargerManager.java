@@ -81,6 +81,20 @@ public class ChargerManager {
     }
 
     /**
+     * Initialize the charger manager.
+     */
+    public void initialize(Context context) {
+        if (!mChargerReceiverRegistered) {
+            mContext = context;
+            mBatteryManager = (BatteryManager) mContext.getSystemService(Context.BATTERY_SERVICE);
+            IntentFilter batteryChangedFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            mChargerReceiver = new ChargerReceiver();
+            Intent batteryStatusIntent = mContext.registerReceiver(mChargerReceiver, batteryChangedFilter);
+            handleBatteryStatusIntent(context, batteryStatusIntent);
+        }
+    }
+
+    /**
      * Register a {@link ChargerListener} to listen to charger events.
      *
      * @param chargerListener the listener to register.
@@ -90,7 +104,9 @@ public class ChargerManager {
             return;
 
         synchronized (mChargerListeners) {
-            mChargerListeners.add(chargerListener);
+            if (!mChargerListeners.contains(chargerListener)) {
+                mChargerListeners.add(chargerListener);
+            }
         }
 
         if (!mChargerReceiverRegistered) {

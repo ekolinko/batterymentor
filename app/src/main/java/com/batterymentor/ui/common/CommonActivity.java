@@ -15,6 +15,7 @@ import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.google.android.gms.ads.AdRequest;
@@ -27,6 +28,7 @@ import com.batterymentor.constants.UIConstants;
 import com.batterymentor.sensors.ChargerManager;
 import com.batterymentor.ui.theme.Theme;
 import com.batterymentor.ui.theme.ThemeManager;
+import com.google.android.gms.ads.MobileAds;
 
 import java.text.DecimalFormat;
 
@@ -89,6 +91,10 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         com.batterymentor.settings.Settings.getInstance().setContext(this);
+        if (!com.batterymentor.settings.Settings.getInstance().isPaidVersion()) {
+            MobileAds.initialize(getApplicationContext(), getString(R.string.advertising_id));
+        }
+        ChargerManager.getInstance().initialize(this);
         mHandler = new Handler();
         mThemeManager = ThemeManager.getInstance();
     }
@@ -110,6 +116,12 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
+        }
+        mAdView = (AdView) findViewById(R.id.powerbench_ad);
+        if (com.batterymentor.settings.Settings.getInstance().isPaidVersion()) {
+            mAdView.setVisibility(View.GONE);
+        } else {
+            mAdView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -138,8 +150,10 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     protected void onPause() {
         super.onPause();
         ChargerManager.getInstance().unregisterChargerListener(this, this);
-        if (mAdRefreshThread != null) {
-            mHandler.removeCallbacks(mAdRefreshThread);
+        if (!com.batterymentor.settings.Settings.getInstance().isPaidVersion()) {
+            if (mAdRefreshThread != null) {
+                mHandler.removeCallbacks(mAdRefreshThread);
+            }
         }
     }
 
@@ -147,9 +161,11 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     protected void onResume() {
         super.onResume();
         ChargerManager.getInstance().registerChargerListener(this, this);
-        if (mAdRefreshThread == null) {
-            mAdRefreshThread = new AdRefreshThread();
-            mHandler.post(mAdRefreshThread);
+        if (!com.batterymentor.settings.Settings.getInstance().isPaidVersion()) {
+            if (mAdRefreshThread == null) {
+                mAdRefreshThread = new AdRefreshThread();
+                mHandler.post(mAdRefreshThread);
+            }
         }
     }
 
@@ -199,12 +215,14 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      * Refresh the ad.
      */
     private void refreshAd() {
-        if (mAdView == null)
-            mAdView = (AdView) findViewById(R.id.powerbench_ad);
-
         if (mAdView != null) {
-            AdRequest adRequest = new AdRequest.Builder().build();
-            mAdView.loadAd(adRequest);
+            if (com.batterymentor.settings.Settings.getInstance().isPaidVersion()) {
+                mAdView.setVisibility(View.GONE);
+            } else {
+                AdRequest adRequest = new AdRequest.Builder().build();
+                mAdView.loadAd(adRequest);
+                mAdView.setVisibility(View.VISIBLE);
+            }
         }
     }
 

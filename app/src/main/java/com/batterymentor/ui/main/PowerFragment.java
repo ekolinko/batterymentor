@@ -203,6 +203,7 @@ public class PowerFragment extends CommonFragment {
     public void updatePowerViews(boolean forceRefresh) {
         if (needsUpdate() || forceRefresh) {
             if (mHistogram != null) {
+                double voltage = Sensor.VOLTAGE.measure();
                 if (mPowerView != null) {
                     if (mPowerFormatter == null)
                         mPowerFormatter = new DecimalFormat(getString(R.string.format_power));
@@ -213,7 +214,7 @@ public class PowerFragment extends CommonFragment {
                         value = getString(R.string.not_charging);
                     } else {
                         if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.milliamps))) {
-                            value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue / Sensor.VOLTAGE.measure()), getString(R.string.milliamps));
+                            value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue / voltage), getString(R.string.milliamps));
                         } else {
                             value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.milliwatts));
                         }
@@ -248,10 +249,17 @@ public class PowerFragment extends CommonFragment {
                         maxValue = -minValue + 0.0;
                         minValue = temp;
                     }
-                    String min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue);
-                    String max = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue);
-                    mMinValue.setText(String.format(getString(R.string.power_template), min));
-                    mMaxValue.setText(String.format(getString(R.string.power_template), max));
+                    if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.milliamps))) {
+                        String min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue / voltage);
+                        String max = Double.isInfinite(maxValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue / voltage);
+                        mMinValue.setText(String.format(getString(R.string.current_template), min));
+                        mMaxValue.setText(String.format(getString(R.string.current_template), max));
+                    } else {
+                        String min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue);
+                        String max = Double.isInfinite(maxValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue);
+                        mMinValue.setText(String.format(getString(R.string.power_template), min));
+                        mMaxValue.setText(String.format(getString(R.string.power_template), max));
+                    }
                 }
             } else if (mPowerView != null) {
                 mPowerView.setText(getString(R.string.invalid_value));

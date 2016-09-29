@@ -18,6 +18,11 @@ public class Settings {
      */
     private Context mContext;
 
+    /**
+     * Flag indicating that this is the paid version.
+     */
+    private boolean mPaidVersion = true;
+
     private static class SingletonHolder {
         private static final Settings INSTANCE = new Settings();
     }
@@ -135,5 +140,9 @@ public class Settings {
 
     public Context getContext() {
         return mContext;
+    }
+
+    public boolean isPaidVersion() {
+        return mPaidVersion;
     }
 }

@@ -63,7 +63,7 @@ public class UIConstants {
     /**
      * The notification scaling factor for battery life.
      */
-    public static int NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR = 10;
+    public static int NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR = 6;
 
     /**
      * The notification id key.
@@ -124,6 +124,11 @@ public class UIConstants {
      * The maximum battery life / until fully charger to show in minutes
      */
     public static final double MAX_BATTERY_LIFE = 20*Constants.MINUTES_IN_HOUR;
+
+    /**
+     * The maximum battery life / until fully charger to show for the notification.
+     */
+    public static final double MAX_BATTERY_LIFE_NOTIFICATION = 10000;
 
     /**
      * The index of the power tab.

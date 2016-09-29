@@ -3,6 +3,7 @@ package com.batterymentor.device;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 
 import com.batterymentor.constants.Constants;
 import com.batterymentor.constants.DeviceConstants;

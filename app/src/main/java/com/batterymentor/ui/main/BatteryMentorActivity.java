@@ -202,11 +202,12 @@ public class BatteryMentorActivity extends CommonActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MobileAds.initialize(getApplicationContext(), getString(R.string.advertising_id));
+
         boolean showTutorialActivity = Settings.getInstance().getShowTutorial(this) || !Permissions.getInstance().isSettingsPermissionGranted(this);
         if (showTutorialActivity) {
             startActivityForResult(new Intent(this, TutorialActivity.class), UIConstants.TUTORIAL_REQUEST_CODE);
         }
+
         setContentView(R.layout.activity_main);
         setupNavigationDrawer();
         initialize();
@@ -456,7 +457,7 @@ public class BatteryMentorActivity extends CommonActivity {
     protected void updateBatteryLife() {
         double batteryLife = mBatteryModel.getBatteryLife();
         String value = Utils.convertBatteryLifeToSimpleString(this, batteryLife);
-        if (getBatteryLevel() == Constants.INT_PERCENT && isChargerConnected()) {
+        if (ChargerManager.getInstance().getBatteryLevel() == Constants.INT_PERCENT && isChargerConnected()) {
             value = getString(R.string.fully_charged);
             mBatteryLifeLabel.setVisibility(View.GONE);
         } else if (batteryLife <= 0 && isChargerConnected()) {
@@ -468,6 +469,8 @@ public class BatteryMentorActivity extends CommonActivity {
         } else if (Double.isInfinite(batteryLife)) {
             value = String.format(getString(R.string.value_units_template), getString(R.string.invalid_value), getString(R.string.hours));
             mBatteryLifeLabel.setVisibility(View.GONE);
+        } else {
+            mBatteryLifeLabel.setVisibility(View.VISIBLE);
         }
         mBatteryLife.setText(value);
         if (mBatteryLifeDetails != null) {

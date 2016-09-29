@@ -101,7 +101,7 @@ public class ScreenFragment extends CommonFragment {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), mTheme.getDialogStyleResource()).setTitle(getString(R.string.screen_test)).
                 setMessage(R.string.test_screen_more_details)
-                .setPositiveButton(mBatteryModel == null ? R.string.test_screen_run : R.string.test_screen_rerun, new OnClickListener() {
+                .setPositiveButton(R.string.test_screen_run, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         startActivity(new Intent(getContext(), ScreenTestActivity.class));
@@ -206,26 +206,28 @@ public class ScreenFragment extends CommonFragment {
     @Override
     public void applyTheme(Theme theme) {
         mTheme = theme;
-        if (mScreenTestIcon != null) {
-            mScreenTestIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), mTheme.getScreenTestIconResource()));
-        }
-        if (mMoreDetailsButton != null) {
-            mMoreDetailsButton.setTextColor(ContextCompat.getColor(getContext(), mTheme.getColorResource()));
-        }
-        if (mScreenTestButton != null) {
-            mScreenTestButton.setTextColor(ContextCompat.getColor(getContext(), mTheme.getColorResource()));
-        }
-        if (mBatteryTipsButton != null) {
-            mBatteryTipsButton.setTextColor(ContextCompat.getColor(getContext(), mTheme.getColorResource()));
-            mBatteryTipsButton.setText(isChargerConnected() ? R.string.charger_tips : R.string.battery_tips);
-        }
-        if (mSunView != null) {
-            mSunView.applyTheme(theme);
-        }
-        if (mScreenBrightnessSeekBar != null) {
-            mScreenBrightnessSeekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(getContext(), mTheme.getColorResource()), PorterDuff.Mode.MULTIPLY));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                mScreenBrightnessSeekBar.getThumb().setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(getContext(), mTheme.getColorResource()), PorterDuff.Mode.SRC_IN));
+        if (mTheme != null) {
+            if (mScreenTestIcon != null) {
+                mScreenTestIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), mTheme.getScreenTestIconResource()));
+            }
+            if (mMoreDetailsButton != null) {
+                mMoreDetailsButton.setTextColor(ContextCompat.getColor(getContext(), mTheme.getColorResource()));
+            }
+            if (mScreenTestButton != null) {
+                mScreenTestButton.setTextColor(ContextCompat.getColor(getContext(), mTheme.getColorResource()));
+            }
+            if (mBatteryTipsButton != null) {
+                mBatteryTipsButton.setTextColor(ContextCompat.getColor(getContext(), mTheme.getColorResource()));
+                mBatteryTipsButton.setText(isChargerConnected() ? R.string.charger_tips : R.string.battery_tips);
+            }
+            if (mSunView != null) {
+                mSunView.applyTheme(theme);
+            }
+            if (mScreenBrightnessSeekBar != null) {
+                mScreenBrightnessSeekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(getContext(), mTheme.getColorResource()), PorterDuff.Mode.MULTIPLY));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    mScreenBrightnessSeekBar.getThumb().setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(getContext(), mTheme.getColorResource()), PorterDuff.Mode.SRC_IN));
+                }
             }
         }
     }
