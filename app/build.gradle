@@ -5,7 +5,7 @@ android {
     buildToolsVersion '24.0.0'
 
     defaultConfig {
-        applicationId "com.powerbench"
+        applicationId "com.batterymentor"
         minSdkVersion 15
         targetSdkVersion 23
     }
@@ -13,6 +13,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+        standard {
+            applicationId "com.batterymentor"
+        }
+        pro {
+            applicationId "com.batterymentor.pro"
         }
     }
 }

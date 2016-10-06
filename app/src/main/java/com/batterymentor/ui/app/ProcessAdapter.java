@@ -113,7 +113,7 @@ public class ProcessAdapter extends ArrayAdapter<Process> {
         viewHolder.cpu.setText(String.format(mContext.getString(R.string.value_units_condensed_template), mCpuLoadFormatter.format(cpuLoad), mContext.getString(R.string.cpu_load)));
         if (mModel != null) {
             double power = mModel.getY(process.getCpuLoad());
-            viewHolder.power.setText(String.format(mContext.getString(R.string.value_units_template), mPowerFormatter.format(power), mContext.getString(R.string.milliwatts)));
+            viewHolder.power.setText(String.format(mContext.getString(R.string.value_units_template), mPowerFormatter.format(power), mContext.getString(R.string.mW)));
         } else {
             viewHolder.power.setText(Constants.EMPTY_STRING);
         }

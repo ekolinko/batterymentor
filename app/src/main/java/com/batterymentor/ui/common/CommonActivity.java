@@ -91,7 +91,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         com.batterymentor.settings.Settings.getInstance().setContext(this);
-        if (!com.batterymentor.settings.Settings.getInstance().isPaidVersion()) {
+        if (!com.batterymentor.settings.Settings.getInstance().isProVersion()) {
             MobileAds.initialize(getApplicationContext(), getString(R.string.advertising_id));
         }
         ChargerManager.getInstance().initialize(this);
@@ -118,7 +118,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
             getSupportActionBar().setHomeButtonEnabled(true);
         }
         mAdView = (AdView) findViewById(R.id.powerbench_ad);
-        if (com.batterymentor.settings.Settings.getInstance().isPaidVersion()) {
+        if (com.batterymentor.settings.Settings.getInstance().isProVersion()) {
             mAdView.setVisibility(View.GONE);
         } else {
             mAdView.setVisibility(View.VISIBLE);
@@ -150,7 +150,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     protected void onPause() {
         super.onPause();
         ChargerManager.getInstance().unregisterChargerListener(this, this);
-        if (!com.batterymentor.settings.Settings.getInstance().isPaidVersion()) {
+        if (!com.batterymentor.settings.Settings.getInstance().isProVersion()) {
             if (mAdRefreshThread != null) {
                 mHandler.removeCallbacks(mAdRefreshThread);
             }
@@ -161,7 +161,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     protected void onResume() {
         super.onResume();
         ChargerManager.getInstance().registerChargerListener(this, this);
-        if (!com.batterymentor.settings.Settings.getInstance().isPaidVersion()) {
+        if (!com.batterymentor.settings.Settings.getInstance().isProVersion()) {
             if (mAdRefreshThread == null) {
                 mAdRefreshThread = new AdRefreshThread();
                 mHandler.post(mAdRefreshThread);
@@ -216,7 +216,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      */
     private void refreshAd() {
         if (mAdView != null) {
-            if (com.batterymentor.settings.Settings.getInstance().isPaidVersion()) {
+            if (com.batterymentor.settings.Settings.getInstance().isProVersion()) {
                 mAdView.setVisibility(View.GONE);
             } else {
                 AdRequest adRequest = new AdRequest.Builder().build();

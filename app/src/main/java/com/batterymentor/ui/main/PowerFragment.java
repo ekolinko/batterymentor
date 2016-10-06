@@ -213,10 +213,10 @@ public class PowerFragment extends CommonFragment {
                     if (powerValue <= 0 && isChargerConnected()) {
                         value = getString(R.string.not_charging);
                     } else {
-                        if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.milliamps))) {
-                            value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue / voltage), getString(R.string.milliamps));
+                        if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.mA))) {
+                            value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue / voltage), getString(R.string.mA));
                         } else {
-                            value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.milliwatts));
+                            value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.mW));
                         }
                     }
 
@@ -249,7 +249,7 @@ public class PowerFragment extends CommonFragment {
                         maxValue = -minValue + 0.0;
                         minValue = temp;
                     }
-                    if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.milliamps))) {
+                    if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.mA))) {
                         String min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue / voltage);
                         String max = Double.isInfinite(maxValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue / voltage);
                         mMinValue.setText(String.format(getString(R.string.current_template), min));

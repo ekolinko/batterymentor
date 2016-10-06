@@ -98,6 +98,6 @@
     </LinearLayout>
     <TextView android:id="@+id/powerbench_power_histogram_axis_title"
         style="@style/powerbench_power_histogram_axis_title"
-        android:text="@string/milliwatts"
+        android:text="@string/mW"
         android:layout_alignParentBottom="true" />
 </RelativeLayout>

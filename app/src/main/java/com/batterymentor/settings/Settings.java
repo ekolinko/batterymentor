@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.batterymentor.R;
 import com.batterymentor.constants.Constants;
+import com.batterymentor.constants.FlavorConstants;
 import com.batterymentor.constants.SettingsConstants;
 
 /**
@@ -17,11 +18,6 @@ public class Settings {
      * The device context.
      */
     private Context mContext;
-
-    /**
-     * Flag indicating that this is the paid version.
-     */
-    private boolean mPaidVersion = true;
 
     private static class SingletonHolder {
         private static final Settings INSTANCE = new Settings();
@@ -142,7 +138,7 @@ public class Settings {
         return mContext;
     }
 
-    public boolean isPaidVersion() {
-        return mPaidVersion;
+    public boolean isProVersion() {
+        return FlavorConstants.VERSION_PRO;
     }
 }

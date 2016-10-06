@@ -6,15 +6,15 @@
     <string name="settings_power_tab_units_key">powerTabUnits</string>
     <string name="settings_rerun_screen_test">rerunScreenTest</string>
     <bool name="settings_startup_with_device_default">false</bool>
-    <string name="settings_status_bar_units_default">@string/milliwatts</string>
-    <string name="settings_power_tab_units_default">@string/milliwatts</string>
+    <string name="settings_status_bar_units_default">@string/hours</string>
+    <string name="settings_power_tab_units_default">@string/mW</string>
     <string-array name="settings_status_bar_units_options">
-        <item>@string/milliwatts</item>
-        <item>@string/milliamps</item>
-        <item>@string/hr</item>
+        <item>@string/hours</item>
+        <item>@string/mW</item>
+        <item>@string/mA</item>
     </string-array>
     <string-array name="settings_power_tab_units_options">
-        <item>@string/milliwatts</item>
-        <item>@string/milliamps</item>
+        <item>@string/mW</item>
+        <item>@string/mA</item>
     </string-array>
 </resources>

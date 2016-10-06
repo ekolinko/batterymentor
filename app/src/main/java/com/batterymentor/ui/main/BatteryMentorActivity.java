@@ -636,7 +636,6 @@ public class BatteryMentorActivity extends CommonActivity {
     protected void onResume() {
         super.onResume();
         mPowerCollectionTask.registerMeasurementListener(mMeasurementListener);
-        ChargerManager.getInstance().registerChargerListener(this, ModelManager.getInstance());
         refreshFragments();
     }
 
@@ -644,7 +643,6 @@ public class BatteryMentorActivity extends CommonActivity {
     protected void onPause() {
         super.onPause();
         mPowerCollectionTask.unregisterMeasurementListener(mMeasurementListener);
-        ChargerManager.getInstance().unregisterChargerListener(this, ModelManager.getInstance());
     }
 
     @Override

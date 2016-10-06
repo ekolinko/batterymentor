@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Battery Mentor</string>
+    <string name="battery_mentor">Battery Mentor</string>
+    <string name="battery_mentor_pro">Battery Mentor Pro</string>
 
     <!-- ScreenTestActivity -->
     <string name="screen_test">Screen Test</string>
@@ -8,8 +9,8 @@
     <string name="cpu_frequency_data_template" formatted="false">Frequency %d: %s MHz\n</string>
 
     <!-- Common -->
-    <string name="milliwatts">mW</string>
-    <string name="milliamps">mA</string>
+    <string name="mW">mW</string>
+    <string name="mA">mA</string>
     <string name="hr">hr</string>
     <string name="cpu_load">%</string>
     <string name="seconds">seconds</string>
