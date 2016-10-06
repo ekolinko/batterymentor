@@ -10,6 +10,7 @@ import android.preference.PreferenceScreen;
 
 import com.batterymentor.R;
 import com.batterymentor.constants.UIConstants;
+import com.batterymentor.device.Device;
 import com.batterymentor.model.Model;
 import com.batterymentor.model.ModelManager;
 import com.batterymentor.settings.Settings;
@@ -49,8 +50,7 @@ public class SettingsFragment extends PreferenceFragment {
             });
         }
         final Preference rerunScreenTestPreference = (Preference) findPreference(getString(R.string.settings_rerun_screen_test));
-        Model screenModel = ModelManager.getInstance().getBatteryModel(getActivity()).getScreenModel();
-        if (screenModel != null) {
+        if (!Device.getInstance().isBatteryPowerEstimated()) {
             if (rerunScreenTestPreference != null) {
                 rerunScreenTestPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
