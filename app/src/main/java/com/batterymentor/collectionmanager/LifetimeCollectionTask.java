@@ -191,14 +191,14 @@ public class LifetimeCollectionTask extends CollectionTask {
 
     @Override
     protected void onChargerConnected() {
-        super.onChargerConnected();
         mLifetimeStatistics = mLifetimeChargerStatistics;
+        super.onChargerConnected();
     }
 
     @Override
     protected void onChargerDisconnected() {
-        super.onChargerDisconnected();
         mLifetimeStatistics = mLifetimeBatteryStatistics;
+        super.onChargerDisconnected();
     }
 
     public Statistics getBatteryLifetimeStatistics() {

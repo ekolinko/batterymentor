@@ -33,6 +33,15 @@ public class NotificationDrawableCache {
      * Initialize the values for this generator.
      */
     private void initialize() {
+        mPowerCache.put(10, R.drawable.notification_power_10);
+        mPowerCache.put(20, R.drawable.notification_power_20);
+        mPowerCache.put(30, R.drawable.notification_power_30);
+        mPowerCache.put(40, R.drawable.notification_power_40);
+        mPowerCache.put(50, R.drawable.notification_power_50);
+        mPowerCache.put(60, R.drawable.notification_power_60);
+        mPowerCache.put(70, R.drawable.notification_power_70);
+        mPowerCache.put(80, R.drawable.notification_power_80);
+        mPowerCache.put(90, R.drawable.notification_power_90);
         mPowerCache.put(100, R.drawable.notification_power_100);
         mPowerCache.put(110, R.drawable.notification_power_110);
         mPowerCache.put(120, R.drawable.notification_power_120);
@@ -223,6 +232,15 @@ public class NotificationDrawableCache {
         mPowerCache.put(17000, R.drawable.notification_power_17000);
         mPowerCache.put(18000, R.drawable.notification_power_18000);
         mPowerCache.put(19000, R.drawable.notification_power_19000);
+        mCurrentCache.put(10, R.drawable.notification_current_10);
+        mCurrentCache.put(20, R.drawable.notification_current_20);
+        mCurrentCache.put(30, R.drawable.notification_current_30);
+        mCurrentCache.put(40, R.drawable.notification_current_40);
+        mCurrentCache.put(50, R.drawable.notification_current_50);
+        mCurrentCache.put(60, R.drawable.notification_current_60);
+        mCurrentCache.put(70, R.drawable.notification_current_70);
+        mCurrentCache.put(80, R.drawable.notification_current_80);
+        mCurrentCache.put(90, R.drawable.notification_current_90);
         mCurrentCache.put(100, R.drawable.notification_current_100);
         mCurrentCache.put(110, R.drawable.notification_current_110);
         mCurrentCache.put(120, R.drawable.notification_current_120);
@@ -702,8 +720,6 @@ public class NotificationDrawableCache {
         mBatteryLifeCache.put(297, R.drawable.notification_battery_life_297);
         mBatteryLifeCache.put(298, R.drawable.notification_battery_life_298);
         mBatteryLifeCache.put(299, R.drawable.notification_battery_life_299);
-
-
     }
 
     /**
@@ -747,9 +763,11 @@ public class NotificationDrawableCache {
     public int getBatteryLifeResourceForValue(int value) {
         if (value < UIConstants.NOTIFICATION_MIN_BATTERY_LIFE)
             value = UIConstants.NOTIFICATION_MIN_BATTERY_LIFE;
+        if (value >= UIConstants.NOTIFICATION_MAX_BATTERY_LIFE)
+            return R.drawable.notification_battery_life_max;
         Integer resourceId;
         if ((resourceId = mBatteryLifeCache.get(value)) == null) {
-            resourceId = R.drawable.notification_battery_life_299;
+            resourceId = R.drawable.notification_battery_life_max;
         }
         return resourceId;
     }

@@ -2,60 +2,66 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout android:id="@+id/content_container"
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/screen_button_controls">
+        <LinearLayout android:id="@+id/content_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerInParent="true">
+            <LinearLayout android:id="@+id/screen_test_welcome_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:visibility="gone"
+                android:orientation="vertical">
+                <ImageView android:id="@+id/icon_screen_test"
+                    style="@style/image_button"
+                    android:src="@drawable/phone_red" />
+                <TextView style="@style/help_text"
+                    android:text="@string/test_screen_description"/>
+            </LinearLayout>
+            <LinearLayout android:id="@+id/screen_test_gadget_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingTop="25dp"
+                android:orientation="vertical">
+                <com.batterymentor.ui.common.SunView
+                    android:id="@+id/gadget_screen_sun_view"
+                    android:layout_width="128dp"
+                    android:layout_height="128dp" />
+                <SeekBar android:id="@+id/gadget_screen_brightness_slider"
+                    style="@style/gadget_slider"
+                    android:max="255" />
+                <TextView style="@style/gadget_hint"
+                    android:text="@string/battery_gadget_slider_hint" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+    <LinearLayout android:id="@+id/screen_button_controls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true">
-        <LinearLayout android:id="@+id/screen_test_welcome_container"
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+        <Button android:id="@+id/button_more_details"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:visibility="gone"
-            android:orientation="vertical">
-            <ImageView android:id="@+id/icon_screen_test"
-                style="@style/image_button"
-                android:src="@drawable/phone_red" />
-            <TextView style="@style/help_text"
-                android:text="@string/test_screen_description"/>
-        </LinearLayout>
-        <LinearLayout android:id="@+id/screen_test_gadget_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:paddingTop="25dp"
-            android:orientation="vertical">
-            <com.batterymentor.ui.common.SunView
-                android:id="@+id/gadget_screen_sun_view"
-                android:layout_width="128dp"
-                android:layout_height="128dp" />
-            <SeekBar android:id="@+id/gadget_screen_brightness_slider"
-                style="@style/gadget_slider"
-                android:max="255" />
-            <TextView style="@style/gadget_hint"
-                android:text="@string/battery_gadget_slider_hint" />
-        </LinearLayout>
-        <LinearLayout android:layout_width="match_parent"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:text="@string/more_details"/>
+        <Button android:id="@+id/button_screen_test"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button android:id="@+id/button_more_details"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:text="@string/more_details"/>
-            <Button android:id="@+id/button_screen_test"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:text="@string/test_screen_run"/>
-            <Button android:id="@+id/button_battery_tips"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:text="@string/battery_tips"/>
-        </LinearLayout>
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:text="@string/test_screen_run"/>
+        <Button android:id="@+id/button_battery_tips"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:text="@string/battery_tips"/>
     </LinearLayout>
 </RelativeLayout>

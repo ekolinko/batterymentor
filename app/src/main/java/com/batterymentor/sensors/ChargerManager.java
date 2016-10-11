@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Build;
-import android.util.Log;
 
 import com.batterymentor.R;
 import com.batterymentor.constants.Constants;
@@ -129,8 +128,6 @@ public class ChargerManager {
         if (chargerListener == null)
             return;
 
-        Log.d("tstatic","unregister " + chargerListener);
-
         synchronized (mChargerListeners) {
             mChargerListeners.remove(chargerListener);
         }
@@ -148,7 +145,6 @@ public class ChargerManager {
      * @param batteryStatusIntent the battery status intent to handle.
      */
     public void handleBatteryStatusIntent(Context context, Intent batteryStatusIntent) {
-        Log.d("tstatic","handleBatteryStatusIntent");
         int status = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
         mBatteryLevel = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
         mBatteryVoltage = batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1);

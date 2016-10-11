@@ -3,6 +3,7 @@ package com.batterymentor.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.batterymentor.BatteryMentorService;
 import com.batterymentor.settings.Settings;
@@ -10,7 +11,7 @@ import com.batterymentor.settings.Settings;
 /**
  * Receiver that's responsible for starting this app when the device is booted.
  */
-public class StartPowerBenchServiceAtBootReceiver extends BroadcastReceiver {
+public class StartBatteryMentorServiceAtBootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

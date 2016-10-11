@@ -647,8 +647,10 @@ public class BatteryMentorActivity extends CommonActivity {
 
     @Override
     public void finish() {
-        if (getService() != null)
+        if (getService() != null) {
             getService().cancelNotification();
+            getService().stopSelf();
+        }
         super.finish();
     }
 

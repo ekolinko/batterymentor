@@ -14,7 +14,7 @@ import com.batterymentor.collectionmanager.CollectionManager;
 import com.batterymentor.collectionmanager.CollectionTask;
 import com.batterymentor.collectionmanager.LifetimeCollectionTask;
 import com.batterymentor.constants.Constants;
-import com.batterymentor.constants.UIConstants;
+import com.batterymentor.constants.FlavorConstants;
 import com.batterymentor.datamanager.Point;
 import com.batterymentor.ui.notification.PowerBenchNotification;
 
@@ -28,7 +28,7 @@ public class BatteryMentorService extends Service {
     /**
      * Interface that allows clients to bind to the servic.e
      */
-    private IBinder mBinder = new PowerBenchBinder();
+    private IBinder mBinder = new BatteryMentorBinder();
 
     /**
      * The notification associated with this service.
@@ -66,11 +66,11 @@ public class BatteryMentorService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (mShowNotification) {
             mNotification = PowerBenchNotification.getInstance().createNotification(this);
+            mNotificationManager.notify(FlavorConstants.NOTIFICATION_ID, mNotification);
         }
-        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(Constants.NOTIFICATION_ID, mNotification);
         mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(this);
         mPowerCollectionTask.start();
         mMeasurementListener = new CollectionTask.MeasurementListener() {
@@ -84,6 +84,11 @@ public class BatteryMentorService extends Service {
         registerReceiver(mNotificationDismissedReceiver, new IntentFilter(Constants.NOTIFICATION_ACTION));
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_NOT_STICKY;
+    }
+
     /**
      * Update the notification using the current settings.
      */
@@ -91,7 +96,7 @@ public class BatteryMentorService extends Service {
         if (mShowNotification) {
             double average = mPowerCollectionTask.getRealtimeStatistics().getAverage();
             mNotification = PowerBenchNotification.getInstance().updateNotification(BatteryMentorService.this, Math.abs(average));
-            mNotificationManager.notify(Constants.NOTIFICATION_ID, mNotification);
+            mNotificationManager.notify(FlavorConstants.NOTIFICATION_ID, mNotification);
         }
     }
 
@@ -115,14 +120,14 @@ public class BatteryMentorService extends Service {
         mPowerCollectionTask.unregisterMeasurementListener(mMeasurementListener);
         mShowNotification = false;
         if (mNotificationManager != null) {
-            mNotificationManager.cancel(Constants.NOTIFICATION_ID);
+            mNotificationManager.cancel(FlavorConstants.NOTIFICATION_ID);
         }
     }
 
     /**
      * The binder that clients use to bind to this service.
      */
-    public class PowerBenchBinder extends Binder {
+    public class BatteryMentorBinder extends Binder {
         public BatteryMentorService getService() {
             return BatteryMentorService.this;
         }
@@ -143,8 +148,8 @@ public class BatteryMentorService extends Service {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            int notificationId = intent.getExtras().getInt(UIConstants.NOTIFICATION_ID_KEY);
-            if (notificationId == Constants.NOTIFICATION_ID && mMeasurementListener != null && mShowNotification) {
+            int notificationId = intent.getExtras().getInt(FlavorConstants.NOTIFICATION_ID_KEY);
+            if (notificationId == FlavorConstants.NOTIFICATION_ID && mShowNotification) {
                 cancelNotification();
             }
         }

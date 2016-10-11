@@ -6,14 +6,9 @@ package com.batterymentor.constants;
 public class Constants {
 
     /**
-     * The id of the notification.
-     */
-    public static final int NOTIFICATION_ID = 955845;
-
-    /**
      * The notification action
      */
-    public static final String NOTIFICATION_ACTION = "com.powerbench.NOTIFICATION_DISMISSED";
+    public static final String NOTIFICATION_ACTION = "com.batterymentor.NOTIFICATION_DISMISSED";
 
     /**
      * The key for a double value.

@@ -1,6 +1,7 @@
 package com.batterymentor.collectionmanager;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.batterymentor.constants.SensorConstants;
 import com.batterymentor.datamanager.Point;
@@ -257,7 +258,7 @@ public class CollectionTask {
      */
     public Point measureSensor() {
         mPoint = mSensor.measurePoint();
-        if (!isChargerConnected() && mPoint.getY() < SensorConstants.BATTERY_POWER_MIN) {
+        if ((!isChargerConnected() || mStatistics == mBatteryStatistics) && mPoint.getY() < SensorConstants.BATTERY_POWER_MIN) {
             mPoint.setY(SensorConstants.BATTERY_POWER_MIN);
         }
         mStatistics.addPoint(mPoint);

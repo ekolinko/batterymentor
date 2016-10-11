@@ -1,7 +1,6 @@
 package com.batterymentor.model;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.batterymentor.collectionmanager.CollectionManager;
 import com.batterymentor.collectionmanager.CollectionTask;
@@ -207,7 +206,6 @@ public class ModelManager implements ChargerManager.ChargerListener {
         if (mBatteryModel != null) {
             mBatteryModel.setCharging(true);
         }
-        Log.d("tstatic","onChargerConnected! mBatteryModel = " + mBatteryModel);
     }
 
     @Override
@@ -215,7 +213,6 @@ public class ModelManager implements ChargerManager.ChargerListener {
         if (mBatteryModel != null) {
             mBatteryModel.setCharging(false);
         }
-        Log.d("tstatic","onChargerDisconnected! mBatteryModel = " + mBatteryModel);
     }
 
     @Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list
     xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:drawable="@drawable/one" android:left="8dp" android:right="24dp" android:bottom="26dp"/>
+    <item android:drawable="@drawable/eight" android:left="8dp" android:right="24dp" android:bottom="26dp"/>
     <item android:drawable="@drawable/zero" android:left="24dp" android:right="8dp" android:bottom="26dp" />
-    <item android:drawable="@drawable/w" android:top="26dp" />
+    <item android:drawable="@drawable/ma" android:top="26dp" />
 </layer-list>

@@ -18,8 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.batterymentor.BatteryMentorService;
 import com.batterymentor.R;
 import com.batterymentor.constants.Constants;
@@ -28,6 +26,8 @@ import com.batterymentor.constants.UIConstants;
 import com.batterymentor.sensors.ChargerManager;
 import com.batterymentor.ui.theme.Theme;
 import com.batterymentor.ui.theme.ThemeManager;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
 import java.text.DecimalFormat;
@@ -164,6 +164,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
         if (!com.batterymentor.settings.Settings.getInstance().isProVersion()) {
             if (mAdRefreshThread == null) {
                 mAdRefreshThread = new AdRefreshThread();
+                refreshAd();
                 mHandler.post(mAdRefreshThread);
             }
         }
@@ -385,7 +386,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
-            BatteryMentorService.PowerBenchBinder binder = (BatteryMentorService.PowerBenchBinder) service;
+            BatteryMentorService.BatteryMentorBinder binder = (BatteryMentorService.BatteryMentorBinder) service;
             mService = binder.getService();
             mServiceBound = true;
             CommonActivity.this.onServiceBound();
@@ -404,8 +405,8 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
 
         @Override
         public void run() {
-            refreshAd();
             mHandler.postDelayed(this, Constants.AD_REFRESH_INTERVAL);
+            refreshAd();
         }
     }
 }

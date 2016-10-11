@@ -33,17 +33,22 @@ public class UIConstants {
     /**
      * The minimum power that is shown in the notification.
      */
-    public static final int NOTIFICATION_MIN_POWER = 100;
+    public static final int NOTIFICATION_MIN_POWER = 10;
 
     /**
      * The minimum current that is shown in the notification.
      */
-    public static final int NOTIFICATION_MIN_CURRENT = 100;
+    public static final int NOTIFICATION_MIN_CURRENT = 10;
 
     /**
      * The minimum battery life that is shown in the notification.
      */
     public static final int NOTIFICATION_MIN_BATTERY_LIFE = 1;
+
+    /**
+     * The maximum battery life that is shown in the notification.
+     */
+    public static final int NOTIFICATION_MAX_BATTERY_LIFE = 100;
 
     /**
      * The threshold at which the LED is shown as red.
@@ -64,11 +69,6 @@ public class UIConstants {
      * The notification scaling factor for battery life.
      */
     public static int NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR = 6;
-
-    /**
-     * The notification id key.
-     */
-    public static final String NOTIFICATION_ID_KEY = "com.powerbench.notificationId";
 
     /**
      * The key indicating that the app should close.

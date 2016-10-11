@@ -9,6 +9,7 @@ import android.support.v4.app.TaskStackBuilder;
 
 import com.batterymentor.R;
 import com.batterymentor.constants.Constants;
+import com.batterymentor.constants.FlavorConstants;
 import com.batterymentor.constants.UIConstants;
 import com.batterymentor.model.ModelManager;
 import com.batterymentor.sensors.ChargerManager;
@@ -57,7 +58,7 @@ public class PowerBenchNotification {
                         .setSmallIcon(R.drawable.battery_mentor)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(context.getString(R.string.notification_measuring))
-                        .setDeleteIntent(createOnDismissedIntent(context, Constants.NOTIFICATION_ID));
+                        .setDeleteIntent(createOnDismissedIntent(context, FlavorConstants.NOTIFICATION_ID));
         mBatteryLifeFormatter = new DecimalFormat(context.getString(R.string.format_battery_life));
         Intent resultIntent = new Intent(context, BatteryMentorActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
@@ -168,7 +169,7 @@ public class PowerBenchNotification {
                         .setSmallIcon(resourceId)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(message)
-                        .setDeleteIntent(createOnDismissedIntent(context, Constants.NOTIFICATION_ID));
+                        .setDeleteIntent(createOnDismissedIntent(context, FlavorConstants.NOTIFICATION_ID));
         return mBuilder.build();
     }
 
@@ -182,7 +183,7 @@ public class PowerBenchNotification {
     private PendingIntent createOnDismissedIntent(Context context, int notificationId) {
         Intent intent = new Intent();
         intent.setAction(Constants.NOTIFICATION_ACTION);
-        intent.putExtra(UIConstants.NOTIFICATION_ID_KEY, notificationId);
+        intent.putExtra(FlavorConstants.NOTIFICATION_ID_KEY, notificationId);
         PendingIntent pendingIntent =
                 PendingIntent.getBroadcast(context.getApplicationContext(),
                         notificationId, intent, 0);

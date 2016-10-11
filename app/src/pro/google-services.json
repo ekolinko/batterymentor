@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "21822993427",
+    "firebase_url": "https://battery-mentor.firebaseio.com",
+    "project_id": "battery-mentor",
+    "storage_bucket": "battery-mentor.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:21822993427:android:d2af25bc1164252d",
+        "android_client_info": {
+          "package_name": "com.batterymentor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "21822993427-sbfdj1414q65e51v77ls699ldcs2hgi3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9zFyt8dZkXqKWdrVlRNMZQ2IMsRcmH0o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:21822993427:android:189700e013b0ac05",
+        "android_client_info": {
+          "package_name": "com.batterymentor.pro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "21822993427-sbfdj1414q65e51v77ls699ldcs2hgi3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9zFyt8dZkXqKWdrVlRNMZQ2IMsRcmH0o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
