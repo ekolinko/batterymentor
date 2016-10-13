@@ -14,10 +14,13 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.batterymentor.BatteryMentorService;
 import com.batterymentor.R;
 import com.batterymentor.constants.Constants;
@@ -26,8 +29,6 @@ import com.batterymentor.constants.UIConstants;
 import com.batterymentor.sensors.ChargerManager;
 import com.batterymentor.ui.theme.Theme;
 import com.batterymentor.ui.theme.ThemeManager;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
 import java.text.DecimalFormat;
@@ -102,6 +103,7 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d("tstatic","onStart");
         Intent intent = new Intent(this, BatteryMentorService.class);
         startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);

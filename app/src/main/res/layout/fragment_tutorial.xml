@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/material_blue">
     <TextView android:id="@+id/powerbench_tutorial_title"
         style="@style/powerbench_tutorial_title"
         android:layout_alignParentTop="true"

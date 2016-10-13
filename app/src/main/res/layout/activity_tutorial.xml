@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/material_blue">
     <android.support.v4.view.ViewPager android:id="@+id/powerbench_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/powerbench_ad"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:orientation="horizontal">
         <Button android:id="@+id/powerbench_tutorial_button_skip"
             style="@style/powerbench_tutorial_button"
@@ -24,6 +27,8 @@
         android:id="@+id/powerbench_ad"
         style="@style/powerbench_ad"
         android:layout_above="@+id/align_parent_bottom_view"
+        android:background="@color/material_blue"
+        ads:background="@color/material_blue"
         ads:adSize="BANNER"
         ads:adUnitId="@string/advertising_id">
     </com.google.android.gms.ads.AdView>

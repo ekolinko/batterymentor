@@ -108,7 +108,7 @@
     <string name="realtime">Realtime</string>
     <string name="lifetime">Lifetime</string>
     <string name="charger_readings_not_supported_with_estimated_power_title">Charging Power not Supported</string>
-    <string name="charger_readings_not_supported_with_estimated_power_summary">Your mobile device does not support power measurements while charging, so the battery and screen tabs will show inaccurate data. However, you can still view the tips to speedup charging to see some ways to charge your mobile device faster.</string>
+    <string name="charger_readings_not_supported_with_estimated_power_summary">Your mobile device does not support power measurements while charging, so the Battery and Screen Tabs will show inaccurate data. However, you can still view the tips to speedup charging to see some ways to charge your mobile device faster.</string>
     <!-- Process -->
     <string name="process_stop">STOP</string>
 
@@ -148,7 +148,7 @@
     <string name="battery_tip_title_run_screen_test">Run Screen Test</string>
     <string name="battery_tip_title_run_screen_test_summary">The screen is the largest consumer of power in mobile devices.\n\nTap here to run the screen test to see how screen brightness affects your battery life.</string>
     <string name="battery_tip_title_reduce_screen_brightness">Reduce Screen Brightness</string>
-    <string name="battery_tip_title_reduce_screen_brightness_summary">The screen is the largest consumer of power in mobile devices.\n\nTap here to open the screen tab and move the slider to the left to reduce screen brightness and improve battery life.</string>
+    <string name="battery_tip_title_reduce_screen_brightness_summary">The screen is the largest consumer of power in mobile devices.\n\nTap here to open the Screen Tab and move the slider to the left to reduce screen brightness and improve battery life.</string>
     <string name="battery_tip_title_force_stop_unused_apps">Force Stop Unused Apps</string>
     <string name="battery_tip_title_force_stop_unused_apps_summary">Some apps keep running in the background and consume power even when they are closed.\n\nTap here to open the battery manager and force stop any apps that you are not using to improve battery life.</string>
     <string name="battery_tip_title_use_wifi">Use Wi-Fi instead of Data</string>
@@ -157,7 +157,7 @@
     <string name="battery_tip_title_disable_location_services_summary">Some apps use location services even when closed and consume power in the background.\n\nTap here to open the location manager and either disable location services, use the battery saving mode, or force stop apps that have high battery use to improve battery life.</string>
     <string name="charger_tip_title_try_different_chargers">Try Different Charging Cables</string>
     <string name="charger_tip_title_try_different_chargers_summary">USB cables and AC adapters from different vendors charge at different speeds. Typically, accessories bought directly from device manufacturers charge faster than accessories bought from third-party vendors.</string>
-    <string name="charger_tip_title_try_different_chargers_summary_extra">\n\nTap here to open the battery tab and connect different chargers to see how fast they charge your mobile device. Please check to make sure your battery level is at 80% or less when evaluating a charger.</string>
+    <string name="charger_tip_title_try_different_chargers_summary_extra">\n\nTap here to open the Battery Tab and connect different chargers to see how fast they charge your mobile device. Please check to make sure your battery level is at 80% or less when evaluating a charger.</string>
     <string name="charger_tip_title_turn_off_screen">Turn Off the Screen</string>
     <string name="charger_tip_title_turn_off_screen_summary">The screen is the largest consumer of power in mobile devices. Turn off your screen using the power button to charge your mobile device faster.</string>
     <string name="charger_tip_title_turn_on_airplane_mode">Turn on Airplane Mode</string>
@@ -166,17 +166,17 @@
     <string name="charger_tip_title_plug_directly_into_outlet_summary">A USB cable that is connected to an AC adapter that is plugged into a power outlet typically provides more charging power than a USB cable that is connected through a laptop or desktop. Use an AC adapter plugged into an outlet to charge your mobile device faster.</string>
 
     <!-- Tutorial -->
-    <string name="tutorial_welcome_title">Welcome to Battery Mentor!</string>
-    <string name="tutorial_welcome_text">Battery Mentor is a powerful battery monitor designed to help you improve the battery life and charge your mobile device faster.</string>
+    <string name="tutorial_welcome_title">Welcome to Battery Mentor</string>
+    <string name="tutorial_welcome_text">Battery Mentor is a powerful battery monitor designed to help you improve battery life and charge your mobile device faster.</string>
     <string name="tutorial_power_tab_title">Battery Tab</string>
-    <string name="tutorial_power_tab_text">The battery tab shows you how much power your device is consuming in real-time along with a graph of device power over the last thirty seconds. Tap on the graph to show the average device power since the app was installed.</string>
+    <string name="tutorial_power_tab_text">See how much power your device is using in real-time and over the last 30 seconds. Tap on the graph to show the average power consumed since Battery Mentor was installed.</string>
     <string name="tutorial_screen_title">Screen Tab</string>
     <string name="tutorial_screen_text">Run the screen test to measure the power consumed at different brightness levels. After two minutes, move the slider to see the impact of screen brightness on battery life.</string>
     <string name="tutorial_battery_tips_title">Tips to Save Battery</string>
-    <string name="tutorial_battery_tips_text">This screen shows some ways that you can improve the battery life of your mobile device. Access this screen by sliding out the navigation drawer and selecting TIPS TO SAVE BATTERY.</string>
-    <string name="tutorial_charger_title">Charging Mode</string>
-    <string name="tutorial_charger_text">Connect a charger at any time to switch to Charging Mode. In Charging Mode, all measurements show charging power rather than device power. Find out how to charge your mobile device faster by sliding out the navigation drawer and selecting TIPS TO SPEEDUP CHARGING.</string>
+    <string name="tutorial_battery_tips_text">Discover how you can improve the battery life of your mobile device by sliding out the navigation drawer and selecting TIPS TO SAVE BATTERY.</string>
+    <string name="tutorial_charger_title">Charging Speed</string>
+    <string name="tutorial_charger_text">Connect a charger at any time to see how fast it charges your device. Find out how to charge your device faster by sliding out the navigation drawer and selecting TIPS TO SPEEDUP CHARGING.</string>
     <string name="tutorial_settings_title">System Settings</string>
-    <string name="tutorial_settings_text">Battery Mentor needs permissions to access system settings for the screen tab to work properly. On the next screen, please allow Battery Mentor to modify system settings and press <b>Back</b> when you are done.</string>
+    <string name="tutorial_settings_text">Battery Mentor needs permissions to access system settings for the Screen Tab to work properly. On the next screen, please allow Battery Mentor to modify system settings and press <b>Back</b> when you are done.</string>
 
 </resources>
