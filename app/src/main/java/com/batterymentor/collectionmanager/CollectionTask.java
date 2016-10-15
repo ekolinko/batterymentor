@@ -177,6 +177,7 @@ public class CollectionTask {
      */
     protected void onChargerDisconnected() {
         mChargerConnected = false;
+        mChargerStatistics.reset();
         mStatistics = mBatteryStatistics;
         if (mStatistics.getNumPoints() == 0) {
             measureSensor();

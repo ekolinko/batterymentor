@@ -2,6 +2,8 @@ package com.batterymentor.datamanager;
 
 import com.batterymentor.constants.CollectionConstants;
 import com.batterymentor.constants.DataConstants;
+import com.batterymentor.model.ModelManager;
+import com.batterymentor.settings.Settings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,9 +63,8 @@ public class RealtimeStatistics extends Statistics {
 
         synchronized (mRecentData) {
             mRecentData.add(point);
-
             if (mRecentData.size() > DataConstants.STATISTICS_RECENT_DATA_MAX_SIZE) {
-                removePointFromHistogram(mRecentData.removeFirst());
+                mRecentData.removeFirst();
             }
             mMedianCalculated = false;
             mAverageCalculated = false;
@@ -100,38 +101,60 @@ public class RealtimeStatistics extends Statistics {
      * @return the average of the recent data.
      */
     public double getAverage() {
-        if (!isRealtimeDataReady() && mLifetimeStatistics != null)
-            return mLifetimeStatistics.getAverage();
+        if (!mChargerStatistics) {
+            if (!isRealtimeDataReady() && mLifetimeStatistics != null)
+                return mLifetimeStatistics.getAverage();
 
-        synchronized (mRecentData) {
-            if (!mAverageCalculated) {
-                mAverage = super.getAverage();
-                int recentSize = DataConstants.STATISTICS_RECENT_DATA_SIZE;
-                if (mRecentData.size() > recentSize + 1) {
-                    double previousShortAverage = 0;
-                    for (int i = mRecentData.size() - 2; i > mRecentData.size() - recentSize - 2; i--) {
-                        previousShortAverage += convertValue(mRecentData.get(i).getY());
-                    }
-                    previousShortAverage /= recentSize;
-                    double currentShortAverage = 0;
-                    for (int i = mRecentData.size() - 1; i > mRecentData.size() - recentSize - 1; i--) {
-                        currentShortAverage += convertValue(mRecentData.get(i).getY());
-                    }
-                    currentShortAverage /= recentSize;
-                    if (currentShortAverage > previousShortAverage) {
-                        double variance = 0;
-                        for (int i = mRecentData.size() - 1; i > mRecentData.size() - recentSize - 1; i--) {
-                            double value = convertValue(mRecentData.get(i).getY());
-                            variance += Math.pow(value - currentShortAverage, 2);
-                        }
-                        double standardDeviation = Math.sqrt(variance / recentSize);
-                        mAverage += standardDeviation / 2;
-                    }
+            synchronized (mRecentData) {
+                if (!mAverageCalculated) {
+                    mAverage = getFullRecentAverage();
                     mAverageCalculated = true;
                 }
             }
+        } else {
+            mAverage = getShortRecentAverage();
         }
         return mAverage;
+    }
+
+    /**
+     * Return the average using a short portion of recent data.
+     */
+    private double getShortRecentAverage() {
+        if (mRecentData.isEmpty())
+            return Double.POSITIVE_INFINITY;
+
+        double recentAverage = 0;
+        synchronized (mRecentData) {
+            if (mRecentData.size() > 0) {
+                int recentSize = Math.min(mRecentData.size(), DataConstants.STATISTICS_RECENT_DATA_SIZE) ;
+                for (int i = mRecentData.size() - 1; i > mRecentData.size() - recentSize - 1; i--) {
+                    double value = convertValue(mRecentData.get(i).getY());
+                    recentAverage += value;
+                }
+                recentAverage = recentAverage / recentSize;
+            }
+        }
+        return recentAverage;
+    }
+
+    /**
+     * Return the average using a full portion of recent data.
+     */
+    private double getFullRecentAverage() {
+        if (mRecentData.isEmpty())
+            return Double.POSITIVE_INFINITY;
+
+        double recentAverage = 0;
+        synchronized (mRecentData) {
+            if (mRecentData.size() > 0) {
+                for (Point point : mRecentData) {
+                    recentAverage += convertValue(point.getY());
+                }
+                recentAverage = recentAverage / mRecentData.size();
+            }
+        }
+        return recentAverage;
     }
 
     /**
@@ -141,9 +164,8 @@ public class RealtimeStatistics extends Statistics {
      * @return true if the realtime data is ready, false otherwise
      */
     private boolean isRealtimeDataReady() {
-        return getNumPoints() > CollectionConstants.REALTIME_STATISTICS_VALID_POINT_THRESHOLD;
+        return getSize() > CollectionConstants.REALTIME_STATISTICS_VALID_POINT_THRESHOLD;
     }
-
 
     /**
      * Return the size of the recent data.
@@ -156,6 +178,31 @@ public class RealtimeStatistics extends Statistics {
             size = mRecentData.size();
         }
         return size;
+    }
+
+    @Override
+    public HistogramPoint[] getHistogramData() {
+        HistogramPoint[] histogramData = new HistogramPoint[DataConstants.HISTOGRAM_NUM_BUCKETS - 1];
+        for (int i = 0; i < histogramData.length - 1; i++) {
+            double minX = DataConstants.HISTOGRAM_MIN_POWER + i * DataConstants.HISTOGRAM_BUCKET_RANGE;
+            double maxX = minX + DataConstants.HISTOGRAM_BUCKET_RANGE;
+            histogramData[i] = new HistogramPoint(minX, maxX, 0);
+        }
+        double maxX = DataConstants.HISTOGRAM_MAX_POWER;
+        histogramData[histogramData.length - 1] = new HistogramPoint(maxX, maxX, 0);
+        synchronized (mRecentData) {
+            for (Point point : mRecentData) {
+                double value = convertValue(point.getY());
+                int index = (int)((value - DataConstants.HISTOGRAM_MIN_POWER) / DataConstants.HISTOGRAM_BUCKET_RANGE);
+                if (index < 0)
+                    index = 0;
+                else if (index >= histogramData.length)
+                    index = histogramData.length - 1;
+
+                histogramData[index].y++;
+            }
+        }
+        return histogramData;
     }
 
     /**

@@ -163,7 +163,7 @@
     <string name="charger_tip_title_turn_on_airplane_mode">Turn on Airplane Mode</string>
     <string name="charger_tip_title_turn_on_airplane_mode_summary">The 3G/4G radio constantly scans for nearby base stations and is a large consumer of power in mobile devices.\n\nTap here to open wireless &amp; network settings and turn on airplane mode to charge your mobile device faster.</string>
     <string name="charger_tip_title_plug_directly_into_outlet">Plug Directly into an Outlet</string>
-    <string name="charger_tip_title_plug_directly_into_outlet_summary">A USB cable that is connected to an AC adapter that is plugged into a power outlet typically provides more charging power than a USB cable that is connected through a laptop or desktop. Use an AC adapter plugged into an outlet to charge your mobile device faster.</string>
+    <string name="charger_tip_title_plug_directly_into_outlet_summary">A USB cable that is plugged into a power outlet via an AC adapter typically provides more charging power than a USB cable that is connected through a laptop or desktop. Use an AC adapter plugged into an outlet to charge your mobile device faster.</string>
 
     <!-- Tutorial -->
     <string name="tutorial_welcome_title">Welcome to Battery Mentor</string>

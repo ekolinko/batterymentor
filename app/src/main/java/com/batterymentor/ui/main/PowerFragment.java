@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.batterymentor.R;
 import com.batterymentor.collectionmanager.CollectionManager;
 import com.batterymentor.collectionmanager.LifetimeCollectionTask;
+import com.batterymentor.constants.Constants;
 import com.batterymentor.constants.UIConstants;
 import com.batterymentor.datamanager.Histogram;
 import com.batterymentor.datamanager.RealtimeStatistics;
@@ -210,13 +211,13 @@ public class PowerFragment extends CommonFragment {
 
                     double powerValue = mHistogram.getAverage();
                     String value;
-                    if (powerValue <= 0 && isChargerConnected()) {
+                    if (powerValue <= 0 && !Double.isInfinite(powerValue) && isChargerConnected()) {
                         value = getString(R.string.not_charging);
                     } else {
                         if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.mA))) {
-                            value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue / voltage), getString(R.string.mA));
+                            value = Double.isInfinite(powerValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(powerValue / voltage) + Constants.SPACE + getString(R.string.mA);
                         } else {
-                            value = String.format(getString(R.string.value_units_template), mPowerFormatter.format(powerValue), getString(R.string.mW));
+                            value = Double.isInfinite(powerValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(powerValue) + Constants.SPACE +  getString(R.string.mW);
                         }
                     }
 
@@ -249,17 +250,17 @@ public class PowerFragment extends CommonFragment {
                         maxValue = -minValue + 0.0;
                         minValue = temp;
                     }
+                    String min, max;
                     if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.mA))) {
-                        String min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue / voltage);
-                        String max = Double.isInfinite(maxValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue / voltage);
-                        mMinValue.setText(String.format(getString(R.string.current_template), min));
-                        mMaxValue.setText(String.format(getString(R.string.current_template), max));
+                        min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue / voltage) + Constants.SPACE + getString(R.string.mA);
+                        max = Double.isInfinite(maxValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue / voltage) + Constants.SPACE + getString(R.string.mA);
+
                     } else {
-                        String min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue);
-                        String max = Double.isInfinite(maxValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue);
-                        mMinValue.setText(String.format(getString(R.string.power_template), min));
-                        mMaxValue.setText(String.format(getString(R.string.power_template), max));
+                        min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue) + Constants.SPACE + getString(R.string.mW);
+                        max = Double.isInfinite(maxValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue) + Constants.SPACE + getString(R.string.mW);
                     }
+                    mMinValue.setText(min);
+                    mMaxValue.setText(max);
                 }
             } else if (mPowerView != null) {
                 mPowerView.setText(getString(R.string.invalid_value));

@@ -54,7 +54,7 @@ public class Statistics implements Serializable, Histogram {
             double maxX = minX + DataConstants.HISTOGRAM_BUCKET_RANGE;
             mHistogramData[i] = new HistogramPoint(minX, maxX, 0);
         }
-        double maxX = DataConstants.HISTOGRAM_MIN_POWER;
+        double maxX = DataConstants.HISTOGRAM_MAX_POWER;
         mHistogramData[mHistogramData.length - 1] = new HistogramPoint(maxX, maxX, 0);
     }
 
@@ -88,7 +88,7 @@ public class Statistics implements Serializable, Histogram {
             return mTotal / mNumPoints;
         }
 
-        return 0;
+        return Double.POSITIVE_INFINITY;
     }
 
     /**
@@ -106,24 +106,10 @@ public class Statistics implements Serializable, Histogram {
     }
 
     /**
-     * Remove a point from the histogram.
-     */
-    public void removePointFromHistogram(Point point) {
-        double value = convertValue(point.getY());
-        int index = (int)((value - DataConstants.HISTOGRAM_MIN_POWER) / DataConstants.HISTOGRAM_BUCKET_RANGE);
-        if (index < 0)
-            index = 0;
-        else if (index >= mHistogramData.length)
-            index = mHistogramData.length - 1;
-
-        mHistogramData[index].y--;
-    }
-
-    /**
      * Convert the value depending on the type of statistics.
      */
     public double convertValue(double value) {
-        if (areChargerStatistics())
+        if (isChargerStatistics())
             return -value;
 
         return value;
@@ -182,7 +168,7 @@ public class Statistics implements Serializable, Histogram {
         return mNumPoints;
     }
 
-    public boolean areChargerStatistics() {
+    public boolean isChargerStatistics() {
         return mChargerStatistics;
     }
 

@@ -136,7 +136,7 @@ public class HistogramView extends View {
         float rangeY = maxY - minY;
 
         int width = getWidth() - (int)(mPadding*2);
-        int height = getHeight();
+        int height = getHeight() - (int)mPadding;
 
         double[] xs = new double[numPoints];
         double[] ys = new double[numPoints];
@@ -152,12 +152,12 @@ public class HistogramView extends View {
         path.moveTo(mPadding, (float) (height - spline.value(0)));
         float x = 0;
         while (x <= width) {
-            path.lineTo(x + mPadding, (float) (height - spline.value(x)));
+            path.lineTo(x + mPadding, (float) (height - spline.value(x) + mPadding));
             x += diff;
         }
-        path.lineTo(width + mPadding, height);
-        path.lineTo(mPadding, height);
-        path.lineTo(mPadding, maxY);
+        path.lineTo(width + mPadding, height + mPadding);
+        path.lineTo(mPadding, height + mPadding);
+        path.lineTo(mPadding, maxY + mPadding);
         mPaint.setColor(mFillColor);
         mPaint.setStyle(Paint.Style.FILL);
         canvas.drawPath(path, mPaint);

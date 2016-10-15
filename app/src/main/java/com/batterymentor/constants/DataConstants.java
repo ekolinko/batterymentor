@@ -8,7 +8,7 @@ public class DataConstants {
     /**
      * The size of the statistics queue that contains the most recent data.
      */
-    public static final int STATISTICS_RECENT_DATA_MAX_SIZE = 50;
+    public static final int STATISTICS_RECENT_DATA_MAX_SIZE = 30;
 
     /**
      * The percent of the spikes to drop. (0.10 = drop 10% of spikes, 0.20 = drop 20% of spikes,
@@ -19,7 +19,7 @@ public class DataConstants {
     /**
      * The number of points to be considered as part of the short term calculation.
      */
-    public static final int STATISTICS_RECENT_DATA_SIZE = 5;
+    public static final int STATISTICS_RECENT_DATA_SIZE = 7;
 
     /**
      * The number of buckets used for collecting histogram points.
