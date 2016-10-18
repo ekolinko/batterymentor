@@ -705,8 +705,8 @@ public class BatteryMentorActivity extends CommonActivity {
     }
 
     @Override
-    public void onBatteryLevelChanged(int level) {
-        super.onBatteryLevelChanged(level);
+    public void onBatteryLevelChangedUIThread(int level) {
+        super.onBatteryLevelChangedUIThread(level);
         if (mBatteryStatusMenuItem != null) {
             mBatteryStatusMenuItem.setTitle(String.format(getString(R.string.value_percent_template), Integer.toString(level)));
         }

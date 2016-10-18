@@ -41,6 +41,7 @@ public abstract class Sensor {
 
     /**
      * Create an initialize the sensor.
+     *
      * @return
      */
     public Sensor() {
@@ -129,7 +130,7 @@ public abstract class Sensor {
     /**
      * Read a value measurement from this sensor and scale it by the specified conversion factor.
      *
-     * @param filename the name of the file to measure from.
+     * @param filename         the name of the file to measure from.
      * @param conversionFactor the factor by which to scale the measurement.
      * @return a scaled value measurement from this sensor.
      */

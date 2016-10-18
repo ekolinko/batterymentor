@@ -71,6 +71,7 @@ public class DeviceConstants {
      */
     public static class Model {
         public static final String NEXUS_6 = "Nexus 6";
+        public static final String NEXUS_7 = "Nexus 7";
     }
 
     /**
@@ -79,6 +80,7 @@ public class DeviceConstants {
     public static class PowerFactor {
         public static final double DEFAULT = 1;
         public static final double NEXUS_6 = -1;
+        public static final double NEXUS_7 = -0.001;
     }
 
 }

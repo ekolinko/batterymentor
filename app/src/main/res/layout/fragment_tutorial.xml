@@ -18,7 +18,6 @@
         android:layout_below="@+id/powerbench_tutorial_text">
         <ImageView android:id="@+id/powerbench_tutorial_image"
             style="@style/powerbench_tutorial_image"
-            android:src="@drawable/tutorial_battery_256"
-            android:layout_alignParentTop="true" />
+            android:src="@drawable/tutorial_battery_tab" />
     </RelativeLayout>
 </RelativeLayout>

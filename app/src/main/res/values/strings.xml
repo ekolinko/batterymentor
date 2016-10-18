@@ -108,7 +108,7 @@
     <string name="realtime">Realtime</string>
     <string name="lifetime">Lifetime</string>
     <string name="charger_readings_not_supported_with_estimated_power_title">Charging Power not Supported</string>
-    <string name="charger_readings_not_supported_with_estimated_power_summary">Your mobile device does not support power measurements while charging, so the Battery and Screen Tabs will show inaccurate data. However, you can still view the tips to speedup charging to see some ways to charge your mobile device faster.</string>
+    <string name="charger_readings_not_supported_with_estimated_power_summary">Your mobile device does not support power measurements while charging. The Battery and Screen Tabs will show inaccurate data while the device is connected. You can still view the tips to speedup charging to see how you can charge your mobile device faster.</string>
     <!-- Process -->
     <string name="process_stop">STOP</string>
 

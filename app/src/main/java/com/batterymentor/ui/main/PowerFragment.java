@@ -211,7 +211,7 @@ public class PowerFragment extends CommonFragment {
 
                     double powerValue = mHistogram.getAverage();
                     String value;
-                    if (powerValue <= 0 && !Double.isInfinite(powerValue) && isChargerConnected()) {
+                    if ((powerValue <= 0 && !Double.isInfinite(powerValue)) && isChargerConnected()) {
                         value = getString(R.string.not_charging);
                     } else {
                         if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.mA))) {
@@ -245,11 +245,6 @@ public class PowerFragment extends CommonFragment {
                 if (mMinValue != null && mMaxValue != null) {
                     double minValue = mHistogram.getMin();
                     double maxValue = mHistogram.getMax();
-                    if (isChargerConnected()) {
-                        double temp = -maxValue + 0.0;
-                        maxValue = -minValue + 0.0;
-                        minValue = temp;
-                    }
                     String min, max;
                     if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.mA))) {
                         min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue / voltage) + Constants.SPACE + getString(R.string.mA);

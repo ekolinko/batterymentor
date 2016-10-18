@@ -155,7 +155,12 @@ public class BatteryModel {
             mForceUpdate = false;
         }
 
-        double power = mRealtimePower * mRealtimeWeight + mLifetimePower * mRealtimeCounterweight;
+        double power;
+        if (mCharging) {
+            power = mRealtimePower;
+        } else {
+            power = mRealtimePower * mRealtimeWeight + mLifetimePower * mRealtimeCounterweight;
+        }
         Model screenModel = getScreenModel();
         if (screenModel != null && mScreenBrightness != null) {
             if (mCharging) {
@@ -174,6 +179,9 @@ public class BatteryModel {
         mBatteryLife = (Device.getInstance().getBatteryCapacity(mContext) * Constants.MINUTES_IN_HOUR * batteryLevel) / (SensorConstants.BATTERY_LEVEL_FULL * power);
         if (mBatteryLife.isInfinite())
             mNextUpdateTime = 0;
+        if (mCharging && mRealtimePower < 0) {
+            mBatteryLife = -1d;
+        }
         notifyAllListenersOfModelChanged();
     }
 

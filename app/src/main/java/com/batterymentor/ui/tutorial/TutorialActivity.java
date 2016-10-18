@@ -144,15 +144,15 @@ public class TutorialActivity extends CommonActivity {
         boolean showTutorial = Settings.getInstance().getShowTutorial(this);
         if (showTutorial) {
             TutorialFragment welcomeFragment = new TutorialFragment();
-            welcomeFragment.setArguments(bundleArguments(R.string.tutorial_welcome_title, R.drawable.tutorial_welcome_256, R.string.tutorial_welcome_text));
+            welcomeFragment.setArguments(bundleArguments(R.string.tutorial_welcome_title, R.drawable.tutorial_welcome, R.string.tutorial_welcome_text));
             TutorialFragment realtimePowerFragment = new TutorialFragment();
-            realtimePowerFragment.setArguments(bundleArguments(R.string.tutorial_power_tab_title, R.drawable.tutorial_battery_256, R.string.tutorial_power_tab_text));
+            realtimePowerFragment.setArguments(bundleArguments(R.string.tutorial_power_tab_title, R.drawable.tutorial_battery_tab, R.string.tutorial_power_tab_text));
             TutorialFragment brightnessFragment = new TutorialFragment();
-            brightnessFragment.setArguments(bundleArguments(R.string.tutorial_screen_title, R.drawable.tutorial_screen_256, R.string.tutorial_screen_text));
+            brightnessFragment.setArguments(bundleArguments(R.string.tutorial_screen_title, R.drawable.tutorial_screen_tab, R.string.tutorial_screen_text));
             TutorialFragment tipsFragment = new TutorialFragment();
-            tipsFragment.setArguments(bundleArguments(R.string.tutorial_battery_tips_title, R.drawable.tutorial_battery_tips_256, R.string.tutorial_battery_tips_text));
+            tipsFragment.setArguments(bundleArguments(R.string.tutorial_battery_tips_title, R.drawable.tutorial_battery_tips, R.string.tutorial_battery_tips_text));
             TutorialFragment chargerFragment = new TutorialFragment();
-            chargerFragment.setArguments(bundleArguments(R.string.tutorial_charger_title, R.drawable.tutorial_charger_256, R.string.tutorial_charger_text));
+            chargerFragment.setArguments(bundleArguments(R.string.tutorial_charger_title, R.drawable.tutorial_charger, R.string.tutorial_charger_text));
             tutorialFragments.add(welcomeFragment);
             tutorialFragments.add(realtimePowerFragment);
             tutorialFragments.add(brightnessFragment);
@@ -162,7 +162,7 @@ public class TutorialActivity extends CommonActivity {
         mPermissionPagesShown = !Permissions.getInstance().isSettingsPermissionGranted(this);
         if (mPermissionPagesShown) {
             TutorialFragment settingsFragment = new TutorialFragment();
-            settingsFragment.setArguments(bundleArguments(R.string.tutorial_settings_title, R.drawable.tutorial_modify_system_settings_256, R.string.tutorial_settings_text));
+            settingsFragment.setArguments(bundleArguments(R.string.tutorial_settings_title, R.drawable.tutorial_modify_system_settings, R.string.tutorial_settings_text));
             tutorialFragments.add(settingsFragment);
         }
 

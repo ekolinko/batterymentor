@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.batterymentor"
-    android:versionCode="5"
-    android:versionName="0.0.0.31">
+    android:versionCode="6"
+    android:versionName="0.0.0.32">
     <!-- Used for changing brightness in brightness benchmark -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!-- Used for launching battery mentor on device start -->

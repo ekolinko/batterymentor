@@ -2,8 +2,6 @@ package com.batterymentor.datamanager;
 
 import com.batterymentor.constants.CollectionConstants;
 import com.batterymentor.constants.DataConstants;
-import com.batterymentor.model.ModelManager;
-import com.batterymentor.settings.Settings;
 
 import java.util.ArrayList;
 import java.util.Collections;

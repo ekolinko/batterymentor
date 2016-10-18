@@ -159,6 +159,8 @@ public class Device {
 
         if (Build.MODEL.equals(DeviceConstants.Model.NEXUS_6)) {
             conversionFactor = DeviceConstants.PowerFactor.NEXUS_6;
+        } else if (Build.MODEL.equals(DeviceConstants.Model.NEXUS_7)) {
+            conversionFactor = DeviceConstants.PowerFactor.NEXUS_7;
         }
 
         return conversionFactor * SensorConstants.MILLIAMPS_IN_MICROAMP;

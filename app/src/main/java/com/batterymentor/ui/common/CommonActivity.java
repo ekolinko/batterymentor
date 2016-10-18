@@ -344,13 +344,30 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
     }
 
     /**
-     * Method that indicates to all activities that inherit form this class that the battery level
+     * Method that indicates to all activities that inherit from this class that the battery level
      * has changed.
+     */
+    public void onBatteryLevelChanged(final int level) {
+        mChargerConnected = true;
+        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            onBatteryLevelChangedUIThread(level);
+        } else {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onBatteryLevelChangedUIThread(level);
+                }
+            });
+        }
+    }
+
+    /**
+     * Method that indicates to all activities that inherit form this class that the battery level
+     * has changed and is guaranteed to run on the main UI thread.
      *
      * @param level the new battery level.
      */
-    @Override
-    public void onBatteryLevelChanged(int level) {
+    public void onBatteryLevelChangedUIThread(int level) {
         mBatteryLevel = level;
     }
 
