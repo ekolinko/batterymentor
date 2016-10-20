@@ -114,7 +114,6 @@ public class CollectionTask {
         mContext = context;
         mSensor = sensor;
         mCollectionInterval = collectionInterval;
-        registerMeasurementListener(measurementListener);
         mBatteryStatistics = new RealtimeStatistics(false);
         mChargerStatistics = new RealtimeStatistics(true);
         mStatistics = mBatteryStatistics;
@@ -135,6 +134,7 @@ public class CollectionTask {
 
             }
         };
+        registerMeasurementListener(measurementListener);
     }
 
     /**
@@ -258,12 +258,16 @@ public class CollectionTask {
      * Measure the sensor immediately and notify all the associated listeners of the measurement.
      */
     public Point measureSensor() {
-        mPoint = mSensor.measurePoint();
-        if ((!isChargerConnected() || mStatistics == mBatteryStatistics) && mPoint.getY() < SensorConstants.BATTERY_POWER_MIN) {
-            mPoint.setY(SensorConstants.BATTERY_POWER_MIN);
+        if (mSensor != null) {
+            mPoint = mSensor.measurePoint();
+            if (mPoint != null) {
+                if ((!isChargerConnected() || mStatistics == mBatteryStatistics) && mPoint.getY() < SensorConstants.BATTERY_POWER_MIN) {
+                    mPoint.setY(SensorConstants.BATTERY_POWER_MIN);
+                }
+                mStatistics.addPoint(mPoint);
+                notifyAllListenersOfMeasurement(mPoint);
+            }
         }
-        mStatistics.addPoint(mPoint);
-        notifyAllListenersOfMeasurement(mPoint);
         return mPoint;
     }
 

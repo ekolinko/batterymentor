@@ -68,6 +68,8 @@
     <string name="charger_benchmark">Charger Benchmark</string>
     <string name="battery_life_remaining">Battery life remaining</string>
     <string name="battery_life_until_full">Until fully charged</string>
+    <string name="battery_life_not_supported">Charging power not supported</string>
+    <string name="battery_life_insufficient_charging_power">Insufficient charging power</string>
     <string name="battery_life_unknown">~</string>
     <string name="tab_battery">BATTERY</string>
     <string name="tab_screen">SCREEN</string>
@@ -107,10 +109,13 @@
     <string name="max">Max</string>
     <string name="realtime">Realtime</string>
     <string name="lifetime">Lifetime</string>
-    <string name="charger_readings_not_supported_with_estimated_power_title">Charging Power not Supported</string>
-    <string name="charger_readings_not_supported_with_estimated_power_summary">Your mobile device does not support power measurements while charging. The Battery and Screen Tabs will show inaccurate data while the device is connected. You can still view the tips to speedup charging to see how you can charge your mobile device faster.</string>
+    <string name="charger_readings_not_supported_with_estimated_power_title">Charging power not supported</string>
+    <string name="charger_readings_not_supported_with_estimated_power_summary">Your mobile device does not support power measurements while charging. You can still view the tips to speed up charging to see how you can charge your mobile device faster.</string>
     <!-- Process -->
     <string name="process_stop">STOP</string>
+
+    <!-- Promo -->
+    <string name="promo_battery_mentor_pro">For an ad-free experience, tap here to check out Battery Mentor Pro in Google Play.</string>
 
     <!-- Prototype -->
     <string name="prototype_running_applications">Running Applications</string>
@@ -123,7 +128,7 @@
     <string name="fully_charged">Fully Charged</string>
 
     <!-- Settings -->
-    <string name="settings_startup_with_device">Startup with Device</string>
+    <string name="settings_start_up_with_device">Start up with Device</string>
     <string name="settings_status_bar_units">Status Bar Units</string>
     <string name="settings_power_tab_units">Power Tab Units</string>
 
@@ -144,7 +149,7 @@
 
     <!-- Tips -->
     <string name="battery_tips">Tips to Save Battery</string>
-    <string name="charger_tips">Tips to Speedup Charging</string>
+    <string name="charger_tips">Tips to Speed Up Charging</string>
     <string name="battery_tip_title_run_screen_test">Run Screen Test</string>
     <string name="battery_tip_title_run_screen_test_summary">The screen is the largest consumer of power in mobile devices.\n\nTap here to run the screen test to see how screen brightness affects your battery life.</string>
     <string name="battery_tip_title_reduce_screen_brightness">Reduce Screen Brightness</string>
@@ -154,7 +159,7 @@
     <string name="battery_tip_title_use_wifi">Use Wi-Fi instead of Data</string>
     <string name="battery_tip_title_use_wifi_summary">Using Wi-Fi for browsing, checking e-mail, and other network activities consumes much less power than using cellular data.\n\nTap here to open the Wi-Fi manager and connect to a Wi-Fi network to improve battery life.</string>
     <string name="battery_tip_title_disable_location_services">Disable Location Services</string>
-    <string name="battery_tip_title_disable_location_services_summary">Some apps use location services even when closed and consume power in the background.\n\nTap here to open the location manager and either disable location services, use the battery saving mode, or force stop apps that have high battery use to improve battery life.</string>
+    <string name="battery_tip_title_disable_location_services_summary">Some apps use location services even when closed and consume power in the background.\n\nTap here to open the location manager and either disable location services, enable the battery saving mode, or force stop apps that have high battery usage to improve battery life.</string>
     <string name="charger_tip_title_try_different_chargers">Try Different Charging Cables</string>
     <string name="charger_tip_title_try_different_chargers_summary">USB cables and AC adapters from different vendors charge at different speeds. Typically, accessories bought directly from device manufacturers charge faster than accessories bought from third-party vendors.</string>
     <string name="charger_tip_title_try_different_chargers_summary_extra">\n\nTap here to open the Battery Tab and connect different chargers to see how fast they charge your mobile device. Please check to make sure your battery level is at 80% or less when evaluating a charger.</string>
@@ -171,11 +176,11 @@
     <string name="tutorial_power_tab_title">Battery Tab</string>
     <string name="tutorial_power_tab_text">See how much power your device is using in real-time and over the last 30 seconds. Tap on the graph to show the average power consumed since Battery Mentor was installed.</string>
     <string name="tutorial_screen_title">Screen Tab</string>
-    <string name="tutorial_screen_text">Run the screen test to measure the power consumed at different brightness levels. After two minutes, move the slider to see the impact of screen brightness on battery life.</string>
+    <string name="tutorial_screen_text">Run the screen test to measure the power consumed at different brightness levels (this option is not supported on devices that use estimated power). After the two minute test completes, move the slider to see the impact of screen brightness on battery life.</string>
     <string name="tutorial_battery_tips_title">Tips to Save Battery</string>
     <string name="tutorial_battery_tips_text">Discover how you can improve the battery life of your mobile device by sliding out the navigation drawer and selecting TIPS TO SAVE BATTERY.</string>
     <string name="tutorial_charger_title">Charging Speed</string>
-    <string name="tutorial_charger_text">Connect a charger at any time to see how fast it charges your device. Find out how to charge your device faster by sliding out the navigation drawer and selecting TIPS TO SPEEDUP CHARGING.</string>
+    <string name="tutorial_charger_text">Connect a charger at any time to see how fast it charges your device. Find out how to charge your device faster by sliding out the navigation drawer and selecting TIPS TO SPEED UP CHARGING.</string>
     <string name="tutorial_settings_title">System Settings</string>
     <string name="tutorial_settings_text">Battery Mentor needs permissions to access system settings for the Screen Tab to work properly. On the next screen, please allow Battery Mentor to modify system settings and press <b>Back</b> when you are done.</string>
 

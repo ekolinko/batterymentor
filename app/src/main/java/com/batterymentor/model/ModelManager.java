@@ -84,6 +84,10 @@ public class ModelManager implements ChargerManager.ChargerListener {
         ChargerManager.getInstance().registerChargerListener(context, this);
     }
 
+    public void unregister(Context context) {
+        ChargerManager.getInstance().unregisterChargerListener(context, this);
+    }
+
     public BatteryModel getBatteryModel(Context context) {
         if (mBatteryModel == null) {
             mBatteryModel = new BatteryModel(context);

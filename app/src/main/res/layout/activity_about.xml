@@ -3,11 +3,11 @@
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_centerInParent="true">
+        android:layout_above="@+id/promo_container">
         <ImageView android:layout_width="192dp"
             android:layout_height="192dp"
             android:src="@drawable/battery_mentor"/>
@@ -15,6 +15,27 @@
             android:text="@string/app_name" />
         <TextView android:id="@+id/about_version"
             style="@style/about_version" />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/promo_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/powerbench_ad"
+        android:drawable="@drawable/button_material"
+        android:orientation="vertical">
+        <View style="@style/divider_horizontal_gray"/>
+        <RelativeLayout android:id="@+id/promo_battery_mentor_pro"
+            style="@style/promo_container"
+            android:layout_above="@+id/powerbench_ad">
+            <ImageView android:id="@+id/battery_mentor_pro_icon"
+                style="@style/promo_icon"
+                android:src="@drawable/battery_mentor">
+            </ImageView>
+            <TextView style="@style/promo_text"
+                android:layout_toRightOf="@id/battery_mentor_pro_icon"
+                android:layout_centerVertical="true"
+                android:text="@string/promo_battery_mentor_pro"></TextView>
+        </RelativeLayout>
+        <View style="@style/divider_horizontal_gray"/>
     </LinearLayout>
     <com.google.android.gms.ads.AdView
         android:id="@+id/powerbench_ad"

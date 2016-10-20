@@ -348,7 +348,6 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
      * has changed.
      */
     public void onBatteryLevelChanged(final int level) {
-        mChargerConnected = true;
         if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
             onBatteryLevelChangedUIThread(level);
         } else {

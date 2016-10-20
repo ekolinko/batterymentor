@@ -36,6 +36,11 @@ public class DeviceConstants {
     public static final int BATTERY_TEST_NUM_POINTS = 10;
 
     /**
+     * The number of readings included in the device information.
+     */
+    public static final int DEVICE_INFORMATION_BATTERY_TEST_NUM_POINTS = 5;
+
+    /**
      * The amount of time between battery readings used to determine if the battery reading is
      * valid.
      */

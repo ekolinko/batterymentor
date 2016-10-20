@@ -69,6 +69,8 @@ public class ChargerManager {
      */
     private float mBatteryTemperature;
 
+
+
     private static class SingletonHolder {
         private static final ChargerManager INSTANCE = new ChargerManager();
     }
@@ -91,6 +93,7 @@ public class ChargerManager {
             mChargerReceiver = new ChargerReceiver();
             Intent batteryStatusIntent = mContext.registerReceiver(mChargerReceiver, batteryChangedFilter);
             handleBatteryStatusIntent(context, batteryStatusIntent);
+            mChargerReceiverRegistered = true;
         }
     }
 
@@ -133,6 +136,20 @@ public class ChargerManager {
         }
 
         if (mChargerReceiverRegistered && mChargerListeners.isEmpty()) {
+            context.unregisterReceiver(mChargerReceiver);
+            mChargerReceiverRegistered = false;
+        }
+    }
+
+    /**
+     * Unregister all charger listeners and unregister the charger receiver.
+     */
+    public void unregisterAllChargerListeners(Context context) {
+        synchronized (mChargerListeners) {
+            mChargerListeners.clear();
+        }
+
+        if (mChargerReceiverRegistered) {
             context.unregisterReceiver(mChargerReceiver);
             mChargerReceiverRegistered = false;
         }

@@ -24,9 +24,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.MobileAds;
 import com.batterymentor.R;
-import com.batterymentor.collectionmanager.ApplicationCollectionTask;
 import com.batterymentor.collectionmanager.CollectionManager;
 import com.batterymentor.collectionmanager.CollectionTask;
 import com.batterymentor.constants.Constants;
@@ -165,11 +163,6 @@ public class BatteryMentorActivity extends CommonActivity {
     private CollectionTask.MeasurementListener mMeasurementListener;
 
     /**
-     * The primary application collection task.
-     */
-    private ApplicationCollectionTask mApplicationCollectionTask;
-
-    /**
      * The handler used to measure the UI.
      */
     private Handler mHandler;
@@ -261,9 +254,7 @@ public class BatteryMentorActivity extends CommonActivity {
         };
 
         mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(this);
-        mApplicationCollectionTask = CollectionManager.getInstance().getApplicationCollectionTask(this);
         mPowerCollectionTask.start();
-        mApplicationCollectionTask.start();
         Device.getInstance().getBatteryCapacity(this);
     }
 
@@ -357,6 +348,7 @@ public class BatteryMentorActivity extends CommonActivity {
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                             getString(R.string.feedback_mailto),getString(R.string.feedback_email), null));
                     emailIntent.putExtra(Intent.EXTRA_SUBJECT, String.format(getString(R.string.feedback_subject_template), Device.getInstance().getAppVersion(BatteryMentorActivity.this)));
+                    emailIntent.putExtra(Intent.EXTRA_TEXT, Device.getInstance().getDeviceInformation(BatteryMentorActivity.this));
                     startActivity(Intent.createChooser(emailIntent, getString(R.string.feedback_dialog_title)));
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
@@ -460,16 +452,21 @@ public class BatteryMentorActivity extends CommonActivity {
         if (ChargerManager.getInstance().getBatteryLevel() == Constants.INT_PERCENT && isChargerConnected()) {
             value = getString(R.string.fully_charged);
             mBatteryLifeLabel.setVisibility(View.GONE);
+        } else if (Device.getInstance().isBatteryPowerEstimated() && isChargerConnected()) {
+            value = getString(R.string.charging);
+            mBatteryLifeLabel.setText(R.string.battery_life_not_supported);
         } else if (batteryLife <= 0 && isChargerConnected()) {
             value = getString(R.string.not_charging);
-            mBatteryLifeLabel.setVisibility(View.GONE);
+            mBatteryLifeLabel.setText(R.string.battery_life_insufficient_charging_power);
         } else if (batteryLife >= UIConstants.MAX_BATTERY_LIFE) {
             value = String.format(getString(R.string.value_units_template), getString(R.string.max_battery_life), getString(R.string.hours));
+            mBatteryLifeLabel.setText(isChargerConnected() ? getString(R.string.battery_life_until_full) : getString(R.string.battery_life_remaining));
             mBatteryLifeLabel.setVisibility(View.VISIBLE);
         } else if (Double.isInfinite(batteryLife)) {
             value = String.format(getString(R.string.value_units_template), getString(R.string.invalid_value), getString(R.string.hours));
             mBatteryLifeLabel.setVisibility(View.GONE);
         } else {
+            mBatteryLifeLabel.setText(isChargerConnected() ? getString(R.string.battery_life_until_full) : getString(R.string.battery_life_remaining));
             mBatteryLifeLabel.setVisibility(View.VISIBLE);
         }
         mBatteryLife.setText(value);
@@ -651,12 +648,12 @@ public class BatteryMentorActivity extends CommonActivity {
             getService().cancelNotification();
             getService().stopSelf();
         }
+        ChargerManager.getInstance().unregisterAllChargerListeners(this);
         super.finish();
     }
 
     @Override
     public void onDestroy() {
-        mApplicationCollectionTask.stop();
         if (getService() != null)
             getService().cancelNotification();
         super.onDestroy();
@@ -668,17 +665,13 @@ public class BatteryMentorActivity extends CommonActivity {
         for (CommonFragment tabFragment : mTabFragments) {
             tabFragment.onChargerConnected();
         }
-        if (mBatteryLifeLabel != null) {
-            mBatteryLifeLabel.setText(getString(R.string.battery_life_until_full));
-            if (getBatteryLevel() == Constants.INT_PERCENT)
-                mBatteryLifeLabel.setVisibility(View.GONE);
-        }
         if (mBatteryStatusMenuItem != null) {
             mBatteryStatusMenuItem.setIcon(R.drawable.battery_charging);
         }
         if (mBatteryLifeDetailsLabel != null) {
             mBatteryLifeDetailsLabel.setText(R.string.time_until_full);
         }
+        updateBatteryLife();
         updateBatteryDetails();
     }
 
@@ -687,10 +680,6 @@ public class BatteryMentorActivity extends CommonActivity {
         super.onChargerDisconnectedUIThread();
         for (CommonFragment tabFragment : mTabFragments) {
             tabFragment.onChargerDisconnected();
-        }
-        if (mBatteryLifeLabel != null) {
-            mBatteryLifeLabel.setText(getString(R.string.battery_life_remaining));
-            mBatteryLifeLabel.setVisibility(View.VISIBLE);
         }
         if (mBatteryStatusMenuItem != null) {
             mBatteryStatusMenuItem.setIcon(R.drawable.battery_discharging);
@@ -701,6 +690,7 @@ public class BatteryMentorActivity extends CommonActivity {
         if (mBatteryTipsButton != null) {
             mBatteryTipsButton.setText(R.string.battery_tips);
         }
+        updateBatteryLife();
         updateBatteryDetails();
     }
 

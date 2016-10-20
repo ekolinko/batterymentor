@@ -63,18 +63,17 @@ public class ChargingTipsActivity extends CommonActivity {
             String summary = getResources().getString(R.string.charger_tip_title_try_different_chargers_summary);
             if (!Device.getInstance().isBatteryPowerEstimated()) {
                 summary += getResources().getString(R.string.charger_tip_title_try_different_chargers_summary_extra);
+                summaryView.setText(summary);
+                mTryDifferentChargersButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent data = new Intent();
+                        data.setData(Uri.parse(UIConstants.POWER_TAB));
+                        setResult(RESULT_OK, data);
+                        finish();
+                    }
+                });
             }
-            summaryView.setText(summary);
-            mTryDifferentChargersButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent data = new Intent();
-                    data.setData(Uri.parse(UIConstants.POWER_TAB));
-                    setResult(RESULT_OK, data);
-                    finish();
-                }
-            });
-
         }
         mTurnOffScreenButton = (RelativeLayout)findViewById(R.id.charger_tip_turn_off_screen);
         mTurnOnAirplaneModeButton = (RelativeLayout)findViewById(R.id.charger_tip_turn_on_airplane_mode);

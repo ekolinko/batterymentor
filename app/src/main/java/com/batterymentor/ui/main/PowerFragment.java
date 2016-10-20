@@ -27,6 +27,7 @@ import com.batterymentor.ui.common.CommonFragment;
 import com.batterymentor.ui.common.HistogramView;
 import com.batterymentor.ui.theme.Theme;
 import com.batterymentor.ui.tips.BatteryTipsActivity;
+import com.batterymentor.ui.tips.ChargingTipsActivity;
 
 import java.text.DecimalFormat;
 
@@ -211,7 +212,9 @@ public class PowerFragment extends CommonFragment {
 
                     double powerValue = mHistogram.getAverage();
                     String value;
-                    if ((powerValue <= 0 && !Double.isInfinite(powerValue)) && isChargerConnected()) {
+                    if (Device.getInstance().isBatteryPowerEstimated() && isChargerConnected()) {
+                        value = getString(R.string.charging);
+                    } else if ((powerValue <= 0 && !Double.isInfinite(powerValue)) && isChargerConnected()) {
                         value = getString(R.string.not_charging);
                     } else {
                         if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.mA))) {
@@ -246,13 +249,18 @@ public class PowerFragment extends CommonFragment {
                     double minValue = mHistogram.getMin();
                     double maxValue = mHistogram.getMax();
                     String min, max;
-                    if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.mA))) {
-                        min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue / voltage) + Constants.SPACE + getString(R.string.mA);
-                        max = Double.isInfinite(maxValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue / voltage) + Constants.SPACE + getString(R.string.mA);
-
+                    if (Device.getInstance().isBatteryPowerEstimated() && isChargerConnected()) {
+                        min = getString(R.string.invalid_value);
+                        max = getString(R.string.invalid_value);
                     } else {
-                        min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue) + Constants.SPACE + getString(R.string.mW);
-                        max = Double.isInfinite(maxValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue) + Constants.SPACE + getString(R.string.mW);
+                        if (Settings.getInstance().getPowerTabUnits(getContext()).equals(getString(R.string.mA))) {
+                            min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue / voltage) + Constants.SPACE + getString(R.string.mA);
+                            max = Double.isInfinite(maxValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue / voltage) + Constants.SPACE + getString(R.string.mA);
+
+                        } else {
+                            min = Double.isInfinite(minValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(minValue) + Constants.SPACE + getString(R.string.mW);
+                            max = Double.isInfinite(maxValue) ? getString(R.string.invalid_value) : mPowerFormatter.format(maxValue) + Constants.SPACE + getString(R.string.mW);
+                        }
                     }
                     mMinValue.setText(min);
                     mMaxValue.setText(max);
@@ -370,7 +378,7 @@ public class PowerFragment extends CommonFragment {
                     .setPositiveButton(R.string.charger_tips, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            startActivityForResult(new Intent(getActivity(), BatteryTipsActivity.class), UIConstants.TAB_REQUEST_CODE);
+                            startActivityForResult(new Intent(getActivity(), ChargingTipsActivity.class), UIConstants.TAB_REQUEST_CODE);
                         }
                     })
                     .setNegativeButton(R.string.close, null)

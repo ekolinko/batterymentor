@@ -12,7 +12,7 @@
     <color name="gray">#9E9E9E</color>
     <color name="dark_gray">#616161</color>
     <color name="transparent">#00000000</color>
-    <color name="background">#FAFAFA</color>
+    <color name="background">@color/white</color>
 
     <!-- Button -->
     <color name="button_pressed">#22000000</color>

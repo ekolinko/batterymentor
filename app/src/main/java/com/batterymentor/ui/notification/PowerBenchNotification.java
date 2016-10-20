@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 import com.batterymentor.R;
 import com.batterymentor.constants.Constants;
 import com.batterymentor.constants.FlavorConstants;
 import com.batterymentor.constants.UIConstants;
+import com.batterymentor.device.Device;
 import com.batterymentor.model.ModelManager;
 import com.batterymentor.sensors.ChargerManager;
 import com.batterymentor.sensors.Sensor;
@@ -96,9 +98,11 @@ public class PowerBenchNotification {
             }
 
             ChargerManager chargerManager = ChargerManager.getInstance();
-            int batteryLevel = chargerManager.getBatteryLevel();
             boolean isChargerConnected = chargerManager.isCharging();
-            if (roundedValue <= 0 && isChargerConnected) {
+            if (Device.getInstance().isBatteryPowerEstimated() && isChargerConnected) {
+                message = context.getString(R.string.charging);
+                resourceId = R.drawable.notification_battery_life_charging;
+            } else if (roundedValue <= 0 && isChargerConnected) {
                 message = context.getString(R.string.not_charging);
                 resourceId = R.drawable.notification_battery_life_not_charging;
             } else {
@@ -114,6 +118,8 @@ public class PowerBenchNotification {
             boolean isChargerConnected = chargerManager.isCharging();
             if (batteryLevel == Constants.INT_PERCENT && isChargerConnected) {
                 resourceId = R.drawable.notification_is_full;
+            } else if (Device.getInstance().isBatteryPowerEstimated() && isChargerConnected) {
+                resourceId = R.drawable.notification_battery_life_charging;
             } else if (batteryLife <= 0 && isChargerConnected) {
                 resourceId = R.drawable.notification_battery_life_not_charging;
             } else if (batteryLife >= UIConstants.MAX_BATTERY_LIFE) {
@@ -130,6 +136,8 @@ public class PowerBenchNotification {
             }
             if (batteryLevel == Constants.INT_PERCENT && isChargerConnected) {
                 message = context.getString(R.string.fully_charged);
+            }  else if (Device.getInstance().isBatteryPowerEstimated() && isChargerConnected) {
+                message = context.getString(R.string.charging);
             } else if (batteryLife <= 0 && isChargerConnected) {
                 message = context.getString(R.string.not_charging);
             } else if (batteryLife >= UIConstants.MAX_BATTERY_LIFE) {
@@ -153,9 +161,11 @@ public class PowerBenchNotification {
             }
 
             ChargerManager chargerManager = ChargerManager.getInstance();
-            int batteryLevel = chargerManager.getBatteryLevel();
             boolean isChargerConnected = chargerManager.isCharging();
-            if (roundedValue <= 0 && isChargerConnected) {
+            if (Device.getInstance().isBatteryPowerEstimated() && isChargerConnected) {
+                message = context.getString(R.string.charging);
+                resourceId = R.drawable.notification_battery_life_charging;
+            } else if (roundedValue <= 0 && isChargerConnected) {
                 message = context.getString(R.string.not_charging);
                 resourceId = R.drawable.notification_battery_life_not_charging;
             } else {

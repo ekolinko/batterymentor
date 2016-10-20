@@ -3,8 +3,8 @@ package com.batterymentor.device;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.util.Log;
 
+import com.batterymentor.R;
 import com.batterymentor.constants.Constants;
 import com.batterymentor.constants.DeviceConstants;
 import com.batterymentor.constants.SensorConstants;
@@ -12,6 +12,7 @@ import com.batterymentor.sensors.ChargerManager;
 import com.batterymentor.sensors.Sensor;
 
 import java.io.File;
+import java.text.DecimalFormat;
 
 /**
  * Class that handles device information.
@@ -91,13 +92,9 @@ public class Device {
         }
 
         double total = 0;
-        for (int i = 0; i < DeviceConstants.BATTERY_TEST_NUM_POINTS; i++) {
-            total += Sensor.POWER.measureForBatterySupport();
-            try {
-                Thread.sleep(DeviceConstants.BATTERY_TEST_INTERVAL);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        double[] testPoints = getBatteryTestPoints(DeviceConstants.BATTERY_TEST_NUM_POINTS);
+        for (double testPoint : testPoints) {
+            total += testPoint;
         }
         double average = total / DeviceConstants.BATTERY_TEST_NUM_POINTS;
         if (ChargerManager.getInstance().isCharging()) {
@@ -105,6 +102,24 @@ public class Device {
         } else {
             return (average >= DeviceConstants.BATTERY_TEST_BATTERY_MIN && average <= DeviceConstants.BATTERY_TEST_BATTERY_MAX) ? BatterySupport.DEVICE : BatterySupport.ESTIMATE;
         }
+    }
+
+    /**
+     * Return the specified number of test measurements from the battery.
+     *
+     * @return the specified number of test measurements from the battery.
+     */
+    public double[] getBatteryTestPoints(int numPoints) {
+        double[] testPoints = new double[numPoints];
+        for (int i = 0; i < numPoints; i++) {
+            testPoints[i] = Sensor.POWER.measureForBatterySupport();
+            try {
+                Thread.sleep(DeviceConstants.BATTERY_TEST_INTERVAL);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return testPoints;
     }
 
     /**
@@ -164,5 +179,25 @@ public class Device {
         }
 
         return conversionFactor * SensorConstants.MILLIAMPS_IN_MICROAMP;
+    }
+
+    /**
+     * Return information about the device including the device manufacturer, model, OS version, and
+     * realtime power metrics.
+     *
+     * @return information about the device including the device manufacturer, model, OS version, and
+     * realtime power metrics.
+     */
+    public String getDeviceInformation(Context context) {
+        String deviceInformation = String.format(context.getString(R.string.device_manufacturer_template), Build.MANUFACTURER) + Constants.NEWLINE;
+        deviceInformation += String.format(context.getString(R.string.device_model_template), Build.MODEL) + Constants.NEWLINE;
+        deviceInformation += String.format(context.getString(R.string.device_operating_system_template), Build.VERSION.RELEASE) + Constants.NEWLINE + Constants.NEWLINE;
+//        DecimalFormat testPointFormatter = new DecimalFormat("#.##");
+//        StringBuilder testPointBuilder = new StringBuilder();
+//        for (double testPoint : getBatteryTestPoints(DeviceConstants.DEVICE_INFORMATION_BATTERY_TEST_NUM_POINTS)) {
+//            testPointBuilder.append(testPointFormatter.format(testPoint) + Constants.SPACE);
+//        }
+//        deviceInformation += String.format(context.getString(R.string.device_sample_data_template), testPointBuilder.toString());
+        return deviceInformation;
     }
 }

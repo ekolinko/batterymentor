@@ -6,10 +6,6 @@
     android:layout_gravity="start"
     android:orientation="vertical"
     android:background="@color/navigation_menu_background">
-    <Button android:id="@+id/button_about"
-        style="@style/navigation_button"
-        android:text="@string/navigation_about"
-        android:drawableLeft="@drawable/icon_about"/>
     <Button android:id="@+id/button_tutorial"
         style="@style/navigation_button"
         android:text="@string/navigation_tutorial"
@@ -30,6 +26,10 @@
         style="@style/navigation_button"
         android:text="@string/navigation_feedback"
         android:drawableLeft="@drawable/ic_mail_outline_white_24dp"/>
+    <Button android:id="@+id/button_about"
+        style="@style/navigation_button"
+        android:text="@string/navigation_about"
+        android:drawableLeft="@drawable/icon_about"/>
     <Button android:id="@+id/button_exit"
         style="@style/navigation_button"
         android:text="@string/navigation_exit"

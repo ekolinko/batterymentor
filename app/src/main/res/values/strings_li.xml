@@ -17,6 +17,12 @@
     <string name="uri_package">package</string>
     <string name="value_percent_template" formatted="false">%s%%</string>
 
+    <!-- Device Information -->
+    <string name="device_manufacturer_template" formatted="false">Manufacturer: %s</string>
+    <string name="device_model_template" formatted="false">Device Model: %s</string>
+    <string name="device_operating_system_template" formatted="false">OS: %s</string>
+    <string name="device_sample_data_template" formatted="false">Sample Data: %s</string>
+
     <!-- Feedback -->
     <string name="feedback_mailto">mailto</string>
     <string name="feedback_email">batterymentor.feedback@gmail.com</string>
@@ -28,6 +34,10 @@
     <string name="format_cpu">#0.0</string>
     <string name="format_duration">#0.0</string>
     <string name="format_model_coefficient">#0.0000</string>
+
+    <!-- Links -->
+    <string name="google_play_link_battery_mentor_pro">market://details?id=com.batterymentor.pro</string>
+    <string name="google_play_web_link_battery_mentor_pro">https://play.google.com/store/apps/details?id=com.batterymentor.pro</string>
 
     <!-- Symbols -->
     <string name="power_estimation_indicator">*</string>
