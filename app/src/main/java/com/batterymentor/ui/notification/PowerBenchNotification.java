@@ -57,7 +57,7 @@ public class PowerBenchNotification {
     public Notification createNotification(Context context) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.battery_mentor)
+                        .setSmallIcon(R.drawable.app_icon)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(context.getString(R.string.notification_measuring))
                         .setDeleteIntent(createOnDismissedIntent(context, FlavorConstants.NOTIFICATION_ID));

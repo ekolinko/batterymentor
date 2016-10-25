@@ -10,7 +10,7 @@
         android:layout_above="@+id/promo_container">
         <ImageView android:layout_width="192dp"
             android:layout_height="192dp"
-            android:src="@drawable/battery_mentor"/>
+            android:src="@drawable/app_icon"/>
         <TextView style="@style/about_name"
             android:text="@string/app_name" />
         <TextView android:id="@+id/about_version"
@@ -28,7 +28,7 @@
             android:layout_above="@+id/powerbench_ad">
             <ImageView android:id="@+id/battery_mentor_pro_icon"
                 style="@style/promo_icon"
-                android:src="@drawable/battery_mentor">
+                android:src="@drawable/battery_mentor_pro">
             </ImageView>
             <TextView style="@style/promo_text"
                 android:layout_toRightOf="@id/battery_mentor_pro_icon"

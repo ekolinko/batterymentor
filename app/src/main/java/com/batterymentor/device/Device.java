@@ -12,7 +12,6 @@ import com.batterymentor.sensors.ChargerManager;
 import com.batterymentor.sensors.Sensor;
 
 import java.io.File;
-import java.text.DecimalFormat;
 
 /**
  * Class that handles device information.

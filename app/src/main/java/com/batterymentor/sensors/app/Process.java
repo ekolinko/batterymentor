@@ -58,7 +58,7 @@ public class Process implements Comparable<Process> {
     private final RealtimeStatistics mStatistics = new RealtimeStatistics(false);
 
     public Process(Context context, int pid, String name) {
-        this(context, pid, name, context.getResources().getDrawable(R.drawable.battery_mentor));
+        this(context, pid, name, context.getResources().getDrawable(R.drawable.app_icon));
     }
 
     public Process(Context context, int pid, String name, Drawable icon) {

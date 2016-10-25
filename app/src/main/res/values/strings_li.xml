@@ -18,9 +18,9 @@
     <string name="value_percent_template" formatted="false">%s%%</string>
 
     <!-- Device Information -->
-    <string name="device_manufacturer_template" formatted="false">Manufacturer: %s</string>
+    <string name="device_manufacturer_template" formatted="false">Device Manufacturer: %s</string>
     <string name="device_model_template" formatted="false">Device Model: %s</string>
-    <string name="device_operating_system_template" formatted="false">OS: %s</string>
+    <string name="device_operating_system_template" formatted="false">Device OS: %s</string>
     <string name="device_sample_data_template" formatted="false">Sample Data: %s</string>
 
     <!-- Feedback -->

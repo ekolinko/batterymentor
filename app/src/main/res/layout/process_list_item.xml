@@ -3,7 +3,7 @@
     style="@style/process_container">
     <ImageView android:id="@+id/process_icon"
         style="@style/process_item"
-        android:src="@drawable/battery_mentor" />
+        android:src="@drawable/app_icon" />
     <RelativeLayout android:id="@+id/process_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

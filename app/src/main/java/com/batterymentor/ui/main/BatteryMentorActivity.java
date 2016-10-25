@@ -222,6 +222,14 @@ public class BatteryMentorActivity extends CommonActivity {
         mViewPager = (ViewPager) findViewById(R.id.powerbench_pager);
         mViewPager.setAdapter(mPagerAdapter);
         mBatteryLifeContainer = findViewById(R.id.battery_life_container);
+        if (mBatteryLifeContainer != null) {
+            mBatteryLifeContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showBatteryStatusDialog();
+                }
+            });
+        }
         mBatteryLife = (TextView) findViewById(R.id.battery_life);
         mBatteryLifeLabel = (TextView) findViewById(R.id.battery_life_label);
         mBatteryStatsShown = false;
@@ -477,6 +485,74 @@ public class BatteryMentorActivity extends CommonActivity {
     }
 
     /**
+     * Show the battery status dialog in the current theme.
+     */
+    private boolean showBatteryStatusDialog() {
+        LayoutInflater inflater = getLayoutInflater();
+        View batteryStatsView = inflater.inflate(R.layout.dialog_battery_stats, null);
+        mBatteryLifeDetailsLabel = (TextView) batteryStatsView.findViewById(R.id.label_battery_life);
+        if (mBatteryLifeDetailsLabel != null) {
+            if (isChargerConnected())
+                mBatteryLifeDetailsLabel.setText(R.string.time_until_full);
+            else
+                mBatteryLifeDetailsLabel.setText(R.string.battery_remaining);
+            mBatteryLifeDetailsLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+        }
+        mBatteryLifeDetails = (TextView) batteryStatsView.findViewById(R.id.value_battery_life);
+        if (mBatteryLifeDetails != null) {
+            mBatteryLifeDetails.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+            mBatteryLifeDetails.setText(mBatteryLifeValue);
+        }
+        TextView batteryStatusLabel = (TextView) batteryStatsView.findViewById(R.id.label_status);
+        if (batteryStatusLabel != null)
+            batteryStatusLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+        mBatteryStatus = (TextView) batteryStatsView.findViewById(R.id.value_status);
+        if (mBatteryStatus != null) {
+            mBatteryStatus.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+        }
+        TextView batteryLevelLabel = (TextView) batteryStatsView.findViewById(R.id.label_level);
+        if (batteryLevelLabel != null)
+            batteryLevelLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+        mBatteryLevel = (TextView) batteryStatsView.findViewById(R.id.value_level);
+        if (mBatteryLevel != null) {
+            mBatteryLevel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+        }
+        TextView batteryTemperatureLabel = (TextView) batteryStatsView.findViewById(R.id.label_temperature);
+        if (batteryTemperatureLabel != null)
+            batteryTemperatureLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+        mBatteryTemperature = (TextView) batteryStatsView.findViewById(R.id.value_temperature);
+        if (mBatteryTemperature != null) {
+            mBatteryTemperature.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+        }
+        TextView batteryVoltageLabel = (TextView) batteryStatsView.findViewById(R.id.label_voltage);
+        if (batteryVoltageLabel != null)
+            batteryVoltageLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+        mBatteryVoltage = (TextView) batteryStatsView.findViewById(R.id.value_voltage);
+        if (mBatteryVoltage != null) {
+            mBatteryVoltage.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
+        }
+        final boolean showChargingTips = isChargerConnected();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, getAppTheme().getDialogStyleResource()).setTitle(getString(R.string.battery_details))
+                .setView(batteryStatsView)
+                .setNegativeButton(R.string.close, null)
+                .setPositiveButton(showChargingTips ? R.string.charger_tips : R.string.battery_tips, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivityForResult(new Intent(BatteryMentorActivity.this, showChargingTips ? ChargingTipsActivity.class : BatteryTipsActivity.class), UIConstants.TAB_REQUEST_CODE);
+                    }
+                }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        mBatteryStatsShown = false;
+                    }
+                });
+        mBatteryStatsShown = true;
+        updateBatteryDetails();
+        builder.show();
+        return true;
+    }
+
+    /**
      * Apply the theme to this activity.
      */
     @Override
@@ -528,69 +604,7 @@ public class BatteryMentorActivity extends CommonActivity {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         } else if (item.getItemId() == R.id.menu_battery_status) {
-            LayoutInflater inflater = getLayoutInflater();
-            ChargerManager chargerManager = ChargerManager.getInstance();
-            View batteryStatsView = inflater.inflate(R.layout.dialog_battery_stats, null);
-            mBatteryLifeDetailsLabel = (TextView) batteryStatsView.findViewById(R.id.label_battery_life);
-            if (mBatteryLifeDetailsLabel != null) {
-                if (isChargerConnected())
-                    mBatteryLifeDetailsLabel.setText(R.string.time_until_full);
-                else
-                    mBatteryLifeDetailsLabel.setText(R.string.battery_remaining);
-                mBatteryLifeDetailsLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
-            }
-            mBatteryLifeDetails = (TextView) batteryStatsView.findViewById(R.id.value_battery_life);
-            if (mBatteryLifeDetails != null) {
-                mBatteryLifeDetails.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
-                mBatteryLifeDetails.setText(mBatteryLifeValue);
-            }
-            TextView batteryStatusLabel = (TextView) batteryStatsView.findViewById(R.id.label_status);
-            if (batteryStatusLabel != null)
-                batteryStatusLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
-            mBatteryStatus = (TextView) batteryStatsView.findViewById(R.id.value_status);
-            if (mBatteryStatus != null) {
-                mBatteryStatus.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
-            }
-            TextView batteryLevelLabel = (TextView) batteryStatsView.findViewById(R.id.label_level);
-            if (batteryLevelLabel != null)
-                batteryLevelLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
-            mBatteryLevel = (TextView) batteryStatsView.findViewById(R.id.value_level);
-            if (mBatteryLevel != null) {
-                mBatteryLevel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
-            }
-            TextView batteryTemperatureLabel = (TextView) batteryStatsView.findViewById(R.id.label_temperature);
-            if (batteryTemperatureLabel != null)
-                batteryTemperatureLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
-            mBatteryTemperature = (TextView) batteryStatsView.findViewById(R.id.value_temperature);
-            if (mBatteryTemperature != null) {
-                mBatteryTemperature.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
-            }
-            TextView batteryVoltageLabel = (TextView) batteryStatsView.findViewById(R.id.label_voltage);
-            if (batteryVoltageLabel != null)
-                batteryVoltageLabel.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
-            mBatteryVoltage = (TextView) batteryStatsView.findViewById(R.id.value_voltage);
-            if (mBatteryVoltage != null) {
-                mBatteryVoltage.setTextColor(ContextCompat.getColor(this, getAppTheme().getColorResource()));
-            }
-            final boolean showChargingTips = isChargerConnected();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, getAppTheme().getDialogStyleResource()).setTitle(getString(R.string.battery_details))
-                    .setView(batteryStatsView)
-                    .setNegativeButton(R.string.close, null)
-                    .setPositiveButton(showChargingTips ? R.string.charger_tips : R.string.battery_tips, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            startActivityForResult(new Intent(BatteryMentorActivity.this, showChargingTips ? ChargingTipsActivity.class : BatteryTipsActivity.class), UIConstants.TAB_REQUEST_CODE);
-                        }
-                    }).setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialogInterface) {
-                            mBatteryStatsShown = false;
-                        }
-                    });
-            mBatteryStatsShown = true;
-            updateBatteryDetails();
-            builder.show();
-            return true;
+            showBatteryStatusDialog();
         }
         return super.onOptionsItemSelected(item);
     }
