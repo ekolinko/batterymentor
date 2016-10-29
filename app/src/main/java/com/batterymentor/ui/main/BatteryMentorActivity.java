@@ -1,5 +1,6 @@
 package com.batterymentor.ui.main;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -191,6 +192,16 @@ public class BatteryMentorActivity extends CommonActivity {
      * The charging tips button.
      */
     private Button mChargingTipsButton;
+
+    /**
+     * The dialog that shows that estimated power is not supported while the device is charging.
+     */
+    private Dialog mEstimatedPowerNotSupportedDialog;
+
+    /**
+     * Flag indicating whether the estimated power not supported dialog is dismissed.
+     */
+    private boolean mEstimatedPowerNotSupportedDialogDismissed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -663,6 +674,8 @@ public class BatteryMentorActivity extends CommonActivity {
             getService().stopSelf();
         }
         ChargerManager.getInstance().unregisterAllChargerListeners(this);
+        if (mPowerCollectionTask != null)
+            mPowerCollectionTask.stop();
         super.finish();
     }
 
@@ -685,6 +698,26 @@ public class BatteryMentorActivity extends CommonActivity {
         if (mBatteryLifeDetailsLabel != null) {
             mBatteryLifeDetailsLabel.setText(R.string.time_until_full);
         }
+        if (Device.getInstance().isBatteryPowerEstimated() && !mEstimatedPowerNotSupportedDialogDismissed) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, getThemeManager().getCurrentTheme(this).getDialogStyleResource()).setTitle(getString(R.string.battery_details))
+                    .setTitle(R.string.charger_readings_not_supported_with_estimated_power_title)
+                    .setMessage(R.string.charger_readings_not_supported_with_estimated_power_summary)
+                    .setPositiveButton(R.string.charger_tips, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            startActivityForResult(new Intent(BatteryMentorActivity.this, ChargingTipsActivity.class), UIConstants.TAB_REQUEST_CODE);
+                        }
+                    })
+                    .setNegativeButton(R.string.close, null)
+                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                        }
+                    });
+            mEstimatedPowerNotSupportedDialog = builder.create();
+            mEstimatedPowerNotSupportedDialog.show();
+            mEstimatedPowerNotSupportedDialogDismissed = true;
+        }
         updateBatteryLife();
         updateBatteryDetails();
     }
@@ -704,6 +737,11 @@ public class BatteryMentorActivity extends CommonActivity {
         if (mBatteryTipsButton != null) {
             mBatteryTipsButton.setText(R.string.battery_tips);
         }
+        if (mEstimatedPowerNotSupportedDialog != null && mEstimatedPowerNotSupportedDialog.isShowing()) {
+            mEstimatedPowerNotSupportedDialog.dismiss();
+            mEstimatedPowerNotSupportedDialog = null;
+        }
+        mEstimatedPowerNotSupportedDialogDismissed = false;
         updateBatteryLife();
         updateBatteryDetails();
     }

@@ -177,6 +177,7 @@ public class ScreenFragment extends CommonFragment {
         mScreenBrightnessSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int brightness, boolean fromUser) {
+                Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
                 Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, brightness);
                 mBatteryModel.setScreenBrightness(brightness);
                 mSunView.setBrightness(brightness * Constants.PERCENT / BenchmarkConstants.MAX_BRIGHTNESS);

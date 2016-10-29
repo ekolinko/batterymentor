@@ -50,7 +50,7 @@ public class SettingsFragment extends PreferenceFragment {
             });
         }
         final Preference rerunScreenTestPreference = (Preference) findPreference(getString(R.string.settings_rerun_screen_test));
-        if (!Device.getInstance().isBatteryPowerEstimated() && ModelManager.getInstance().getBatteryModel(getContext()).getScreenModel() != null) {
+        if (!Device.getInstance().isBatteryPowerEstimated() && ModelManager.getInstance().getBatteryModel(getActivity()).getScreenModel() != null) {
             if (rerunScreenTestPreference != null) {
                 rerunScreenTestPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override

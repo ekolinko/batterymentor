@@ -34,6 +34,11 @@ public class ModelConstants {
     public static final long BATTERY_MODEL_UPDATE_INTERVAL = 60*Constants.SECOND;
 
     /**
+     * Interval at which the battery model should to be updated while charging.
+     */
+    public static final long CHARGING_MODEL_UPDATE_INTERVAL = 30*Constants.SECOND;
+
+    /**
      * Interval at which the battery model needs to be updated when the charger status changes.
      */
     public static final long BATTERY_MODEL_CHARGER_STATUS_CHANGE_UPDATE_INTERVAL = 10*Constants.SECOND;

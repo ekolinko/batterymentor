@@ -119,6 +119,11 @@ public class BrightnessBenchmark extends Benchmark {
         private int mInitialBrightness;
 
         /**
+         * The initial value for adaptive brightness.
+         */
+        private int mInitialAdaptiveBrightness;
+
+        /**
          * Flag indicating that the benchmark is running.
          */
         private boolean mBenchmarkRunning = false;
@@ -138,6 +143,7 @@ public class BrightnessBenchmark extends Benchmark {
             int brightness = BenchmarkConstants.MIN_BRIGHTNESS;
             try {
                 mInitialBrightness = Settings.System.getInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS);
+                mInitialAdaptiveBrightness = Settings.System.getInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE);
             } catch (Settings.SettingNotFoundException e) {
             }
             mBenchmarkRunning = true;
@@ -163,6 +169,7 @@ public class BrightnessBenchmark extends Benchmark {
                 }
             }
             Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS, mInitialBrightness);
+            Settings.System.putInt(mContentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, mInitialAdaptiveBrightness);
             if (!mStopped) {
                 lockData();
                 mBrightnessToPowerModel = new LinearModel(mBrightnessData);

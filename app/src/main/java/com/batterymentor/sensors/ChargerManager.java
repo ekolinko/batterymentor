@@ -70,7 +70,6 @@ public class ChargerManager {
     private float mBatteryTemperature;
 
 
-
     private static class SingletonHolder {
         private static final ChargerManager INSTANCE = new ChargerManager();
     }
@@ -119,6 +118,13 @@ public class ChargerManager {
             mChargerReceiver = new ChargerReceiver();
             Intent batteryStatusIntent = mContext.registerReceiver(mChargerReceiver, batteryChangedFilter);
             handleBatteryStatusIntent(context, batteryStatusIntent);
+        } else {
+            if (mCharging) {
+                chargerListener.onChargerConnected();
+            } else {
+                chargerListener.onChargerDisconnected();
+            }
+            chargerListener.onBatteryLevelChanged(mBatteryLevel);
         }
     }
 
@@ -158,7 +164,7 @@ public class ChargerManager {
     /**
      * Handle a battery status intent. Notify listeners if a charger is connected or disconnected.
      *
-     * @param context the context of the application.
+     * @param context             the context of the application.
      * @param batteryStatusIntent the battery status intent to handle.
      */
     public void handleBatteryStatusIntent(Context context, Intent batteryStatusIntent) {
@@ -175,7 +181,7 @@ public class ChargerManager {
             notifyAllListenersOfChargerDisconnected();
             mChargingStatus = mContext.getString(R.string.discharging);
         }
-        mBatteryTemperature = ((float)batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / SensorConstants.BATTERY_TEMPERATURE_CONVERSION_FACTOR;
+        mBatteryTemperature = ((float) batteryStatusIntent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / SensorConstants.BATTERY_TEMPERATURE_CONVERSION_FACTOR;
         notifyAllListenersOfBatteryLevelChanged(mBatteryLevel);
     }
 

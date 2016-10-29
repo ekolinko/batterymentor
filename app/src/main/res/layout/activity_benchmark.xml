@@ -26,6 +26,7 @@
             android:layout_alignLeft="@+id/benchmark_progress_bar"
             android:layout_alignRight="@+id/benchmark_progress_bar"
             android:layout_below="@+id/benchmark_progress_bar"
+            android:visibility="gone"
             android:text="@string/test_error_charger_connected"/>
         <!-- <TextView android:id="@+id/benchmark_progress_text_view"
             style="@style/benchmark_progress_text"

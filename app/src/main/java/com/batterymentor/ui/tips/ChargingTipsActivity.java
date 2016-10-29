@@ -1,9 +1,11 @@
 package com.batterymentor.ui.tips;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -12,6 +14,8 @@ import com.batterymentor.R;
 import com.batterymentor.constants.UIConstants;
 import com.batterymentor.device.Device;
 import com.batterymentor.ui.common.CommonActivity;
+import com.batterymentor.ui.theme.Theme;
+import com.batterymentor.ui.theme.ThemeManager;
 
 /**
  * The battery tips activity that shows tips for improving the battery life.
@@ -44,6 +48,7 @@ public class ChargingTipsActivity extends CommonActivity {
         setContentView(R.layout.activity_charging_tips);
         initialize();
         getSupportActionBar().setTitle(R.string.charger_tips);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, Theme.CHARGER_THEME.getActionBarColorResource())));
         setupButtons();
     }
 

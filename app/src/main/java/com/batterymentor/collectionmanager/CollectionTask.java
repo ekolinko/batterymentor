@@ -1,7 +1,6 @@
 package com.batterymentor.collectionmanager;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.batterymentor.constants.SensorConstants;
 import com.batterymentor.datamanager.Point;

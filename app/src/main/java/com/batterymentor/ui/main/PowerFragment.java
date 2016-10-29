@@ -1,8 +1,6 @@
 package com.batterymentor.ui.main;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -26,8 +24,6 @@ import com.batterymentor.settings.Settings;
 import com.batterymentor.ui.common.CommonFragment;
 import com.batterymentor.ui.common.HistogramView;
 import com.batterymentor.ui.theme.Theme;
-import com.batterymentor.ui.tips.BatteryTipsActivity;
-import com.batterymentor.ui.tips.ChargingTipsActivity;
 
 import java.text.DecimalFormat;
 
@@ -121,16 +117,6 @@ public class PowerFragment extends CommonFragment {
      * The time at which the next update should come.
      */
     private long mNextUpdateTime;
-
-    /**
-     * The dialog that shows that estimated power is not supported while the device is charging.
-     */
-    private Dialog mEstimatedPowerNotSupportedDialog;
-
-    /**
-     * Flag indicating whether the estimated power not supported dialog is dismissed.
-     */
-    private boolean mEstimatedPowerNotSupportedDialogDismissed = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -364,44 +350,5 @@ public class PowerFragment extends CommonFragment {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Notify the fragment of a connected charger.
-     */
-    public void onChargerConnected() {
-        super.onChargerConnected();
-        if (mCreated && Device.getInstance().isBatteryPowerEstimated() && !mEstimatedPowerNotSupportedDialogDismissed) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), mTheme.getDialogStyleResource()).setTitle(getString(R.string.battery_details))
-                    .setTitle(R.string.charger_readings_not_supported_with_estimated_power_title)
-                    .setMessage(R.string.charger_readings_not_supported_with_estimated_power_summary)
-                    .setPositiveButton(R.string.charger_tips, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            startActivityForResult(new Intent(getActivity(), ChargingTipsActivity.class), UIConstants.TAB_REQUEST_CODE);
-                        }
-                    })
-                    .setNegativeButton(R.string.close, null)
-                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialogInterface) {
-                        }
-                    });
-            mEstimatedPowerNotSupportedDialog = builder.create();
-            mEstimatedPowerNotSupportedDialog.show();
-            mEstimatedPowerNotSupportedDialogDismissed = true;
-        }
-    }
-
-    /**
-     * Notify the fragment of a disconnected charger.
-     */
-    public void onChargerDisconnected() {
-        super.onChargerDisconnected();
-        if (mEstimatedPowerNotSupportedDialog != null && mEstimatedPowerNotSupportedDialog.isShowing()) {
-            mEstimatedPowerNotSupportedDialog.dismiss();
-            mEstimatedPowerNotSupportedDialog = null;
-        }
-        mEstimatedPowerNotSupportedDialogDismissed = false;
     }
 }

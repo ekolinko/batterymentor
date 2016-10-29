@@ -133,12 +133,7 @@ public class BatteryModel {
      * @return true if the model needs updated, false otherwise.
      */
     public boolean needsUpdate() {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime > mNextUpdateTime) {
-            mNextUpdateTime = currentTime + ModelConstants.BATTERY_MODEL_UPDATE_INTERVAL;
-            return true;
-        }
-        return false;
+        return System.currentTimeMillis() > mNextUpdateTime;
     }
 
     public void updateModel() {
@@ -153,6 +148,7 @@ public class BatteryModel {
             mLifetimeBatteryAverage = powerCollectionTask.getBatteryLifetimeStatistics().getAverage();
             mLifetimeChargerAverage = powerCollectionTask.getChargerLifetimeStatistics().getAverage();
             mForceUpdate = false;
+            mNextUpdateTime = System.currentTimeMillis() + ((mCharging) ? ModelConstants.CHARGING_MODEL_UPDATE_INTERVAL : ModelConstants.BATTERY_MODEL_UPDATE_INTERVAL);
         }
 
         double power;
