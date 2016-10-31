@@ -16,6 +16,7 @@ import com.batterymentor.collectionmanager.LifetimeCollectionTask;
 import com.batterymentor.constants.Constants;
 import com.batterymentor.constants.FlavorConstants;
 import com.batterymentor.datamanager.Point;
+import com.batterymentor.model.ModelManager;
 import com.batterymentor.ui.notification.PowerBenchNotification;
 
 /**
@@ -26,7 +27,7 @@ import com.batterymentor.ui.notification.PowerBenchNotification;
 public class BatteryMentorService extends Service {
 
     /**
-     * Interface that allows clients to bind to the servic.e
+     * Interface that allows clients to bind to the service.
      */
     private IBinder mBinder = new BatteryMentorBinder();
 
@@ -73,6 +74,7 @@ public class BatteryMentorService extends Service {
         }
         mPowerCollectionTask = CollectionManager.getInstance().getPowerCollectionTask(this);
         mPowerCollectionTask.start();
+
         mMeasurementListener = new CollectionTask.MeasurementListener() {
             @Override
             public void onMeasurementReceived(Point point) {
@@ -82,6 +84,7 @@ public class BatteryMentorService extends Service {
         mPowerCollectionTask.registerMeasurementListener(mMeasurementListener);
         mNotificationDismissedReceiver = new NotificationDismissedReceiver();
         registerReceiver(mNotificationDismissedReceiver, new IntentFilter(Constants.NOTIFICATION_ACTION));
+        ModelManager.getInstance().initialize(this);
     }
 
     @Override
@@ -136,6 +139,9 @@ public class BatteryMentorService extends Service {
     @Override
     public void onDestroy() {
         unregisterReceiver(mNotificationDismissedReceiver);
+        if (mPowerCollectionTask != null) {
+            mPowerCollectionTask.stop();
+        }
     }
 
     /**

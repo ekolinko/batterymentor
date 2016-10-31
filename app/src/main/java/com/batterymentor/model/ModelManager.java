@@ -40,6 +40,11 @@ public class ModelManager implements ChargerManager.ChargerListener {
      */
     private Model mCpuFrequencyModel;
 
+    /**
+     * Flag indicating whether this manager has been initialized.
+     */
+    private boolean mInitialized = false;
+
     private static class SingletonHolder {
         private static final ModelManager INSTANCE = new ModelManager();
     }
@@ -57,31 +62,33 @@ public class ModelManager implements ChargerManager.ChargerListener {
      * @param context the context of the application.
      */
     public void initialize(Context context) {
-        Model model = loadModelFromStorage(context, ModelConstants.SCREEN_MODEL_FILENAME);
-        if (model instanceof LinearModel) {
-            LinearModel screenModel = (LinearModel) model;
-            if (screenModel != null) {
-                mScreenModel = screenModel;
-                getBatteryModel(context).setScreenModel(screenModel);
+        if (!mInitialized) {
+            Model model = loadModelFromStorage(context, ModelConstants.SCREEN_MODEL_FILENAME);
+            if (model instanceof LinearModel) {
+                LinearModel screenModel = (LinearModel) model;
+                if (screenModel != null) {
+                    mScreenModel = screenModel;
+                    getBatteryModel(context).setScreenModel(screenModel);
+                }
             }
-        }
-        model = loadModelFromStorage(context, ModelConstants.CPU_MODEL_FILENAME);
-        if (model instanceof LinearModel) {
-            LinearModel cpuModel = (LinearModel) model;
-            if (cpuModel != null) {
-                mCpuModel = cpuModel;
-                getBatteryModel(context).setCpuModel(cpuModel);
+            model = loadModelFromStorage(context, ModelConstants.CPU_MODEL_FILENAME);
+            if (model instanceof LinearModel) {
+                LinearModel cpuModel = (LinearModel) model;
+                if (cpuModel != null) {
+                    mCpuModel = cpuModel;
+                    getBatteryModel(context).setCpuModel(cpuModel);
+                }
             }
-        }
-        model = loadModelFromStorage(context, ModelConstants.CPU_FREQUENCY_MODEL_FILENAME);
-        if (model instanceof QuadraticModel) {
-            QuadraticModel frequencyModel = (QuadraticModel) model;
-            if (frequencyModel != null) {
-                mCpuFrequencyModel = frequencyModel;
-                getBatteryModel(context).setCpuFrequencyModel(frequencyModel);
+            model = loadModelFromStorage(context, ModelConstants.CPU_FREQUENCY_MODEL_FILENAME);
+            if (model instanceof QuadraticModel) {
+                QuadraticModel frequencyModel = (QuadraticModel) model;
+                if (frequencyModel != null) {
+                    mCpuFrequencyModel = frequencyModel;
+                    getBatteryModel(context).setCpuFrequencyModel(frequencyModel);
+                }
             }
+            ChargerManager.getInstance().registerChargerListener(context, this);
         }
-        ChargerManager.getInstance().registerChargerListener(context, this);
     }
 
     public void unregister(Context context) {
