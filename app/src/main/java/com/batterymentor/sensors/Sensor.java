@@ -93,16 +93,14 @@ public abstract class Sensor {
      * @return a point measurement from this sensor.
      */
     public synchronized Point measurePoint() {
-        Point point = null;
-        if (isSupported()) {
-            double timestamp = System.currentTimeMillis();
-            if (Math.abs(timestamp - mTimestamp) < SensorConstants.SENSOR_MINIMUM_MEASUREMENT_INTERVAL) {
-                point = new Point(timestamp, mValue);
-            } else {
-                mTimestamp = timestamp;
-                mValue = measure();
-                point = new Point(mTimestamp, mValue);
-            }
+        Point point;
+        double timestamp = System.currentTimeMillis();
+        if (Math.abs(timestamp - mTimestamp) < SensorConstants.SENSOR_MINIMUM_MEASUREMENT_INTERVAL) {
+            point = new Point(timestamp, mValue);
+        } else {
+            mTimestamp = timestamp;
+            mValue = measure();
+            point = new Point(mTimestamp, mValue);
         }
         return point;
     }

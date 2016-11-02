@@ -649,6 +649,11 @@ public class BatteryMentorActivity extends CommonActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         mBatteryStatusMenuItem = menu.findItem(R.id.menu_battery_status);
         if (mBatteryStatusMenuItem != null) {
+            if (isChargerConnected()) {
+                mBatteryStatusMenuItem.setIcon(R.drawable.battery_charging);
+            } else {
+                mBatteryStatusMenuItem.setIcon(R.drawable.battery_discharging);
+            }
             setTitle(String.format(getString(R.string.value_percent_template), Integer.toString(getBatteryLevel())));
         }
         return true;
