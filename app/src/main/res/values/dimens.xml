@@ -5,7 +5,7 @@
 
     <!-- Histogram View dimensions -->
     <dimen name="histogram_view_border_width">1dp</dimen>
-    <dimen name="histogram_view_padding">20dp</dimen>
+    <dimen name="histogram_view_padding">25dp</dimen>
 
     <!-- Sun View -->
     <dimen name="sun_view_padding">25dp</dimen>

@@ -56,17 +56,5 @@ public class Permissions {
             }
         }
         return true;
-//        if (ContextCompat.checkSelfPermission(activity,
-//                Manifest.permission.WRITE_SETTINGS)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-//                    Manifest.permission.READ_CONTACTS)) {
-//
-//            } else {
-//                ActivityCompat.requestPermissions(activity,
-//                        new String[]{ Manifest.permission.WRITE_SETTINGS },
-//                        DeviceConstants.PERMISSIONS_WRITE_SETTINGS);
-//            }
-//        }
     }
 }

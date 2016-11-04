@@ -119,12 +119,12 @@ public class ChargerManager {
             Intent batteryStatusIntent = mContext.registerReceiver(mChargerReceiver, batteryChangedFilter);
             handleBatteryStatusIntent(context, batteryStatusIntent);
         } else {
+            chargerListener.onBatteryLevelChanged(mBatteryLevel);
             if (mCharging) {
                 chargerListener.onChargerConnected();
             } else {
                 chargerListener.onChargerDisconnected();
             }
-            chargerListener.onBatteryLevelChanged(mBatteryLevel);
         }
     }
 

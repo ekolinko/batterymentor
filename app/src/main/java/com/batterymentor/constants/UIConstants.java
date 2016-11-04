@@ -71,6 +71,12 @@ public class UIConstants {
     public static int NOTIFICATION_BATTERY_LIFE_SCALING_FACTOR = 6;
 
     /**
+     * The key indicating that the modify system settings activity was closed.
+     */
+    public static final String MODIFY_SYSTEM_SETTINGS_CLOSED = "com.powerbench.modifySystemSettingsClosed";
+
+
+    /**
      * The key indicating that the app should close.
      */
     public static final String CLOSE_APP = "com.powerbench.closeApp";

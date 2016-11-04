@@ -89,12 +89,12 @@
     <string name="power_title_lifetime_charger_speed">Charger Connected</string>
     <string name="power_hint_realtime_battery_usage">(Tap to switch to lifetime power)</string>
     <string name="power_hint_realtime_charger_speed">(Tap to switch to lifetime power)</string>
-    <string name="power_hint_lifetime_battery_usage">(Tap to switch to realtime power)</string>
-    <string name="power_hint_lifetime_charger_speed">(Tap to switch to realtime power)</string>
+    <string name="power_hint_lifetime_battery_usage">(Tap to switch to real-time power)</string>
+    <string name="power_hint_lifetime_charger_speed">(Tap to switch to real-time power)</string>
     <string name="power_battery_level">BATTERY LEVEL</string>
     <string name="power_charging_status">CHARGING STATUS</string>
     <string name="power_battery_temperature">BATTERY TEMPERATURE</string>
-    <string name="power_battery_min_max">REALTIME\nMIN/MAX</string>
+    <string name="power_battery_min_max">REAL-TIME\nMIN/MAX</string>
     <string name="power_charging_rate">CHARGING RATE</string>
     <string name="power_discharging_rate">DISCHARGING RATE</string>
     <string name="value_celsius_template" formatted="false">%s\u2103</string>
@@ -103,14 +103,16 @@
     <string name="max_battery_life">20+</string>
     <string name="dialog_reset_lifetime_statistics_title">Reset Lifetime Statistics</string>
     <string name="dialog_reset_lifetime_statistics_message">Reset lifetime statistics?</string>
-    <string name="dialog_reset_realtime_statistics_title">Reset Realtime Statistics</string>
-    <string name="dialog_reset_realtime_statistics_message">Reset realtime statistics?</string>
+    <string name="dialog_reset_realtime_statistics_title">Reset Real-time Statistics</string>
+    <string name="dialog_reset_realtime_statistics_message">Reset real-time statistics?</string>
     <string name="min">Min</string>
     <string name="max">Max</string>
-    <string name="realtime">Realtime</string>
+    <string name="realtime">Real-time</string>
     <string name="lifetime">Lifetime</string>
+    <string name="count">Count</string>
     <string name="charger_readings_not_supported_with_estimated_power_title">Charging power not supported</string>
     <string name="charger_readings_not_supported_with_estimated_power_summary">Your mobile device does not support power measurements while charging. You can still view the tips to speed up charging to see how you can charge your mobile device faster.</string>
+
     <!-- Process -->
     <string name="process_stop">STOP</string>
 
@@ -174,14 +176,14 @@
     <string name="tutorial_welcome_title">Welcome to Battery Mentor</string>
     <string name="tutorial_welcome_text">Battery Mentor is a powerful battery monitor designed to help you improve battery life and charge your mobile device faster.</string>
     <string name="tutorial_power_tab_title">Battery Tab</string>
-    <string name="tutorial_power_tab_text">See how much power your device is using in real-time and over the last 30 seconds. Tap on the graph to show the average power consumed since Battery Mentor was installed.</string>
+    <string name="tutorial_power_tab_text">See how much power your device is using in real-time. Use the graph to see the power usage over the last 30 seconds as a histogram distribution curve. Tap on the graph to show the power consumed since Battery Mentor was installed.</string>
     <string name="tutorial_screen_title">Screen Tab</string>
     <string name="tutorial_screen_text">Run the screen test to measure the power consumed at different brightness levels (this option is not supported on devices that use estimated power). After the two minute test completes, move the slider to see the impact of screen brightness on battery life.</string>
     <string name="tutorial_battery_tips_title">Tips to Save Battery</string>
     <string name="tutorial_battery_tips_text">Discover how you can improve the battery life of your mobile device by sliding out the navigation drawer and selecting TIPS TO SAVE BATTERY.</string>
     <string name="tutorial_charger_title">Charging Speed</string>
     <string name="tutorial_charger_text">Connect a charger at any time to see how fast it charges your device. Find out how to charge your device faster by sliding out the navigation drawer and selecting TIPS TO SPEED UP CHARGING.</string>
-    <string name="tutorial_settings_title">System Settings</string>
-    <string name="tutorial_settings_text">Battery Mentor needs permissions to access system settings for the Screen Tab to work properly. On the next screen, please allow Battery Mentor to modify system settings and press <b>Back</b> when you are done.</string>
+    <string name="tutorial_permissions_title">System Permissions</string>
+    <string name="tutorial_permissions_text">Battery Mentor needs permissions to modify system settings for the Screen Tab to work properly. On the next screen, please allow Battery Mentor to modify system settings and press <b>Back</b> when you are done.</string>
 
 </resources>

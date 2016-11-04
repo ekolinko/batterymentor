@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import com.batterymentor.constants.BenchmarkConstants;
 import com.batterymentor.constants.Constants;
 import com.batterymentor.model.Model;
+import com.batterymentor.sensors.ChargerManager;
 
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
@@ -63,13 +64,16 @@ public abstract class Benchmark {
         mContext = context;
         mDuration = duration;
         mBenchmarkTimer = new BenchmarkTimer(mDuration + BenchmarkConstants.BASE_DURATION);
+        mChargerConnected = ChargerManager.getInstance().isCharging();
     }
 
     /**
      * Start running the benchmark.
      */
     public void start() {
-        mBenchmarkTimer.start();
+        if (!mChargerConnected) {
+            mBenchmarkTimer.start();
+        }
     }
 
     /**
@@ -82,14 +86,18 @@ public abstract class Benchmark {
      * Resume the benchmark.
      */
     public void resume() {
-        mBenchmarkTimer.resume();
+        if (!mChargerConnected) {
+            mBenchmarkTimer.resume();
+        }
     }
 
     /**
      * Pause the benchmark.
      */
     public void pause() {
-        mBenchmarkTimer.pause();
+        if (!mChargerConnected) {
+            mBenchmarkTimer.pause();
+        }
     }
 
     /**

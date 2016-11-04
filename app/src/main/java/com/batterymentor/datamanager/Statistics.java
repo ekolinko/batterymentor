@@ -1,6 +1,7 @@
 package com.batterymentor.datamanager;
 
 import com.batterymentor.constants.DataConstants;
+import com.batterymentor.constants.SensorConstants;
 
 import java.io.Serializable;
 
@@ -109,8 +110,11 @@ public class Statistics implements Serializable, Histogram {
      * Convert the value depending on the type of statistics.
      */
     public double convertValue(double value) {
-        if (isChargerStatistics())
+        if (isChargerStatistics()) {
             return -value;
+        } else if (value < SensorConstants.BATTERY_POWER_MIN) {
+            value = SensorConstants.BATTERY_POWER_MIN;
+        }
 
         return value;
     }
@@ -149,6 +153,13 @@ public class Statistics implements Serializable, Histogram {
         mMax = Double.NEGATIVE_INFINITY;
         mTotal = 0;
         mNumPoints = 0;
+        for (int i = 0; i < mHistogramData.length - 1; i++) {
+            double minX = DataConstants.HISTOGRAM_MIN_POWER + i * DataConstants.HISTOGRAM_BUCKET_RANGE;
+            double maxX = minX + DataConstants.HISTOGRAM_BUCKET_RANGE;
+            mHistogramData[i] = new HistogramPoint(minX, maxX, 0);
+        }
+        double maxX = DataConstants.HISTOGRAM_MAX_POWER;
+        mHistogramData[mHistogramData.length - 1] = new HistogramPoint(maxX, maxX, 0);
     }
 
     @Override

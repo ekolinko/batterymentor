@@ -56,7 +56,7 @@ public class RealtimeStatistics extends Statistics {
      * @param point the point to add to the statistics.
      */
     public void addPoint(Point point) {
-        if (point == null)
+        if (point == null || Double.isInfinite(point.getY()))
             return;
 
         synchronized (mRecentData) {

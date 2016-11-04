@@ -109,6 +109,20 @@ public class LifetimeCollectionTask extends CollectionTask {
     }
 
     /**
+     * Save persistent battery lifetime statistics to storage.
+     */
+    public void saveBatteryLifetimeStatisticsToStorage() {
+        saveLifetimeStatisticsToStorage(getContext(), mBatteryFilename, mLifetimeBatteryStatistics);
+    }
+
+    /**
+     * Save persistent charger lifetime statistics to storage.
+     */
+    public void saveChargerLifetimeStatisticsToStorage() {
+        saveLifetimeStatisticsToStorage(getContext(), mChargerFilename, mLifetimeChargerStatistics);
+    }
+
+    /**
      * Save persistent lifetime statistics to the specified file in storage.
      */
     public void saveLifetimeStatisticsToStorage(Context context, String filename, Statistics statistics) {
@@ -215,8 +229,8 @@ public class LifetimeCollectionTask extends CollectionTask {
     class SaverThread implements Runnable {
         @Override
         public void run() {
-            saveLifetimeStatisticsToStorage(getContext(), mBatteryFilename, mLifetimeBatteryStatistics);
-            saveLifetimeStatisticsToStorage(getContext(), mChargerFilename, mLifetimeChargerStatistics);
+            saveBatteryLifetimeStatisticsToStorage();
+            saveChargerLifetimeStatisticsToStorage();
             mHandler.postDelayed(mSaverThread, SensorConstants.PERSISTENT_SAVE_INTERVAL);
         }
     }

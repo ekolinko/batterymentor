@@ -14,7 +14,6 @@ import com.batterymentor.R;
 import com.batterymentor.constants.Constants;
 import com.batterymentor.constants.DeviceConstants;
 import com.batterymentor.constants.UIConstants;
-import com.batterymentor.device.Permissions;
 import com.batterymentor.settings.Settings;
 import com.batterymentor.ui.common.CommonActivity;
 import com.batterymentor.ui.common.CommonFragment;
@@ -44,11 +43,6 @@ public class TutorialActivity extends CommonActivity {
     private PagerAdapter mPagerAdapter;
 
     /**
-     * Flag indicating that the permission pages are shown.
-     */
-    private boolean mPermissionPagesShown;
-
-    /**
      * The skip button.
      */
     private Button mSkipButton;
@@ -72,11 +66,7 @@ public class TutorialActivity extends CommonActivity {
         mSkipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPermissionPagesShown) {
-                    mViewPager.setCurrentItem(numPages - 1);
-                } else {
-                    finishAndSetShowTutorialFalse();
-                }
+                finishAndSetShowTutorialFalse();
             }
         });
         if (numPages <= 1) {
@@ -89,7 +79,7 @@ public class TutorialActivity extends CommonActivity {
                 int currentItem = mViewPager.getCurrentItem();
                 if (currentItem < numPages - 1) {
                     mViewPager.setCurrentItem(currentItem + 1);
-                } else if (Permissions.getInstance().requestSettingsPermission(TutorialActivity.this)) {
+                } else {
                     finishAndSetShowTutorialFalse();
                 }
             }
@@ -104,15 +94,12 @@ public class TutorialActivity extends CommonActivity {
                 // There are two pages at the end of the carousel that cannot be skipped
                 // when permissions need to be set
                 int numNoSkipPages = 1;
-                if (mPermissionPagesShown) {
-                    numNoSkipPages = 1;
-                }
                 if (position >= numPages - numNoSkipPages) {
                     mSkipButton.setVisibility(View.INVISIBLE);
                 } else {
                     mSkipButton.setVisibility(View.VISIBLE);
                 }
-                if (!mPermissionPagesShown && position == numPages - 1) {
+                if (position == numPages - 1) {
                     mNextButton.setText(getString(R.string.finish));
                 } else {
                     mNextButton.setText(getString(R.string.next));
@@ -159,12 +146,6 @@ public class TutorialActivity extends CommonActivity {
             tutorialFragments.add(tipsFragment);
             tutorialFragments.add(chargerFragment);
         }
-        mPermissionPagesShown = !Permissions.getInstance().isSettingsPermissionGranted(this);
-        if (mPermissionPagesShown) {
-            TutorialFragment settingsFragment = new TutorialFragment();
-            settingsFragment.setArguments(bundleArguments(R.string.tutorial_settings_title, R.drawable.tutorial_modify_system_settings, R.string.tutorial_settings_text));
-            tutorialFragments.add(settingsFragment);
-        }
 
         return tutorialFragments.toArray(new TutorialFragment[0]);
     }
@@ -181,12 +162,6 @@ public class TutorialActivity extends CommonActivity {
         return bundle;
     }
 
-    protected void onPermissionGranted(int permission) {
-        if (permission == DeviceConstants.PERMISSIONS_WRITE_SETTINGS) {
-            finishAndSetShowTutorialFalse();
-        }
-    }
-
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
@@ -197,16 +172,6 @@ public class TutorialActivity extends CommonActivity {
 
     @Override
     protected void applyTheme(Theme theme) {
-//        super.applyTheme(theme);
-//        if (mNextButton != null) {
-//            mNextButton.setTextColor(ContextCompat.getColor(this, theme.getColorResource()));
-//        }
-//        if (mSkipButton != null) {
-//            mSkipButton.setTextColor(ContextCompat.getColor(this, theme.getColorResource()));
-//        }
-//        for (TutorialFragment tutorialFragment : mTutorialFragments) {
-//            tutorialFragment.applyTheme(theme);
-//        }
     }
 
     /**

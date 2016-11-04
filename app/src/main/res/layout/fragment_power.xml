@@ -66,9 +66,21 @@
     <com.batterymentor.ui.common.HistogramView
         android:id="@+id/powerbench_power_histogram"
         style="@style/powerbench_power_histogram"
-        android:padding="20dp"
         android:layout_below="@id/powerbench_power_value_container"
         android:layout_above="@+id/powerbench_power_histogram_axis" />
+    <LinearLayout android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/powerbench_power_value_container"
+        android:layout_above="@+id/powerbench_power_histogram_axis">
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/powerbench_power_histogram_y_axis_title"
+            android:layout_gravity="center"
+            android:layout_marginLeft="-5dp"
+            android:rotation="270"
+            android:singleLine="true"
+            android:text="@string/count" />
+    </LinearLayout>
     <TextView android:id="@+id/powerbench_power_hint"
         style="@style/powerbench_power_hint"
         android:layout_alignTop="@+id/powerbench_power_histogram" />
@@ -76,6 +88,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:layout_above="@+id/powerbench_power_histogram_axis_title">
         <TextView android:layout_width="40dp"
             style="@style/powerbench_power_histogram_axis_label"

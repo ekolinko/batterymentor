@@ -66,11 +66,8 @@ public class PowerBenchNotification {
         stackBuilder.addParentStack(BatteryMentorActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         Intent intent = new Intent(context, BatteryMentorActivity.class);
-        intent.addCategory(Intent.ACTION_MAIN);
+        intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setClass(context, BatteryMentorActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT|
-                Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
@@ -181,11 +178,8 @@ public class PowerBenchNotification {
         }
 
         Intent intent = new Intent(context, BatteryMentorActivity.class);
-        intent.addCategory(Intent.ACTION_MAIN);
+        intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setClass(context, BatteryMentorActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT|
-                Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder mBuilder =

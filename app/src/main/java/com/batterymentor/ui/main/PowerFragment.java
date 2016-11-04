@@ -146,6 +146,13 @@ public class PowerFragment extends CommonFragment {
                                     public void onClick(DialogInterface dialog, int id) {
                                         Statistics lifetimeStatistics = mCollectionTask.getLifetimeStatistics();
                                         lifetimeStatistics.reset();
+                                        if (mCollectionTask != null) {
+                                            if (isChargerConnected()) {
+                                                mCollectionTask.saveChargerLifetimeStatisticsToStorage();
+                                            } else {
+                                                mCollectionTask.saveBatteryLifetimeStatisticsToStorage();
+                                            }
+                                        }
                                         updatePowerViews(true);
                                     }
                                 })

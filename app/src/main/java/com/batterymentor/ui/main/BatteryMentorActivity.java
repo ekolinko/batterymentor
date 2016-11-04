@@ -44,6 +44,7 @@ import com.batterymentor.ui.settings.SettingsActivity;
 import com.batterymentor.ui.theme.Theme;
 import com.batterymentor.ui.tips.BatteryTipsActivity;
 import com.batterymentor.ui.tips.ChargingTipsActivity;
+import com.batterymentor.ui.tutorial.SystemPermissionsActivity;
 import com.batterymentor.ui.tutorial.TutorialActivity;
 import com.batterymentor.utils.Utils;
 
@@ -207,7 +208,7 @@ public class BatteryMentorActivity extends CommonActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boolean showTutorialActivity = Settings.getInstance().getShowTutorial(this) || !Permissions.getInstance().isSettingsPermissionGranted(this);
+        boolean showTutorialActivity = Settings.getInstance().getShowTutorial(this);
         if (showTutorialActivity) {
             startActivityForResult(new Intent(this, TutorialActivity.class), UIConstants.TUTORIAL_REQUEST_CODE);
         }
@@ -441,7 +442,11 @@ public class BatteryMentorActivity extends CommonActivity {
 
             @Override
             public void onPageSelected(int position) {
-                updateTabs(position);
+                if (position == UIConstants.SCREEN_TAB_INDEX && !Permissions.getInstance().isSettingsPermissionGranted(BatteryMentorActivity.this)) {
+                    startActivityForResult(new Intent(BatteryMentorActivity.this, SystemPermissionsActivity.class), UIConstants.TAB_REQUEST_CODE);
+                } else {
+                    updateTabs(position);
+                }
             }
 
             @Override
@@ -593,8 +598,13 @@ public class BatteryMentorActivity extends CommonActivity {
      * Refresh all the tab fragments that are part of this view.
      */
     private void refreshFragments() {
-        for (CommonFragment tabFragment : mTabFragments) {
-            tabFragment.refresh();
+        if (mViewPager != null && mViewPager.getCurrentItem() == UIConstants.SCREEN_TAB_INDEX
+                && !Permissions.getInstance().isSettingsPermissionGranted(BatteryMentorActivity.this)) {
+            mViewPager.setCurrentItem(UIConstants.POWER_TAB_INDEX);
+        } else {
+            for (CommonFragment tabFragment : mTabFragments) {
+                tabFragment.refresh();
+            }
         }
     }
 

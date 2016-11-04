@@ -13,8 +13,6 @@ import com.batterymentor.device.Device;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Class that represents a battery model.
@@ -105,11 +103,6 @@ public class BatteryModel {
      * The realtime battery average used for estimating battery life.
      */
     private double mLifetimeChargerAverage;
-
-    /**
-     * The timer used to schedule update operations.
-     */
-    private Timer mTimer;
 
     /**
      * The set of charger listeners.
@@ -232,18 +225,7 @@ public class BatteryModel {
         mCharging = isCharging;
         mForceUpdate = true;
         updateModel();
-        if (mTimer != null) {
-            mTimer.cancel();
-        }
-        mTimer = new Timer();
-        mTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mTimer = null;
-                mForceUpdate = true;
-                updateModel();
-            }
-        }, ModelConstants.BATTERY_MODEL_CHARGER_STATUS_CHANGE_UPDATE_INTERVAL);
+        mNextUpdateTime = System.currentTimeMillis() + ModelConstants.BATTERY_MODEL_CHARGER_STATUS_CHANGE_UPDATE_INTERVAL;
     }
 
     /**

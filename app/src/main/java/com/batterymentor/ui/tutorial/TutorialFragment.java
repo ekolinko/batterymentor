@@ -95,12 +95,5 @@ public class TutorialFragment extends CommonFragment {
      */
     @Override
     public void applyTheme(Theme theme) {
-//        mTheme = theme;
-//        if (mTitleView != null) {
-//            mTitleView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-//        }
-//        if (mTextView != null) {
-//            mTextView.setTextColor(ContextCompat.getColor(getContext(), theme.getColorResource()));
-//        }
     }
 }
