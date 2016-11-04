@@ -252,5 +252,9 @@ public class ScreenFragment extends CommonFragment {
             mScreenTestButton.setVisibility(View.GONE);
             mMoreDetailsButton.setVisibility(View.GONE);
         }
+
+        if (mBatteryTipsButton != null) {
+            mBatteryTipsButton.setText(isChargerConnected() ? R.string.charger_tips : R.string.battery_tips);
+        }
     }
 }
