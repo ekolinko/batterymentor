@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    android:orientation="vertical">
+    <LinearLayout style="@style/battery_mentor_list_row">
+        <TextView android:id="@+id/label_battery_life"
+            style="@style/battery_mentor_list_label"
+            android:text="@string/battery_remaining" />
+        <TextView android:id="@+id/value_battery_life"
+            style="@style/battery_mentor_list_value" />
+    </LinearLayout>
+    <LinearLayout style="@style/battery_mentor_list_row">
+        <TextView android:id="@+id/label_status"
+            style="@style/battery_mentor_list_label"
+            android:text="@string/status" />
+        <TextView android:id="@+id/value_status"
+            style="@style/battery_mentor_list_value" />
+    </LinearLayout>
+    <LinearLayout style="@style/battery_mentor_list_row">
+        <TextView android:id="@+id/label_level"
+            style="@style/battery_mentor_list_label"
+            android:text="@string/level" />
+        <TextView android:id="@+id/value_level"
+            style="@style/battery_mentor_list_value" />
+    </LinearLayout>
+    <LinearLayout style="@style/battery_mentor_list_row">
+        <TextView android:id="@+id/label_temperature"
+            style="@style/battery_mentor_list_label"
+            android:text="@string/temperature" />
+        <TextView android:id="@+id/value_temperature"
+            style="@style/battery_mentor_list_value" />
+    </LinearLayout>
+    <LinearLayout style="@style/battery_mentor_list_row">
+        <TextView android:id="@+id/label_voltage"
+            style="@style/battery_mentor_list_label"
+            android:text="@string/voltage" />
+        <TextView android:id="@+id/value_voltage"
+            style="@style/battery_mentor_list_value" />
+    </LinearLayout>
+</LinearLayout>

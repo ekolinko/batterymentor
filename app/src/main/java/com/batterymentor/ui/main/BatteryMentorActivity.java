@@ -505,7 +505,7 @@ public class BatteryMentorActivity extends CommonActivity {
      */
     private boolean showBatteryStatusDialog() {
         LayoutInflater inflater = getLayoutInflater();
-        View batteryStatsView = inflater.inflate(R.layout.dialog_battery_stats, null);
+        View batteryStatsView = inflater.inflate(R.layout.dialog_battery_details, null);
         mBatteryLifeDetailsLabel = (TextView) batteryStatsView.findViewById(R.id.label_battery_life);
         if (mBatteryLifeDetailsLabel != null) {
             if (isChargerConnected())

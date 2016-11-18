@@ -1,8 +1,12 @@
 package com.batterymentor.device;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.v4.app.FragmentActivity;
+import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.batterymentor.R;
 import com.batterymentor.constants.Constants;
@@ -12,6 +16,7 @@ import com.batterymentor.sensors.ChargerManager;
 import com.batterymentor.sensors.Sensor;
 
 import java.io.File;
+import java.text.DecimalFormat;
 
 /**
  * Class that handles device information.
@@ -198,5 +203,53 @@ public class Device {
 //        }
 //        deviceInformation += String.format(context.getString(R.string.device_sample_data_template), testPointBuilder.toString());
         return deviceInformation;
+    }
+
+    /**
+     * Return the size of the screen in inches.
+     *
+     * @param context the application context.
+     * @return the size of the screen in inches.
+     */
+    public String getScreenSize(Context context) {
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        double x = Math.pow(dm.widthPixels/dm.xdpi,2);
+        double y = Math.pow(dm.heightPixels/dm.ydpi,2);
+        double inches = Math.sqrt(x+y);
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        return String.format(context.getString(R.string.value_units_template), decimalFormat.format(inches), context.getString(R.string.inches));
+    }
+
+    /**
+     * Return the screen dimensions as a string.
+     *
+     * @param context the application context.
+     * @return the screen dimensions as a string.
+     */
+    public String getScreenDimensions(Context context) {
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        return String.format(context.getString(R.string.screen_dimensions_template), dm.widthPixels, dm.heightPixels);
+    }
+
+    /**
+     * Return the screen density as a string.
+     *
+     * @param context the application context.
+     * @return the screen density as a string.
+     */
+    public String getScreenDensity(Context context) {
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        return String.format(context.getString(R.string.value_units_template), Integer.toString((int)(dm.density*160)), context.getString(R.string.dpi));
+    }
+
+    /**
+     * Return the total number of pixels for this device.
+     *
+     * @param context the application context.
+     * @return the total number of pixels for this device.
+     */
+    public int getTotalScreenPixels(Context context) {
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        return dm.widthPixels * dm.heightPixels;
     }
 }

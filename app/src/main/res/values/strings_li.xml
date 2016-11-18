@@ -22,6 +22,7 @@
     <string name="device_model_template" formatted="false">Device Model: %s</string>
     <string name="device_operating_system_template" formatted="false">Device OS: %s</string>
     <string name="device_sample_data_template" formatted="false">Sample Data: %s</string>
+    <string name="screen_dimensions_template" formatted="false">%d x %d</string>
 
     <!-- Feedback -->
     <string name="feedback_mailto">mailto</string>
@@ -34,6 +35,8 @@
     <string name="format_cpu">#0.0</string>
     <string name="format_duration">#0.0</string>
     <string name="format_model_coefficient">#0.0000</string>
+    <string name="format_screen_coefficient">#0.00</string>
+    <string name="format_screen_coefficient_long">#0.000000</string>
 
     <!-- Links -->
     <string name="google_play_link_battery_mentor_pro">market://details?id=com.batterymentor.pro</string>

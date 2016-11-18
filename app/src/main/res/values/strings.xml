@@ -2,12 +2,6 @@
     <string name="battery_mentor">Battery Mentor</string>
     <string name="battery_mentor_pro">Battery Mentor Pro</string>
 
-    <!-- ScreenTestActivity -->
-    <string name="screen_test">Screen Test</string>
-    <string name="screen_test_data_template" formatted="false">Brightness %d%%: %s mW\n</string>
-    <string name="cpu_load_data_template" formatted="false">CPU Load %d%%: %s mW\n</string>
-    <string name="cpu_frequency_data_template" formatted="false">Frequency %d: %s MHz\n</string>
-
     <!-- Common -->
     <string name="mW">mW</string>
     <string name="mA">mA</string>
@@ -16,6 +10,10 @@
     <string name="seconds">seconds</string>
     <string name="minutes">minutes</string>
     <string name="hours">hours</string>
+    <string name="inches">inches</string>
+    <string name="dpi">dpi</string>
+    <string name="mW_per_percent">mW / %</string>
+    <string name="mW_per_pixel">mW / pixel</string>
     <string name="skip">SKIP</string>
     <string name="next">NEXT</string>
     <string name="finish">FINISH</string>
@@ -36,11 +34,6 @@
 
     <!-- Feedback -->
     <string name="feedback_dialog_title">Send Feedback</string>
-
-    <!-- Gadgets -->
-    <string name="brightness_gadget">Brightness Gadget</string>
-    <string name="cpu_gadget">CPU Gadget</string>
-    <string name="battery_gadget_slider_hint">Move the slider to see the impact of screen brightness on battery life</string>
 
     <!-- Model -->
     <string name="model_dialog_title">Power Models</string>
@@ -75,6 +68,7 @@
     <string name="tab_screen">SCREEN</string>
     <string name="tab_apps">APPS</string>
     <string name="battery_details">Battery Details</string>
+    <string name="screen_details">Screen Details</string>
     <string name="battery_remaining">Remaining:</string>
     <string name="time_until_full">Until Full:</string>
     <string name="status">Status:</string>
@@ -122,6 +116,23 @@
     <!-- Prototype -->
     <string name="prototype_running_applications">Running Applications</string>
     <string name="prototype_application_cpu_load_template" formatted="false">%s: %,.2f</string>
+
+    <!-- Screen Tab -->
+    <string name="brightness_gadget">Brightness Gadget</string>
+    <string name="cpu_gadget">CPU Gadget</string>
+    <string name="battery_gadget_slider_hint">Move the slider to see the impact of screen brightness on battery life</string>
+    <string name="brightness">BRIGHTNESS:</string>
+    <string name="screen_size">SCREEN SIZE:</string>
+    <string name="screen_dimensions">RESOLUTION:</string>
+    <string name="screen_density">DENSITY:</string>
+    <string name="power_per_brightness">POWER / BRIGHTNESS:</string>
+    <string name="max_power_per_pixel">MAX POWER / PIXEL:</string>
+
+    <!-- ScreenTestActivity -->
+    <string name="screen_test">Screen Test</string>
+    <string name="screen_test_data_template" formatted="false">Brightness %d%%: %s mW\n</string>
+    <string name="cpu_load_data_template" formatted="false">CPU Load %d%%: %s mW\n</string>
+    <string name="cpu_frequency_data_template" formatted="false">Frequency %d: %s MHz\n</string>
 
     <!-- Sensors -->
     <string name="charging">Charging</string>

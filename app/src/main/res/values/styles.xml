@@ -386,31 +386,32 @@
         <item name="android:textColor">@color/material_blue</item>
     </style>
 
-    <style name="powerbench_list_label_container">
-        <item name="android:layout_width">150dp</item>
+    <style name="battery_mentor_list_row">
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:gravity">right</item>
-        <item name="android:paddingRight">15dp</item>
+        <item name="android:orientation">horizontal</item>
     </style>
 
-    <style name="powerbench_list_label">
-        <item name="android:layout_width">wrap_content</item>
+    <style name="battery_mentor_list_label">
+        <item name="android:layout_width">165dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:gravity">right</item>
+        <item name="android:paddingRight">5dp</item>
     </style>
 
-    <style name="powerbench_list_value_container">
+    <style name="battery_mentor_list_value_container">
         <item name="android:layout_width">150dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">vertical</item>
+        <item name="android:orientation">horizontal</item>
     </style>
 
-    <style name="powerbench_list_value">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">16sp</item>
+    <style name="battery_mentor_list_value">
+        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="powerbench_ad">
