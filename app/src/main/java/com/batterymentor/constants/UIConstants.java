@@ -155,4 +155,9 @@ public class UIConstants {
      * The screen tab.
      */
     public static final String SCREEN_TAB = "screen_tab";
+
+    /**
+     * The duration of the brightness benchmark.
+     */
+    public static final String BRIGHTNESS_DURATION_STEP = "brightness_duration_step";
 }

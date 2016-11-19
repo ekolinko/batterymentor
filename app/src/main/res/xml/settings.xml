@@ -18,7 +18,11 @@
         android:entries="@array/settings_power_tab_units_options"
         android:entryValues="@array/settings_power_tab_units_options"
         android:defaultValue="@string/settings_power_tab_units_default" />
-    <Preference
+    <ListPreference
         android:key="@string/settings_rerun_screen_test"
-        android:title="@string/test_screen_rerun" />
+        android:title="@string/test_screen_rerun"
+        android:dialogTitle="@string/settings_screen_test_duration"
+        android:entries="@array/settings_screen_test_duration_options"
+        android:entryValues="@array/settings_screen_test_duration_values"
+        android:defaultValue="@string/settings_screen_test_duration_default" />
 </PreferenceScreen>

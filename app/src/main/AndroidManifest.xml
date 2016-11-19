@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.batterymentor"
     android:versionCode="15"
-    android:versionName="1.0.0.01">
+    android:versionName="1.0.0.02">
     <!-- Used for changing brightness in brightness benchmark -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!-- Used for launching battery mentor on device start -->

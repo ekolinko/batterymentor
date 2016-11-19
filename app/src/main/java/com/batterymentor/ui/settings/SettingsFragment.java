@@ -49,17 +49,21 @@ public class SettingsFragment extends PreferenceFragment {
                 }
             });
         }
-        final Preference rerunScreenTestPreference = (Preference) findPreference(getString(R.string.settings_rerun_screen_test));
-        if (!Device.getInstance().isBatteryPowerEstimated() && ModelManager.getInstance().getBatteryModel(getActivity()).getScreenModel() != null) {
+        final ListPreference rerunScreenTestPreference = (ListPreference) findPreference(getString(R.string.settings_rerun_screen_test));
+        if (!Device.getInstance().isBatteryPowerEstimated()) {
             if (rerunScreenTestPreference != null) {
-                rerunScreenTestPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                if (ModelManager.getInstance().getBatteryModel(getActivity()).getScreenModel() == null)
+                    rerunScreenTestPreference.setTitle(R.string.test_screen_run);
+                rerunScreenTestPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
-                    public boolean onPreferenceClick(Preference preference) {
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
                         Intent data = new Intent();
                         data.setData(Uri.parse(UIConstants.SCREEN_TAB));
                         getActivity().setResult(getActivity().RESULT_OK, data);
                         getActivity().finish();
-                        startActivity(new Intent(getActivity(), ScreenTestActivity.class));
+                        Intent intent = new Intent(getActivity(), ScreenTestActivity.class);
+                        intent.putExtra(UIConstants.BRIGHTNESS_DURATION_STEP, Long.parseLong((String)newValue));
+                        startActivity(intent);
                         return false;
                     }
                 });

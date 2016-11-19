@@ -5,6 +5,8 @@ import android.os.Bundle;
 import com.batterymentor.R;
 import com.batterymentor.benchmarks.BrightnessBenchmark;
 import com.batterymentor.constants.BenchmarkConstants;
+import com.batterymentor.constants.Constants;
+import com.batterymentor.constants.UIConstants;
 import com.batterymentor.model.ModelManager;
 
 /**
@@ -23,7 +25,12 @@ public class ScreenTestActivity extends BenchmarkActivity {
         setContentView(R.layout.activity_benchmark);
         initialize();
         getSupportActionBar().setTitle(getString(R.string.screen_test));
-        mBrightnessBenchmark = new BrightnessBenchmark(this, BenchmarkConstants.BRIGHTNESS_DURATION_STEP, BenchmarkConstants.BRIGHTNESS_STEP);
+        long brightnessDurationStep = BenchmarkConstants.BRIGHTNESS_DURATION_STEP;
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            brightnessDurationStep = extras.getLong(UIConstants.BRIGHTNESS_DURATION_STEP) * Constants.SECOND;
+        }
+        mBrightnessBenchmark = new BrightnessBenchmark(this, brightnessDurationStep, BenchmarkConstants.BRIGHTNESS_STEP);
         startBenchmark(mBrightnessBenchmark);
     }
 

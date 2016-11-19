@@ -8,6 +8,7 @@
     <bool name="settings_startup_with_device_default">false</bool>
     <string name="settings_status_bar_units_default">@string/hours</string>
     <string name="settings_power_tab_units_default">@string/mW</string>
+    <string name="settings_screen_test_duration_default">@string/two_minutes</string>
     <string-array name="settings_status_bar_units_options">
         <item>@string/hours</item>
         <item>@string/mW</item>
@@ -16,5 +17,15 @@
     <string-array name="settings_power_tab_units_options">
         <item>@string/mW</item>
         <item>@string/mA</item>
+    </string-array>
+    <string-array name="settings_screen_test_duration_options">
+        <item>@string/two_minutes</item>
+        <item>@string/five_minutes</item>
+        <item>@string/ten_minutes</item>
+    </string-array>
+    <string-array name="settings_screen_test_duration_values">
+        <item>20</item>
+        <item>55</item>
+        <item>110</item>
     </string-array>
 </resources>

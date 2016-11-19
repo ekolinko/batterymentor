@@ -14,6 +14,9 @@
     <string name="dpi">dpi</string>
     <string name="mW_per_percent">mW / %</string>
     <string name="mW_per_pixel">mW / pixel</string>
+    <string name="two_minutes">2 minutes</string>
+    <string name="five_minutes">5 minutes</string>
+    <string name="ten_minutes">10 minutes</string>
     <string name="skip">SKIP</string>
     <string name="next">NEXT</string>
     <string name="finish">FINISH</string>
@@ -144,6 +147,7 @@
     <string name="settings_start_up_with_device">Start up with Device</string>
     <string name="settings_status_bar_units">Status Bar Units</string>
     <string name="settings_power_tab_units">Power Tab Units</string>
+    <string name="settings_screen_test_duration">Screen Test Duration</string>
 
     <!-- Test -->
     <string name="test_screen_run">Run Screen Test</string>
