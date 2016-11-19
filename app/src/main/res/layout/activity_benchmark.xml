@@ -37,16 +37,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_above="@+id/powerbench_ad"
+        android:layout_above="@+id/align_parent_bottom_view"
         android:layout_centerHorizontal="true"
         android:text="@string/stop_test" />
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/powerbench_ad"
-        style="@style/powerbench_ad"
-        android:layout_above="@+id/align_parent_bottom_view"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/advertising_id">
-    </com.google.android.gms.ads.AdView>
     <View android:id="@+id/align_parent_bottom_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"

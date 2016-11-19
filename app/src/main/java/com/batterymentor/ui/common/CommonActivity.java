@@ -118,10 +118,12 @@ public abstract class CommonActivity extends AppCompatActivity implements Charge
             getSupportActionBar().setHomeButtonEnabled(true);
         }
         mAdView = (AdView) findViewById(R.id.powerbench_ad);
-        if (com.batterymentor.settings.Settings.getInstance().isProVersion()) {
-            mAdView.setVisibility(View.GONE);
-        } else {
-            mAdView.setVisibility(View.VISIBLE);
+        if (mAdView != null) {
+            if (com.batterymentor.settings.Settings.getInstance().isProVersion()) {
+                mAdView.setVisibility(View.GONE);
+            } else {
+                mAdView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
