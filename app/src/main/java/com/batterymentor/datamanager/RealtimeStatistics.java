@@ -139,7 +139,7 @@ public class RealtimeStatistics extends Statistics {
     /**
      * Return the average using a full portion of recent data.
      */
-    private double getFullRecentAverage() {
+    public double getFullRecentAverage() {
         if (mRecentData.isEmpty())
             return Double.POSITIVE_INFINITY;
 
@@ -153,6 +153,15 @@ public class RealtimeStatistics extends Statistics {
             }
         }
         return recentAverage;
+    }
+
+    /**
+     * Return the absolute average over the entire statistics.
+     *
+     * @return the absolute average over the entire statistcs.
+     */
+    public double getAbsoluteAverage() {
+        return super.getAverage();
     }
 
     /**

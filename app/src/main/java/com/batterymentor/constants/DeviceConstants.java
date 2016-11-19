@@ -49,12 +49,12 @@ public class DeviceConstants {
     /**
      * The minimum threshold to check for when a device is charging.
      */
-    public static final double BATTERY_TEST_CHARGING_MIN = -5000;
+    public static final double BATTERY_TEST_CHARGING_MIN = -15000;
 
     /**
      * The maximum threshold to check for when a device is charging.
      */
-    public static final double BATTERY_TEST_CHARGING_MAX = 10000;
+    public static final double BATTERY_TEST_CHARGING_MAX = 7500;
 
     /**
      * The minimum threshold to check for when a device is charging.

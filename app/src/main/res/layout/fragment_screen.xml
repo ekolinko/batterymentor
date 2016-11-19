@@ -9,7 +9,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_centerInParent="true">
+            android:layout_centerVertical="true"
+            android:paddingTop="15dp">
+            <RelativeLayout android:id="@+id/powerbench_power_value_container"
+                style="@style/powerbench_power_value_container">
+                <TextView android:id="@+id/battery_mentor_screen_power"
+                    style="@style/powerbench_power_value"
+                    android:layout_centerHorizontal="true" />
+                <TextView android:id="@+id/powerbench_power_estimation_indicator"
+                    style="@style/powerbench_power_indicator"
+                    android:layout_toLeftOf="@+id/battery_mentor_screen_power_label"
+                    android:layout_alignTop="@+id/battery_mentor_screen_power_label"
+                    android:layout_alignBottom="@+id/battery_mentor_screen_power_label"
+                    android:text="@string/power_estimation_indicator" />
+                <TextView android:id="@+id/battery_mentor_screen_power_label"
+                    style="@style/powerbench_power_label"
+                    android:layout_below="@id/battery_mentor_screen_power"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/screen_power"/>
+            </RelativeLayout>
             <LinearLayout android:id="@+id/screen_test_welcome_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -26,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingTop="25dp"
+                android:paddingTop="15dp"
                 android:orientation="vertical">
                 <com.batterymentor.ui.common.SunView
                     android:id="@+id/gadget_screen_sun_view"
@@ -57,6 +75,12 @@
             android:layout_weight="1"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:text="@string/test_screen_run"/>
+        <Button android:id="@+id/button_screen_details"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:text="@string/screen_details"/>
         <Button android:id="@+id/button_battery_tips"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

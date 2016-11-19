@@ -13,7 +13,7 @@ public abstract class Model {
     /**
      * The estimated display model.
      */
-    public static final LinearModel ESTIMATED_SCREEN_MODEL = new LinearModel(3.0054d, 1170.5571d);
+    public static final LinearModel ESTIMATED_SCREEN_MODEL = new LinearModel(3.3343d, 1000.5571d);
 
     /**
      * Create a new model.

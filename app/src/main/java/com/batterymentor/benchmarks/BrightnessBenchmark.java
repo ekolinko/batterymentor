@@ -161,7 +161,7 @@ public class BrightnessBenchmark extends Benchmark {
                     if (!mStopped) {
                         mCollectionTask.stop();
                         lockData();
-                        mBrightnessData.add(new Point(brightness, mCollectionTask.getAverage()));
+                        mBrightnessData.add(new Point(brightness, mCollectionTask.getAbsoluteAverage()));
                         unlockData();
                         preciseBrightness += mBrightnessStep;
                         brightness = (int) Math.round(preciseBrightness);

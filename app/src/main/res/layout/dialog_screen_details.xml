@@ -5,44 +5,51 @@
     android:padding="15dp"
     android:orientation="vertical">
     <LinearLayout style="@style/battery_mentor_list_row">
+        <TextView android:id="@+id/label_screen_power"
+            style="@style/battery_mentor_list_label"
+            android:text="@string/screen_power_label" />
+        <TextView android:id="@+id/value_screen_power"
+            style="@style/battery_mentor_list_value" />
+    </LinearLayout>
+    <LinearLayout style="@style/battery_mentor_list_row">
         <TextView android:id="@+id/label_brightness"
             style="@style/battery_mentor_list_label"
-            android:text="@string/brightness" />
+            android:text="@string/brightness_label" />
         <TextView android:id="@+id/value_brightness"
             style="@style/battery_mentor_list_value" />
     </LinearLayout>
     <LinearLayout style="@style/battery_mentor_list_row">
         <TextView android:id="@+id/label_screen_size"
             style="@style/battery_mentor_list_label"
-            android:text="@string/screen_size" />
+            android:text="@string/screen_size_label" />
         <TextView android:id="@+id/value_screen_size"
             style="@style/battery_mentor_list_value" />
     </LinearLayout>
     <LinearLayout style="@style/battery_mentor_list_row">
         <TextView android:id="@+id/label_screen_resolution"
             style="@style/battery_mentor_list_label"
-            android:text="@string/screen_dimensions" />
+            android:text="@string/screen_dimensions_label" />
         <TextView android:id="@+id/value_screen_dimensions"
             style="@style/battery_mentor_list_value" />
     </LinearLayout>
     <LinearLayout style="@style/battery_mentor_list_row">
         <TextView android:id="@+id/label_screen_density"
             style="@style/battery_mentor_list_label"
-            android:text="@string/screen_density" />
+            android:text="@string/screen_density_label" />
         <TextView android:id="@+id/value_screen_density"
             style="@style/battery_mentor_list_value" />
     </LinearLayout>
     <LinearLayout style="@style/battery_mentor_list_row">
         <TextView android:id="@+id/label_power_per_brightness"
             style="@style/battery_mentor_list_label"
-            android:text="@string/power_per_brightness" />
+            android:text="@string/power_per_brightness_label" />
         <TextView android:id="@+id/value_power_per_brightness"
             style="@style/battery_mentor_list_value" />
     </LinearLayout>
     <LinearLayout style="@style/battery_mentor_list_row">
         <TextView android:id="@+id/label_power_per_pixel"
             style="@style/battery_mentor_list_label"
-            android:text="@string/max_power_per_pixel" />
+            android:text="@string/max_power_per_pixel_label" />
         <TextView android:id="@+id/value_max_power_per_pixel"
             style="@style/battery_mentor_list_value" />
     </LinearLayout>

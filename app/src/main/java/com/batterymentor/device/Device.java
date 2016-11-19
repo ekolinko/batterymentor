@@ -4,9 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
+import android.view.Display;
 
 import com.batterymentor.R;
 import com.batterymentor.constants.Constants;
@@ -208,48 +207,65 @@ public class Device {
     /**
      * Return the size of the screen in inches.
      *
-     * @param context the application context.
+     * @param activity the application activity.
      * @return the size of the screen in inches.
      */
-    public String getScreenSize(Context context) {
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+    public String getScreenSize(Activity activity) {
+        DisplayMetrics dm = getRealDisplayMetrics(activity);
         double x = Math.pow(dm.widthPixels/dm.xdpi,2);
         double y = Math.pow(dm.heightPixels/dm.ydpi,2);
         double inches = Math.sqrt(x+y);
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
-        return String.format(context.getString(R.string.value_units_template), decimalFormat.format(inches), context.getString(R.string.inches));
+        return String.format(activity.getString(R.string.value_units_template), decimalFormat.format(inches), activity.getString(R.string.inches));
     }
 
     /**
      * Return the screen dimensions as a string.
      *
-     * @param context the application context.
+     * @param activity the activity.
      * @return the screen dimensions as a string.
      */
-    public String getScreenDimensions(Context context) {
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        return String.format(context.getString(R.string.screen_dimensions_template), dm.widthPixels, dm.heightPixels);
+    public String getScreenDimensions(Activity activity) {
+        DisplayMetrics dm = getRealDisplayMetrics(activity);
+        return String.format(activity.getString(R.string.screen_dimensions_template), dm.widthPixels, dm.heightPixels);
     }
 
     /**
      * Return the screen density as a string.
      *
-     * @param context the application context.
+     * @param activity the application activity.
      * @return the screen density as a string.
      */
-    public String getScreenDensity(Context context) {
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        return String.format(context.getString(R.string.value_units_template), Integer.toString((int)(dm.density*160)), context.getString(R.string.dpi));
+    public String getScreenDensity(Activity activity) {
+        DisplayMetrics dm = getRealDisplayMetrics(activity);
+        return String.format(activity.getString(R.string.value_units_template), Integer.toString((int)(dm.density*160)), activity.getString(R.string.dpi));
     }
 
     /**
      * Return the total number of pixels for this device.
      *
-     * @param context the application context.
+     * @param activity the current activity.
      * @return the total number of pixels for this device.
      */
-    public int getTotalScreenPixels(Context context) {
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+    public int getTotalScreenPixels(Activity activity) {
+        DisplayMetrics dm = getRealDisplayMetrics(activity);
         return dm.widthPixels * dm.heightPixels;
+    }
+
+    /**
+     * Get the real display metrics for this device.
+     *
+     * @param activity the activity for which to get the metrics.
+     * @return the real display metrics.
+     */
+    public DisplayMetrics getRealDisplayMetrics(Activity activity) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        if (Build.VERSION.SDK_INT >= 17){
+            display.getRealMetrics(displayMetrics);
+        } else  {
+            display.getMetrics(displayMetrics);
+        }
+        return displayMetrics;
     }
 }

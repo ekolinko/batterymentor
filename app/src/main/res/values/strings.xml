@@ -124,12 +124,14 @@
     <string name="brightness_gadget">Brightness Gadget</string>
     <string name="cpu_gadget">CPU Gadget</string>
     <string name="battery_gadget_slider_hint">Move the slider to see the impact of screen brightness on battery life</string>
-    <string name="brightness">BRIGHTNESS:</string>
-    <string name="screen_size">SCREEN SIZE:</string>
-    <string name="screen_dimensions">RESOLUTION:</string>
-    <string name="screen_density">DENSITY:</string>
-    <string name="power_per_brightness">POWER / BRIGHTNESS:</string>
-    <string name="max_power_per_pixel">MAX POWER / PIXEL:</string>
+    <string name="screen_power">Screen Power</string>
+    <string name="screen_power_label">SCREEN POWER:</string>
+    <string name="brightness_label">BRIGHTNESS:</string>
+    <string name="screen_size_label">SCREEN SIZE:</string>
+    <string name="screen_dimensions_label">RESOLUTION:</string>
+    <string name="screen_density_label">DENSITY:</string>
+    <string name="power_per_brightness_label">POWER / BRIGHTNESS:</string>
+    <string name="max_power_per_pixel_label">MAX POWER / PIXEL:</string>
 
     <!-- ScreenTestActivity -->
     <string name="screen_test">Screen Test</string>
@@ -167,6 +169,8 @@
     <!-- Tips -->
     <string name="battery_tips">Tips to Save Battery</string>
     <string name="charger_tips">Tips to Speed Up Charging</string>
+    <string name="battery_tips_short">Battery Tips</string>
+    <string name="charger_tips_short">Charging Tips</string>
     <string name="battery_tip_title_run_screen_test">Run Screen Test</string>
     <string name="battery_tip_title_run_screen_test_summary">The screen is the largest consumer of power in mobile devices.\n\nTap here to run the screen test to see how screen brightness affects your battery life.</string>
     <string name="battery_tip_title_reduce_screen_brightness">Reduce Screen Brightness</string>

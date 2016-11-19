@@ -22,6 +22,11 @@ public class BenchmarkConstants {
     public static final int MIN_BRIGHTNESS = 0;
 
     /**
+     * The minimum brightness supported by the device for visual purposes.
+     */
+    public static final int MIN_VISUAL_BRIGHTNESS = 5;
+
+    /**
      * The maximum brightness supported by the device.
      */
     public static final int MAX_BRIGHTNESS = 255;

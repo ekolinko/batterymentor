@@ -56,6 +56,21 @@ public class ScreenFragment extends CommonFragment {
     private BatteryModel mBatteryModel;
 
     /**
+     * The screen power value.
+     */
+    private TextView mScreenPowerValue;
+
+    /**
+     * The screen power label.
+     */
+    private TextView mScreenPowerLabel;
+
+    /**
+     * The power estimation indicator
+     */
+    private TextView mPowerEstimationIndicator;
+
+    /**
      * The icon that shows on the run screen test tab.
      */
     private ImageView mScreenTestIcon;
@@ -69,6 +84,11 @@ public class ScreenFragment extends CommonFragment {
      * The button for running the screen test.
      */
     private Button mScreenTestButton;
+
+    /**
+     * The button for viewing the screen details.
+     */
+    private Button mScreenDetailsButton;
 
     /**
      * The button for viewing the battery tips.
@@ -97,6 +117,9 @@ public class ScreenFragment extends CommonFragment {
         mBatteryModel = ModelManager.getInstance().getBatteryModel(getActivity());
         mWelcomeContainer = view.findViewById(R.id.screen_test_welcome_container);
         mGadgetContainer = view.findViewById(R.id.screen_test_gadget_container);
+        mScreenPowerValue = (TextView) view.findViewById(R.id.battery_mentor_screen_power);
+        mScreenPowerLabel = (TextView) view.findViewById(R.id.battery_mentor_screen_power_label);
+        mPowerEstimationIndicator = (TextView) view.findViewById(R.id.powerbench_power_estimation_indicator);
         mScreenTestIcon = (ImageView) view.findViewById(R.id.icon_screen_test);
         mMoreDetailsButton = (Button) view.findViewById(R.id.button_more_details);
         mMoreDetailsButton.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +146,13 @@ public class ScreenFragment extends CommonFragment {
                 }
             });
         }
+        mScreenDetailsButton = (Button) view.findViewById(R.id.button_screen_details);
+        mScreenDetailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showScreenDetailsDialog();
+            }
+        });
         mScreenTestButton = (Button) view.findViewById(R.id.button_screen_test);
         mScreenTestButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,8 +208,11 @@ public class ScreenFragment extends CommonFragment {
         mScreenBrightnessSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int brightness, boolean fromUser) {
+                if (brightness < BenchmarkConstants.MIN_VISUAL_BRIGHTNESS)
+                    brightness = BenchmarkConstants.MIN_VISUAL_BRIGHTNESS;
                 Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
                 Settings.System.putInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, brightness);
+                updateScreenPower();
                 mBatteryModel.setScreenBrightness(brightness);
                 mSunView.setBrightness(brightness * Constants.PERCENT / BenchmarkConstants.MAX_BRIGHTNESS);
             }
@@ -213,6 +246,9 @@ public class ScreenFragment extends CommonFragment {
     public void applyTheme(Theme theme) {
         mTheme = theme;
         if (mTheme != null) {
+            if (mScreenPowerValue != null) {
+                mScreenPowerValue.setTextColor(ContextCompat.getColor(getContext(), mTheme.getColorResource()));
+            }
             if (mScreenTestIcon != null) {
                 mScreenTestIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), mTheme.getScreenTestIconResource()));
             }
@@ -222,9 +258,12 @@ public class ScreenFragment extends CommonFragment {
             if (mScreenTestButton != null) {
                 mScreenTestButton.setTextColor(ContextCompat.getColor(getContext(), mTheme.getColorResource()));
             }
+            if (mScreenDetailsButton != null) {
+                mScreenDetailsButton.setTextColor(ContextCompat.getColor(getContext(), mTheme.getColorResource()));
+            }
             if (mBatteryTipsButton != null) {
                 mBatteryTipsButton.setTextColor(ContextCompat.getColor(getContext(), mTheme.getColorResource()));
-                mBatteryTipsButton.setText(isChargerConnected() ? R.string.charger_tips : R.string.battery_tips);
+                mBatteryTipsButton.setText(isChargerConnected() ? R.string.charger_tips_short : R.string.battery_tips_short);
             }
             if (mSunView != null) {
                 mSunView.applyTheme(theme);
@@ -247,13 +286,20 @@ public class ScreenFragment extends CommonFragment {
             mWelcomeContainer.setVisibility(View.VISIBLE);
             mGadgetContainer.setVisibility(View.GONE);
             mBatteryTipsButton.setVisibility(View.GONE);
+            mScreenDetailsButton.setVisibility(View.GONE);
+            mScreenPowerValue.setVisibility(View.GONE);
+            mScreenPowerLabel.setVisibility(View.GONE);
+            mPowerEstimationIndicator.setVisibility(View.GONE);
             mScreenTestButton.setVisibility(View.VISIBLE);
             mMoreDetailsButton.setVisibility(View.VISIBLE);
-
         } else {
             mWelcomeContainer.setVisibility(View.GONE);
             mGadgetContainer.setVisibility(View.VISIBLE);
             mBatteryTipsButton.setVisibility(View.VISIBLE);
+            mScreenDetailsButton.setVisibility(View.VISIBLE);
+            mScreenPowerValue.setVisibility(View.VISIBLE);
+            mScreenPowerLabel.setVisibility(View.VISIBLE);
+            mPowerEstimationIndicator.setVisibility(Device.getInstance().isBatteryPowerEstimated() ? View.VISIBLE : View.GONE);
             mScreenTestButton.setVisibility(View.GONE);
             mMoreDetailsButton.setVisibility(View.GONE);
             if (mBatteryModel.getScreenModel() != null) {
@@ -265,9 +311,37 @@ public class ScreenFragment extends CommonFragment {
                 });
             }
         }
-
         if (mBatteryTipsButton != null) {
-            mBatteryTipsButton.setText(isChargerConnected() ? R.string.charger_tips : R.string.battery_tips);
+            mBatteryTipsButton.setText(isChargerConnected() ? R.string.charger_tips_short : R.string.battery_tips_short);
+        }
+        updateScreenPower();
+    }
+
+    /**
+     * Update the screen power value.
+     */
+    private void updateScreenPower() {
+        if (mScreenPowerValue != null) {
+            mScreenPowerValue.setText(getScreenPowerValueAsString());
+        }
+    }
+
+    /**
+     * Return the screen power value as a string.
+     *
+     * @return the screen power value as a string.
+     */
+    private String getScreenPowerValueAsString() {
+        if (mBatteryModel != null && mBatteryModel.getScreenModel() != null) {
+            Model screenModel = mBatteryModel.getScreenModel();
+            int screenBrightness = getScreenBrightnessAsPercent();
+            int screenPower = 0;
+            if (screenBrightness != 0) {
+                screenPower = (int)(Math.round(screenModel.getFirstCoefficient() * BenchmarkConstants.MAX_BRIGHTNESS * getScreenBrightnessAsPercent() / Constants.PERCENT));
+            }
+            return String.format(getString(R.string.value_units_template), Integer.toString(screenPower), getString(R.string.mW));
+        } else {
+            return getString(R.string.invalid_value);
         }
     }
 
@@ -276,13 +350,13 @@ public class ScreenFragment extends CommonFragment {
      *
      * @return the screen brightness as a percent.
      */
-    private String getScreenBrightnessAsPercent() {
+    private int getScreenBrightnessAsPercent() {
         int brightness = BenchmarkConstants.MAX_BRIGHTNESS;
         try {
             brightness = Settings.System.getInt(getActivity().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
         } catch (Settings.SettingNotFoundException e) {
         }
-        return String.format(getString(R.string.value_percent_template), Integer.toString((int)((brightness * Constants.PERCENT) / BenchmarkConstants.MAX_BRIGHTNESS)));
+        return (int)((brightness * Constants.PERCENT) / BenchmarkConstants.MAX_BRIGHTNESS);
     }
 
     /**
@@ -291,6 +365,11 @@ public class ScreenFragment extends CommonFragment {
     private boolean showScreenDetailsDialog() {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View screenDetailsView = inflater.inflate(R.layout.dialog_screen_details, null);
+
+        TextView screenPowerLabel = (TextView) screenDetailsView.findViewById(R.id.label_screen_power);
+        if (screenPowerLabel != null) {
+            screenPowerLabel.setTextColor(ContextCompat.getColor(getActivity(), getAppTheme().getColorResource()));
+        }
 
         TextView brightnessLabel = (TextView) screenDetailsView.findViewById(R.id.label_brightness);
         if (brightnessLabel != null) {
@@ -322,9 +401,18 @@ public class ScreenFragment extends CommonFragment {
             maxPowerPerPixelLabel.setTextColor(ContextCompat.getColor(getActivity(), getAppTheme().getColorResource()));
         }
 
+        TextView screenPowerDetails = (TextView) screenDetailsView.findViewById(R.id.value_screen_power);
+        if (screenPowerDetails != null) {
+            screenPowerDetails.setText(getScreenPowerValueAsString());
+            if (Device.getInstance().isBatteryPowerEstimated()) {
+                screenPowerDetails.setText(getString(R.string.power_estimation_indicator) + screenPowerDetails.getText());
+            }
+            screenPowerDetails.setTextColor(ContextCompat.getColor(getActivity(), getAppTheme().getColorResource()));
+        }
+
         TextView brightnessDetails = (TextView) screenDetailsView.findViewById(R.id.value_brightness);
         if (brightnessDetails != null) {
-            brightnessDetails.setText(getScreenBrightnessAsPercent());
+            brightnessDetails.setText(String.format(getString(R.string.value_percent_template), Integer.toString(getScreenBrightnessAsPercent())));
             brightnessDetails.setTextColor(ContextCompat.getColor(getActivity(), getAppTheme().getColorResource()));
         }
 
@@ -355,6 +443,9 @@ public class ScreenFragment extends CommonFragment {
                 powerPerBrightnessDetails.setText(String.format(getString(R.string.value_units_template), coefficientFormat.format(powerPerBrightness), getString(R.string.mW_per_percent)));
             } else
                 powerPerBrightnessDetails.setText(R.string.invalid_value);
+            if (Device.getInstance().isBatteryPowerEstimated()) {
+                powerPerBrightnessDetails.setText(getString(R.string.power_estimation_indicator) + powerPerBrightnessDetails.getText());
+            }
             powerPerBrightnessDetails.setTextColor(ContextCompat.getColor(getActivity(), getAppTheme().getColorResource()));
         }
 
@@ -367,6 +458,9 @@ public class ScreenFragment extends CommonFragment {
                 maxPowerPerPixelDetails.setText(String.format(getString(R.string.value_units_template), coefficientFormat.format(maxPowerPerPixel), getString(R.string.mW_per_pixel)));
             } else
                 maxPowerPerPixelDetails.setText(R.string.invalid_value);
+            if (Device.getInstance().isBatteryPowerEstimated()) {
+                maxPowerPerPixelDetails.setText(getString(R.string.power_estimation_indicator) + maxPowerPerPixelDetails.getText());
+            }
             maxPowerPerPixelDetails.setTextColor(ContextCompat.getColor(getActivity(), getAppTheme().getColorResource()));
         }
 

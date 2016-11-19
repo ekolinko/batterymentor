@@ -208,6 +208,10 @@ public class CollectionTask {
         return mStatistics.getAverage();
     }
 
+    public double getAbsoluteAverage() {
+        return mStatistics.getAbsoluteAverage();
+    }
+
     public double getValue() {
         return mStatistics.getValue();
     }

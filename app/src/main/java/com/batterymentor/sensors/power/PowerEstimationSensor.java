@@ -54,7 +54,7 @@ public class PowerEstimationSensor extends Sensor {
             } catch (Settings.SettingNotFoundException e) {
             }
         }
-        return 3.0054*brightness;
+        return 3.3343*brightness;
     }
 
     /**

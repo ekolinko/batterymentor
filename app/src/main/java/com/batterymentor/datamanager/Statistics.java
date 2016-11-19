@@ -179,6 +179,10 @@ public class Statistics implements Serializable, Histogram {
         return mNumPoints;
     }
 
+    public double getTotal() {
+        return mTotal;
+    }
+
     public boolean isChargerStatistics() {
         return mChargerStatistics;
     }
