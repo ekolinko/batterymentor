@@ -102,6 +102,7 @@ public abstract class BenchmarkActivity extends CommonActivity {
             mStopButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mBenchmark.stop();
                     finish();
                 }
             });
